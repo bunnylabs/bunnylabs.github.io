@@ -1,4 +1,8 @@
-@STATIC;1.0;p;15;AppController.jt;1299;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;1232;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPObject, "AppController"),
+@STATIC;1.0;p;6;main.jt;292;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;15;AppController.jt;206;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("AppController.j", YES);main = function(args, namedArgs)
+{
+    CPApplicationMain(args, namedArgs);
+}
+p;15;AppController.jt;1299;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;1232;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPObject, "AppController"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLaunching:"), function $AppController__applicationDidFinishLaunching_(self, _cmd, aNotification)
 {
@@ -14,8 +18,4 @@ class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLau
     objj_msgSend(theWindow, "orderFront:", self);
 }
 ,["void","CPNotification"])]);
-}p;6;main.jt;292;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;15;AppController.jt;206;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("AppController.j", YES);main = function(args, namedArgs)
-{
-    CPApplicationMain(args, namedArgs);
-}
-e;
+}e;
