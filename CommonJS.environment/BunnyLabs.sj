@@ -1,27 +1,436 @@
-@STATIC;1.0;p;22;BunnylabsLoginWindow.jt;926;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;860;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPPanel, "BunnylabsLoginWindow"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("contentView")]);objj_registerClassPair(the_class);
+@STATIC;1.0;p;26;BunnylabsLoginController.jt;306;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;240;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPWindowController, "BunnylabsLoginController"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+}p;6;main.jt;292;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;15;AppController.jt;206;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("AppController.j", YES);main = function(args, namedArgs)
+{
+    CPApplicationMain(args, namedArgs);
+}
+p;16;SessionManager.jt;226;@STATIC;1.0;I;23;Foundation/Foundation.jt;180;objj_executeFile("Foundation/Foundation.j", NO);{var the_class = objj_allocateClassPair(CPObject, "SessionManager"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+}p;20;TextFieldWithLabel.jt;4560;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;4493;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "TextFieldWithLabel"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("textField"), new objj_ivar("label"), new objj_ivar("target"), new objj_ivar("validator")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("target"), function $TextFieldWithLabel__target(self, _cmd)
+{
+    return self.target;
+}
+,["id"]), new objj_method(sel_getUid("setTarget:"), function $TextFieldWithLabel__setTarget_(self, _cmd, newValue)
+{
+    self.target = newValue;
+}
+,["void","id"]), new objj_method(sel_getUid("validator"), function $TextFieldWithLabel__validator(self, _cmd)
+{
+    return self.validator;
+}
+,["SEL"]), new objj_method(sel_getUid("setValidator:"), function $TextFieldWithLabel__setValidator_(self, _cmd, newValue)
+{
+    self.validator = newValue;
+}
+,["void","SEL"]), new objj_method(sel_getUid("initWithLabel:andPlaceHolder:andWidth:"), function $TextFieldWithLabel__initWithLabel_andPlaceHolder_andWidth_(self, _cmd, aLabel, aPlaceholder, aWidth)
+{
+    return objj_msgSend(self, "initWithLabel:andPlaceHolder:andWidth:isSecure:", aLabel, aPlaceholder, aWidth, NO);
+}
+,["id","CPString","CPString","CPInteger"]), new objj_method(sel_getUid("initWithLabel:andPlaceHolder:andWidth:isSecure:"), function $TextFieldWithLabel__initWithLabel_andPlaceHolder_andWidth_isSecure_(self, _cmd, aLabel, aPlaceholder, aWidth, secure)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("TextFieldWithLabel").super_class }, "init");
+    if (self)
+    {
+        self.textField = objj_msgSend(CPTextField, "textFieldWithStringValue:placeholder:width:", "", aPlaceholder, aWidth - 125);
+        objj_msgSend(self.textField, "setDelegate:", self);
+        objj_msgSend(self.textField, "setSecure:", secure);
+        objj_msgSend(self.textField, "setFrameOrigin:", CGPointMake(125, 0));
+        objj_msgSend(self, "addSubview:", self.textField);
+        self.label = objj_msgSend(CPTextField, "labelWithTitle:", aLabel);
+        objj_msgSend(self.label, "setFrame:", CGRectMake(0, 0, 120, objj_msgSend(self.textField, "bounds").size.height));
+        objj_msgSend(self.label, "setVerticalAlignment:", CPCenterVerticalTextAlignment);
+        objj_msgSend(self.label, "setAlignment:", CPRightTextAlignment);
+        objj_msgSend(self, "addSubview:", self.label);
+        objj_msgSend(self, "setFrame:", CGRectMake(0, 0, aWidth, objj_msgSend(self.textField, "bounds").size.height));
+    }
+    return self;
+}
+,["id","CPString","CPString","CPInteger","BOOL"]), new objj_method(sel_getUid("controlTextDidFocus:"), function $TextFieldWithLabel__controlTextDidFocus_(self, _cmd, aTextField)
+{
+}
+,["void","CPTextField"]), new objj_method(sel_getUid("controlTextDidBlur:"), function $TextFieldWithLabel__controlTextDidBlur_(self, _cmd, aTextField)
+{
+}
+,["void","CPTextField"]), new objj_method(sel_getUid("controlTextDidBeginEditing:"), function $TextFieldWithLabel__controlTextDidBeginEditing_(self, _cmd, aTextField)
+{
+}
+,["void","CPTextField"]), new objj_method(sel_getUid("controlTextDidChange:"), function $TextFieldWithLabel__controlTextDidChange_(self, _cmd, aTextField)
+{
+    objj_msgSend(self, "validate");
+}
+,["void","CPTextField"]), new objj_method(sel_getUid("validate"), function $TextFieldWithLabel__validate(self, _cmd)
+{
+    if (objj_msgSend(self.target, "respondsToSelector:", self.validator))
+    {
+        var valid = objj_msgSend(self.target, "performSelector:withObject:", self.validator, objj_msgSend(self.textField, "stringValue"));
+        if (!valid)
+        {
+            objj_msgSend(self.textField, "setBackgroundColor:", objj_msgSend(CPColor, "redColor"));
+        }
+        else
+        {
+            objj_msgSend(self.textField, "setBackgroundColor:", objj_msgSend(CPColor, "clearColor"));
+        }
+        return valid;
+    }
+    return true;
+}
+,["BOOL"]), new objj_method(sel_getUid("controlTextDidEndEditing:"), function $TextFieldWithLabel__controlTextDidEndEditing_(self, _cmd, aTextField)
+{
+}
+,["void","CPTextField"]), new objj_method(sel_getUid("text"), function $TextFieldWithLabel__text(self, _cmd)
+{
+    return objj_msgSend(self.textField, "stringValue");
+}
+,["CPString"]), new objj_method(sel_getUid("setText:"), function $TextFieldWithLabel__setText_(self, _cmd, aString)
+{
+    objj_msgSend(self.textField, "setStringValue:", aString);
+}
+,["void","CPString"])]);
+}p;22;BunnylabsLoginWindow.jt;22670;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;20;TextFieldWithLabel.jt;22577;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("TextFieldWithLabel.j", YES);var LOGIN_STATE = 1;
+var REGISTRATION_STATE = 2;
+var FORGOTPASSWORD_STATE = 3;
+var CHANGEPASSWORD_STATE = 4;
+{var the_class = objj_allocateClassPair(CPPanel, "BunnylabsLoginWindow"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("currentState"), new objj_ivar("contentView"), new objj_ivar("messageField"), new objj_ivar("errorField"), new objj_ivar("usernameField"), new objj_ivar("passwordField"), new objj_ivar("passwordConfirmField"), new objj_ivar("emailField"), new objj_ivar("loginButton"), new objj_ivar("newAccountButton"), new objj_ivar("forgotPasswordButton"), new objj_ivar("registerButton"), new objj_ivar("submitUsernameButton"), new objj_ivar("cancelButton"), new objj_ivar("changePasswordButton"), new objj_ivar("messageSize")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $BunnylabsLoginWindow__init(self, _cmd)
 {
     self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("BunnylabsLoginWindow").super_class }, "init");
     if (self)
     {
+        self.contentView = objj_msgSend(self, "contentView");
         objj_msgSend(self, "setFrame:", CGRectMake(0, 0, 100, 100));
         objj_msgSend(self, "center");
-        objj_msgSend(self, "setFrame:display:animate:", CGRectMake(objj_msgSend(self, "frame").origin.x - 150, objj_msgSend(self, "frame").origin.y - 100, 400, 300), YES, YES);
+        objj_msgSend(self, "setFrameOrigin:", CGPointMake(objj_msgSend(self, "frame").origin.x, objj_msgSend(self, "frame").origin.y - 50));
+        self.messageField = objj_msgSend(objj_msgSend(CPTextField, "alloc"), "initWithFrame:", CGRectMake(0, 0, 100, 40));
+        objj_msgSend(self.messageField, "setLineBreakMode:", CPLineBreakByWordWrapping);
+        objj_msgSend(self.messageField, "setBackgroundColor:", objj_msgSend(CPColor, "colorWithCalibratedRed:green:blue:alpha:", 103.0 / 255.0, 154.0 / 255.0, 205.0 / 255.0, 1.0));
+        objj_msgSend(self.messageField, "setTextColor:", objj_msgSend(CPColor, "whiteColor"));
+        objj_msgSend(self.messageField, "setAutoresizingMask:", CPViewWidthSizable);
+        objj_msgSend(self.messageField, "setValue:forThemeAttribute:", CGInsetMake(9.0, 9.0, 9.0, 9.0), "content-inset");
+        objj_msgSend(self.contentView, "addSubview:", self.messageField);
+        self.errorField = objj_msgSend(objj_msgSend(CPTextField, "alloc"), "initWithFrame:", CGRectMake(0, 0, 100, 0));
+        objj_msgSend(self.errorField, "setLineBreakMode:", CPLineBreakByWordWrapping);
+        objj_msgSend(self.errorField, "setBackgroundColor:", objj_msgSend(CPColor, "colorWithHexString:", "993333"));
+        objj_msgSend(self.errorField, "setTextColor:", objj_msgSend(CPColor, "whiteColor"));
+        objj_msgSend(self.errorField, "setAutoresizingMask:", CPViewWidthSizable);
+        objj_msgSend(self.errorField, "setValue:forThemeAttribute:", CGInsetMake(9.0, 9.0, 9.0, 9.0), "content-inset");
+        objj_msgSend(self.contentView, "addSubview:", self.errorField);
+        self.loginButton = objj_msgSend(CPButton, "buttonWithTitle:", "Log In");
+        objj_msgSend(self.loginButton, "setFrame:", CGRectMake(10, 180, 185, objj_msgSend(self.loginButton, "bounds").size.height));
+        objj_msgSend(self.contentView, "addSubview:", self.loginButton);
+        self.newAccountButton = objj_msgSend(CPButton, "buttonWithTitle:", "New Account");
+        objj_msgSend(self.newAccountButton, "setFrame:", CGRectMake(10, 180, 185, objj_msgSend(self.newAccountButton, "bounds").size.height));
+        objj_msgSend(self.newAccountButton, "setTarget:", self);
+        objj_msgSend(self.newAccountButton, "setAction:", sel_getUid("newAccountButtonClicked:"));
+        objj_msgSend(self.contentView, "addSubview:", self.newAccountButton);
+        self.forgotPasswordButton = objj_msgSend(CPButton, "buttonWithTitle:", "Forgot Password");
+        objj_msgSend(self.forgotPasswordButton, "setFrame:", CGRectMake(10, 180, 185, objj_msgSend(self.forgotPasswordButton, "bounds").size.height));
+        objj_msgSend(self.forgotPasswordButton, "setTarget:", self);
+        objj_msgSend(self.forgotPasswordButton, "setAction:", sel_getUid("forgotPasswordButtonClicked:"));
+        objj_msgSend(self.contentView, "addSubview:", self.forgotPasswordButton);
+        self.registerButton = objj_msgSend(CPButton, "buttonWithTitle:", "Register");
+        objj_msgSend(self.registerButton, "setFrame:", CGRectMake(10, 180, 185, objj_msgSend(self.registerButton, "bounds").size.height));
+        objj_msgSend(self.contentView, "addSubview:", self.registerButton);
+        self.changePasswordButton = objj_msgSend(CPButton, "buttonWithTitle:", "Change Password!");
+        objj_msgSend(self.changePasswordButton, "setFrame:", CGRectMake(10, 180, 185, objj_msgSend(self.changePasswordButton, "bounds").size.height));
+        objj_msgSend(self.contentView, "addSubview:", self.changePasswordButton);
+        self.submitUsernameButton = objj_msgSend(CPButton, "buttonWithTitle:", "Send Recovery E-mail");
+        objj_msgSend(self.submitUsernameButton, "setFrame:", CGRectMake(10, 180, 185, objj_msgSend(self.submitUsernameButton, "bounds").size.height));
+        objj_msgSend(self.contentView, "addSubview:", self.submitUsernameButton);
+        self.cancelButton = objj_msgSend(CPButton, "buttonWithTitle:", "Cancel");
+        objj_msgSend(self.cancelButton, "setFrame:", CGRectMake(205, 180, 185, objj_msgSend(self.cancelButton, "bounds").size.height));
+        objj_msgSend(self.cancelButton, "setTarget:", self);
+        objj_msgSend(self.cancelButton, "setAction:", sel_getUid("cancelButtonClicked:"));
+        objj_msgSend(self.contentView, "addSubview:", self.cancelButton);
+        self.usernameField = objj_msgSend(objj_msgSend(TextFieldWithLabel, "alloc"), "initWithLabel:andPlaceHolder:andWidth:", "Username:", "Username", 380);
+        objj_msgSend(self.usernameField, "setFrameOrigin:", CGPointMake(10, 20));
+        objj_msgSend(self.contentView, "addSubview:", self.usernameField);
+        self.passwordField = objj_msgSend(objj_msgSend(TextFieldWithLabel, "alloc"), "initWithLabel:andPlaceHolder:andWidth:isSecure:", "Password:", "Password", 380, YES);
+        objj_msgSend(self.passwordField, "setFrameOrigin:", CGPointMake(10, 50));
+        objj_msgSend(self.contentView, "addSubview:", self.passwordField);
+        self.passwordConfirmField = objj_msgSend(objj_msgSend(TextFieldWithLabel, "alloc"), "initWithLabel:andPlaceHolder:andWidth:isSecure:", "Password (again):", "Re-type your password", 380, YES);
+        objj_msgSend(self.passwordConfirmField, "setFrameOrigin:", CGPointMake(10, 80));
+        objj_msgSend(self.contentView, "addSubview:", self.passwordConfirmField);
+        self.emailField = objj_msgSend(objj_msgSend(TextFieldWithLabel, "alloc"), "initWithLabel:andPlaceHolder:andWidth:", "E-mail:", "E-mail", 380);
+        objj_msgSend(self.emailField, "setFrameOrigin:", CGPointMake(10, 110));
+        objj_msgSend(self.contentView, "addSubview:", self.emailField);
+        self.messageSize = 0;
+        objj_msgSend(self, "setState:", LOGIN_STATE);
     }
     return self;
 }
-,["id"])]);
-}p;6;main.jt;292;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;15;AppController.jt;206;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("AppController.j", YES);main = function(args, namedArgs)
+,["id"]), new objj_method(sel_getUid("cancelButtonClicked:"), function $BunnylabsLoginWindow__cancelButtonClicked_(self, _cmd, sender)
 {
-    CPApplicationMain(args, namedArgs);
+    objj_msgSend(self, "close");
+    return sender;
 }
-p;9;Session.jt;219;@STATIC;1.0;I;23;Foundation/Foundation.jt;173;objj_executeFile("Foundation/Foundation.j", NO);{var the_class = objj_allocateClassPair(CPObject, "Session"),
-meta_class = the_class.isa;objj_registerClassPair(the_class);
-}p;26;BunnylabsLoginController.jt;306;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;240;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPWindowController, "BunnylabsLoginController"),
-meta_class = the_class.isa;objj_registerClassPair(the_class);
-}p;15;AppController.jt;4514;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;22;BunnylabsLoginWindow.jt;4420;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("BunnylabsLoginWindow.j", YES);{var the_class = objj_allocateClassPair(CPObject, "AppController"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("mainMenu"), new objj_ivar("contentView")]);objj_registerClassPair(the_class);
+,["id","id"]), new objj_method(sel_getUid("newAccountButtonClicked:"), function $BunnylabsLoginWindow__newAccountButtonClicked_(self, _cmd, sender)
+{
+    objj_msgSend(self, "setState:", REGISTRATION_STATE);
+    return sender;
+}
+,["id","id"]), new objj_method(sel_getUid("forgotPasswordButtonClicked:"), function $BunnylabsLoginWindow__forgotPasswordButtonClicked_(self, _cmd, sender)
+{
+    objj_msgSend(self, "setState:", FORGOTPASSWORD_STATE);
+    return sender;
+}
+,["id","id"]), new objj_method(sel_getUid("usernameIsValid:"), function $BunnylabsLoginWindow__usernameIsValid_(self, _cmd, username)
+{
+    if (username.length < 4)
+    {
+        objj_msgSend(self, "setError:", "Username must be at least 4 letters");
+        objj_msgSend(self, "_update");
+        return NO;
+    }
+    objj_msgSend(self, "setError:", "");
+    objj_msgSend(self, "_update");
+    return YES;
+}
+,["BOOL","CPString"]), new objj_method(sel_getUid("passwordIsValid:"), function $BunnylabsLoginWindow__passwordIsValid_(self, _cmd, password)
+{
+    if (password.length < 8)
+    {
+        objj_msgSend(self, "setError:", "Password must be at least 8 letters");
+        objj_msgSend(self, "_update");
+        return NO;
+    }
+    objj_msgSend(self, "setError:", "");
+    objj_msgSend(self, "_update");
+    return YES;
+}
+,["BOOL","CPString"]), new objj_method(sel_getUid("passwordsMatch:"), function $BunnylabsLoginWindow__passwordsMatch_(self, _cmd, password)
+{
+    if (password !== objj_msgSend(self.passwordField, "text"))
+    {
+        objj_msgSend(self, "setError:", "Passwords do not match");
+        objj_msgSend(self, "_update");
+        return NO;
+    }
+    objj_msgSend(self, "setError:", "");
+    objj_msgSend(self, "_update");
+    return YES;
+}
+,["BOOL","CPString"]), new objj_method(sel_getUid("emailIsValid:"), function $BunnylabsLoginWindow__emailIsValid_(self, _cmd, email)
+{
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!re.test(email))
+    {
+        objj_msgSend(self, "setError:", "Please type in a valid e-mail address");
+        objj_msgSend(self, "_update");
+        return NO;
+    }
+    objj_msgSend(self, "setError:", "");
+    objj_msgSend(self, "_update");
+    return YES;
+}
+,["BOOL","CPString"]), new objj_method(sel_getUid("setMessage:"), function $BunnylabsLoginWindow__setMessage_(self, _cmd, aMessage)
+{
+    objj_msgSend(self.messageField, "setStringValue:", aMessage);
+    objj_msgSend(self, "_update");
+}
+,["void","CPString"]), new objj_method(sel_getUid("setError:"), function $BunnylabsLoginWindow__setError_(self, _cmd, anErrorMessage)
+{
+    objj_msgSend(self.errorField, "setStringValue:", anErrorMessage);
+    objj_msgSend(self, "_update");
+}
+,["void","CPString"]), new objj_method(sel_getUid("_getPasswordRules"), function $BunnylabsLoginWindow___getPasswordRules(self, _cmd)
+{
+    var rules = ["We don't care if you use symbols in your password", "You are responsible for your own account", "Try and make your password long", "Poems and lyrics are effective ways to have long passwords", "If its short people can guess it easily"];
+    var ruleString = "";
+    for (var i = 0; i < rules.length; i++)
+    {
+        ruleString += "\n• " + rules[i];
+    }
+    return ruleString;
+}
+,["CPString"]), new objj_method(sel_getUid("setState:"), function $BunnylabsLoginWindow__setState_(self, _cmd, state)
+{
+    self.currentState = state;
+    objj_msgSend(self, "setError:", "");
+    switch(self.currentState) {
+    case LOGIN_STATE:
+        objj_msgSend(self, "setMessage:", "Please enter your username and password");
+        break;
+    case REGISTRATION_STATE:
+        objj_msgSend(self, "setMessage:", "Account registration: A validation e-mail will be sent to you which contains a link you need to click before you can use your account.\n" + objj_msgSend(self, "_getPasswordRules"));
+        break;
+    case FORGOTPASSWORD_STATE:
+        objj_msgSend(self, "setMessage:", "Forgot your password? Fear not. Enter your username and e-mail here and a reset password link will be sent to your e-mail");
+        break;
+    case CHANGEPASSWORD_STATE:
+        objj_msgSend(self, "setMessage:", "Change your password to something memorable and long.\n" + objj_msgSend(self, "_getPasswordRules"));
+        break;
+    }
+    objj_msgSend(self, "_update");
+}
+,["void","CPInteger"]), new objj_method(sel_getUid("_update"), function $BunnylabsLoginWindow___update(self, _cmd)
+{
+    var targetWidth = objj_msgSend(self, "frame").size.width;
+    var targetHeight = objj_msgSend(self, "frame").size.height;
+    var messageFieldSize = {width: objj_msgSend(self.messageField, "frame").size.width, height: 0};
+    if (objj_msgSend(self.messageField, "stringValue") && objj_msgSend(self.messageField, "stringValue").length > 0)
+    {
+        messageFieldSize = objj_msgSend(objj_msgSend(self.messageField, "stringValue"), "sizeWithFont:inWidth:", objj_msgSend(self.messageField, "font"), objj_msgSend(self.messageField, "frame").size.width);
+        objj_msgSend(self.messageField, "setFrame:", CGRectMake(0, 0, messageFieldSize.width, messageFieldSize.height + 18));
+    }
+    else
+    {
+        objj_msgSend(self.messageField, "setFrame:", CGRectMake(0, 0, messageFieldSize.width, 0));
+    }
+    var errorFieldSize = {width: objj_msgSend(self.errorField, "frame").size.width, height: 0};
+    if (objj_msgSend(self.errorField, "stringValue") && objj_msgSend(self.errorField, "stringValue").length > 0)
+    {
+        errorFieldSize = objj_msgSend(objj_msgSend(self.errorField, "stringValue"), "sizeWithFont:inWidth:", objj_msgSend(self.errorField, "font"), objj_msgSend(self.errorField, "frame").size.width);
+        objj_msgSend(self.errorField, "setFrame:", CGRectMake(0, objj_msgSend(self.messageField, "frame").size.height, errorFieldSize.width, errorFieldSize.height + 18));
+    }
+    else
+    {
+        objj_msgSend(self.errorField, "setFrame:", CGRectMake(0, objj_msgSend(self.messageField, "frame").size.height, errorFieldSize.width, 0));
+    }
+    self.messageSize = objj_msgSend(self.messageField, "frame").size.height + objj_msgSend(self.errorField, "frame").size.height;
+    switch(self.currentState) {
+    case LOGIN_STATE:
+        objj_msgSend(self, "setTitle:", "Log In");
+        objj_msgSend(self.usernameField, "setHidden:", NO);
+        objj_msgSend(self.passwordField, "setHidden:", NO);
+        objj_msgSend(self.passwordConfirmField, "setHidden:", YES);
+        objj_msgSend(self.emailField, "setHidden:", YES);
+        objj_msgSend(self.registerButton, "setHidden:", YES);
+        objj_msgSend(self.submitUsernameButton, "setHidden:", YES);
+        objj_msgSend(self.newAccountButton, "setHidden:", NO);
+        objj_msgSend(self.forgotPasswordButton, "setHidden:", NO);
+        objj_msgSend(self.loginButton, "setHidden:", NO);
+        objj_msgSend(self.changePasswordButton, "setHidden:", YES);
+        objj_msgSend(self.cancelButton, "setHidden:", NO);
+        objj_msgSend(self.usernameField, "setFrameOrigin:", CGPointMake(10, 10 + self.messageSize));
+        objj_msgSend(self.passwordField, "setFrameOrigin:", CGPointMake(10, 40 + self.messageSize));
+        objj_msgSend(self.loginButton, "setFrame:", CGRectMake(10, 80 + self.messageSize, 185, objj_msgSend(self.loginButton, "bounds").size.height));
+        objj_msgSend(self.cancelButton, "setFrame:", CGRectMake(205, 80 + self.messageSize, 185, objj_msgSend(self.cancelButton, "bounds").size.height));
+        objj_msgSend(self.newAccountButton, "setFrame:", CGRectMake(10, 110 + self.messageSize, 185, objj_msgSend(self.loginButton, "bounds").size.height));
+        objj_msgSend(self.forgotPasswordButton, "setFrame:", CGRectMake(205, 110 + self.messageSize, 185, objj_msgSend(self.cancelButton, "bounds").size.height));
+        objj_msgSend(self.usernameField, "setTarget:", nil);
+        objj_msgSend(self.passwordField, "setTarget:", nil);
+        objj_msgSend(self.passwordConfirmField, "setTarget:", nil);
+        objj_msgSend(self.emailField, "setTarget:", nil);
+        objj_msgSend(self, "setDefaultButton:", self.loginButton);
+        targetWidth = 400;
+        targetHeight = 180 + self.messageSize;
+        break;
+    case REGISTRATION_STATE:
+        objj_msgSend(self, "setTitle:", "Register");
+        objj_msgSend(self.usernameField, "setHidden:", NO);
+        objj_msgSend(self.passwordField, "setHidden:", NO);
+        objj_msgSend(self.passwordConfirmField, "setHidden:", NO);
+        objj_msgSend(self.emailField, "setHidden:", NO);
+        objj_msgSend(self.registerButton, "setHidden:", NO);
+        objj_msgSend(self.submitUsernameButton, "setHidden:", YES);
+        objj_msgSend(self.newAccountButton, "setHidden:", YES);
+        objj_msgSend(self.forgotPasswordButton, "setHidden:", YES);
+        objj_msgSend(self.loginButton, "setHidden:", YES);
+        objj_msgSend(self.changePasswordButton, "setHidden:", YES);
+        objj_msgSend(self.cancelButton, "setHidden:", NO);
+        objj_msgSend(self.usernameField, "setFrameOrigin:", CGPointMake(10, 10 + self.messageSize));
+        objj_msgSend(self.passwordField, "setFrameOrigin:", CGPointMake(10, 40 + self.messageSize));
+        objj_msgSend(self.passwordConfirmField, "setFrameOrigin:", CGPointMake(10, 70 + self.messageSize));
+        objj_msgSend(self.emailField, "setFrameOrigin:", CGPointMake(10, 100 + self.messageSize));
+        objj_msgSend(self.registerButton, "setFrame:", CGRectMake(10, 140 + self.messageSize, 185, objj_msgSend(self.loginButton, "bounds").size.height));
+        objj_msgSend(self.cancelButton, "setFrame:", CGRectMake(205, 140 + self.messageSize, 185, objj_msgSend(self.cancelButton, "bounds").size.height));
+        objj_msgSend(self, "setDefaultButton:", self.registerButton);
+        objj_msgSend(self.usernameField, "setTarget:", self);
+        objj_msgSend(self.usernameField, "setValidator:", sel_getUid("usernameIsValid:"));
+        objj_msgSend(self.passwordField, "setTarget:", self);
+        objj_msgSend(self.passwordField, "setValidator:", sel_getUid("passwordIsValid:"));
+        objj_msgSend(self.passwordConfirmField, "setTarget:", self);
+        objj_msgSend(self.passwordConfirmField, "setValidator:", sel_getUid("passwordsMatch:"));
+        objj_msgSend(self.emailField, "setTarget:", self);
+        objj_msgSend(self.emailField, "setValidator:", sel_getUid("emailIsValid:"));
+        targetWidth = 400;
+        targetHeight = 210 + self.messageSize;
+        break;
+    case FORGOTPASSWORD_STATE:
+        objj_msgSend(self, "setTitle:", "Forgot Password");
+        objj_msgSend(self.usernameField, "setHidden:", NO);
+        objj_msgSend(self.passwordField, "setHidden:", YES);
+        objj_msgSend(self.passwordConfirmField, "setHidden:", YES);
+        objj_msgSend(self.emailField, "setHidden:", NO);
+        objj_msgSend(self.registerButton, "setHidden:", YES);
+        objj_msgSend(self.submitUsernameButton, "setHidden:", NO);
+        objj_msgSend(self.newAccountButton, "setHidden:", YES);
+        objj_msgSend(self.forgotPasswordButton, "setHidden:", YES);
+        objj_msgSend(self.loginButton, "setHidden:", YES);
+        objj_msgSend(self.changePasswordButton, "setHidden:", YES);
+        objj_msgSend(self.cancelButton, "setHidden:", NO);
+        objj_msgSend(self.usernameField, "setFrameOrigin:", CGPointMake(10, 10 + self.messageSize));
+        objj_msgSend(self.emailField, "setFrameOrigin:", CGPointMake(10, 40 + self.messageSize));
+        objj_msgSend(self.submitUsernameButton, "setFrame:", CGRectMake(10, 80 + self.messageSize, 185, objj_msgSend(self.loginButton, "bounds").size.height));
+        objj_msgSend(self.cancelButton, "setFrame:", CGRectMake(205, 80 + self.messageSize, 185, objj_msgSend(self.cancelButton, "bounds").size.height));
+        objj_msgSend(self, "setDefaultButton:", self.submitUsernameButton);
+        objj_msgSend(self.usernameField, "setTarget:", nil);
+        objj_msgSend(self.passwordField, "setTarget:", nil);
+        objj_msgSend(self.passwordConfirmField, "setTarget:", nil);
+        objj_msgSend(self.emailField, "setTarget:", nil);
+        targetWidth = 400;
+        targetHeight = 150 + self.messageSize;
+        break;
+    case CHANGEPASSWORD_STATE:
+        objj_msgSend(self, "setTitle:", "Change Password");
+        objj_msgSend(self.usernameField, "setHidden:", YES);
+        objj_msgSend(self.passwordField, "setHidden:", NO);
+        objj_msgSend(self.passwordConfirmField, "setHidden:", NO);
+        objj_msgSend(self.emailField, "setHidden:", YES);
+        objj_msgSend(self.registerButton, "setHidden:", YES);
+        objj_msgSend(self.submitUsernameButton, "setHidden:", YES);
+        objj_msgSend(self.newAccountButton, "setHidden:", YES);
+        objj_msgSend(self.forgotPasswordButton, "setHidden:", YES);
+        objj_msgSend(self.loginButton, "setHidden:", YES);
+        objj_msgSend(self.changePasswordButton, "setHidden:", NO);
+        objj_msgSend(self.cancelButton, "setHidden:", NO);
+        objj_msgSend(self.passwordField, "setFrameOrigin:", CGPointMake(10, 10 + self.messageSize));
+        objj_msgSend(self.passwordConfirmField, "setFrameOrigin:", CGPointMake(10, 40 + self.messageSize));
+        objj_msgSend(self.changePasswordButton, "setFrame:", CGRectMake(10, 80 + self.messageSize, 185, objj_msgSend(self.loginButton, "bounds").size.height));
+        objj_msgSend(self.cancelButton, "setFrame:", CGRectMake(205, 80 + self.messageSize, 185, objj_msgSend(self.cancelButton, "bounds").size.height));
+        objj_msgSend(self, "setDefaultButton:", self.changePasswordButton);
+        objj_msgSend(self.usernameField, "setTarget:", nil);
+        objj_msgSend(self.passwordField, "setTarget:", self);
+        objj_msgSend(self.passwordField, "setValidator:", sel_getUid("passwordIsValid:"));
+        objj_msgSend(self.passwordConfirmField, "setTarget:", self);
+        objj_msgSend(self.passwordConfirmField, "setValidator:", sel_getUid("passwordsMatch:"));
+        objj_msgSend(self.emailField, "setTarget:", nil);
+        targetWidth = 400;
+        targetHeight = 150 + self.messageSize;
+        break;
+    }
+    var xmargins = (targetWidth - objj_msgSend(self, "frame").size.width) / 2;
+    var ymargins = (targetHeight - objj_msgSend(self, "frame").size.height) / 2;
+    objj_msgSend(self, "setFrame:display:animate:", CGRectMake(objj_msgSend(self, "frame").origin.x - xmargins, objj_msgSend(self, "frame").origin.y - ymargins, targetWidth, targetHeight), YES, YES);
+}
+,["void"]), new objj_method(sel_getUid("state"), function $BunnylabsLoginWindow__state(self, _cmd)
+{
+    return self.currentState;
+}
+,["CPInteger"])]);
+class_addMethods(meta_class, [new objj_method(sel_getUid("loginState"), function $BunnylabsLoginWindow__loginState(self, _cmd)
+{
+    return LOGIN_STATE;
+}
+,["CPInteger"]), new objj_method(sel_getUid("registrationState"), function $BunnylabsLoginWindow__registrationState(self, _cmd)
+{
+    return REGISTRATION_STATE;
+}
+,["CPInteger"]), new objj_method(sel_getUid("forgotPasswordState"), function $BunnylabsLoginWindow__forgotPasswordState(self, _cmd)
+{
+    return FORGOTPASSWORD_STATE;
+}
+,["CPInteger"]), new objj_method(sel_getUid("changePasswordState"), function $BunnylabsLoginWindow__changePasswordState(self, _cmd)
+{
+    return CHANGEPASSWORD_STATE;
+}
+,["CPInteger"])]);
+}p;15;AppController.jt;5274;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;22;BunnylabsLoginWindow.jt;5180;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("BunnylabsLoginWindow.j", YES);{var the_class = objj_allocateClassPair(CPObject, "AppController"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("mainMenu"), new objj_ivar("contentView"), new objj_ivar("loginWindow")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLaunching:"), function $AppController__applicationDidFinishLaunching_(self, _cmd, aNotification)
 {
     var theWindow = objj_msgSend(objj_msgSend(CPWindow, "alloc"), "initWithContentRect:styleMask:", CGRectMakeZero(), CPBorderlessBridgeWindowMask);
@@ -32,15 +441,27 @@ class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLau
     objj_msgSend(self, "refreshMenu");
     objj_msgSend(self, "setDesktop");
     objj_msgSend(self, "login");
-    var button = objj_msgSend(CPButton, "buttonWithTitle:", "start");
+    var button = objj_msgSend(CPButton, "buttonWithTitle:", "login");
     objj_msgSend(button, "setTarget:", self);
-    objj_msgSend(button, "setAction:", sel_getUid("start:"));
+    objj_msgSend(button, "setAction:", sel_getUid("login:"));
     objj_msgSend(self.contentView, "addSubview:", button);
+    var cpbutton = objj_msgSend(CPButton, "buttonWithTitle:", "changepass");
+    objj_msgSend(cpbutton, "setFrameOrigin:", CGPointMake(0, 20));
+    objj_msgSend(cpbutton, "setTarget:", self);
+    objj_msgSend(cpbutton, "setAction:", sel_getUid("changepass:"));
+    objj_msgSend(self.contentView, "addSubview:", cpbutton);
+    self.loginWindow = objj_msgSend(objj_msgSend(BunnylabsLoginWindow, "alloc"), "init");
 }
-,["void","CPNotification"]), new objj_method(sel_getUid("start:"), function $AppController__start_(self, _cmd, sender)
+,["void","CPNotification"]), new objj_method(sel_getUid("login:"), function $AppController__login_(self, _cmd, sender)
 {
-    var loginWindow = objj_msgSend(objj_msgSend(BunnylabsLoginWindow, "alloc"), "init");
-    objj_msgSend(loginWindow, "orderFront:", self);
+    objj_msgSend(self.loginWindow, "orderFront:", self);
+    objj_msgSend(self.loginWindow, "setState:", objj_msgSend(BunnylabsLoginWindow, "loginState"));
+    return sender;
+}
+,["id","id"]), new objj_method(sel_getUid("changepass:"), function $AppController__changepass_(self, _cmd, sender)
+{
+    objj_msgSend(self.loginWindow, "orderFront:", self);
+    objj_msgSend(self.loginWindow, "setState:", objj_msgSend(BunnylabsLoginWindow, "changePasswordState"));
     return sender;
 }
 ,["id","id"]), new objj_method(sel_getUid("login"), function $AppController__login(self, _cmd)
@@ -260,33 +681,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("defaultManager"), func
 }
 ,["SCUserSessionManager"])]);
 }objj_msgSend(CPURLConnection, "setClassDelegate:", objj_msgSend(SCUserSessionManager, "defaultManager"));
-p;61;Frameworks/SCAuth/AccountValidators/SCEmailAccountValidator.jt;605;@STATIC;1.0;I;21;Foundation/CPObject.ji;20;SCAccountValidator.jt;536;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("SCAccountValidator.j", YES);{var the_class = objj_allocateClassPair(SCAccountValidator, "SCEmailAccountValidator"),
-meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(meta_class, [new objj_method(sel_getUid("validateUsername:"), function $SCEmailAccountValidator__validateUsername_(self, _cmd, username)
-{
-    var reg = new RegExp("^[-a-zA-Z0-9+._]+@[-a-zA-Z0-9.]+\\.[a-zA-Z]{2,4}$");
-    return reg.test(username);
-}
-,["BOOL","CPString"])]);
-}p;56;Frameworks/SCAuth/AccountValidators/SCAccountValidator.jt;964;@STATIC;1.0;I;21;Foundation/CPObject.jt;920;objj_executeFile("Foundation/CPObject.j", NO);{var the_class = objj_allocateClassPair(CPObject, "SCAccountValidator"),
-meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(meta_class, [new objj_method(sel_getUid("validateUsername:"), function $SCAccountValidator__validateUsername_(self, _cmd, username)
-{
-    return YES;
-}
-,["BOOL","CPString"]), new objj_method(sel_getUid("validatePassword:withConfirmPassword:"), function $SCAccountValidator__validatePassword_withConfirmPassword_(self, _cmd, password, confirmPassword)
-{
-    var retVal = nil;
-    if (!password || password === "")
-        retVal = "Password can't be blank.";
-    else if (objj_msgSend(password, "length") < 9)
-        retVal = "Password must be at least 9 characters long.";
-    else if (password !== confirmPassword)
-        retVal = "Passwords don't match.";
-    return retVal;
-}
-,["CPString","CPString","CPString"])]);
-}p;57;Frameworks/SCAuth/Test/SCEmailLoginDialogControllerTest.jt;1504;@STATIC;1.0;I;19;OJUnit/OJTestCase.ji;48;../LoginProviders/SCEmailLoginDialogController.jI;15;AppKit/AppKit.jt;1388;objj_executeFile("OJUnit/OJTestCase.j", NO);objj_executeFile("../LoginProviders/SCEmailLoginDialogController.j", YES);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(OJTestCase, "SCEmailLoginDialogControllerTest"),
+p;57;Frameworks/SCAuth/Test/SCEmailLoginDialogControllerTest.jt;1504;@STATIC;1.0;I;19;OJUnit/OJTestCase.ji;48;../LoginProviders/SCEmailLoginDialogController.jI;15;AppKit/AppKit.jt;1388;objj_executeFile("OJUnit/OJTestCase.j", NO);objj_executeFile("../LoginProviders/SCEmailLoginDialogController.j", YES);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(OJTestCase, "SCEmailLoginDialogControllerTest"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("testDialogController")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("setUp"), function $SCEmailLoginDialogControllerTest__setUp(self, _cmd)
 {
@@ -307,38 +702,32 @@ class_addMethods(the_class, [new objj_method(sel_getUid("setUp"), function $SCEm
     objj_msgSend(self, "assertTrue:", objj_msgSend(self.testDialogController._userLabel, "stringValue") === "E-mail:");
 }
 ,["void"])]);
-}p;52;Frameworks/SCAuth/Test/SCEmailAccountValidatorTest.jt;1973;@STATIC;1.0;I;19;OJUnit/OJTestCase.ji;46;../AccountValidators/SCEmailAccountValidator.jt;1879;objj_executeFile("OJUnit/OJTestCase.j", NO);objj_executeFile("../AccountValidators/SCEmailAccountValidator.j", YES);{var the_class = objj_allocateClassPair(OJTestCase, "SCEmailAccountValidatorTest"),
+}p;47;Frameworks/SCAuth/Test/SCAccountValidatorTest.jt;2019;@STATIC;1.0;I;19;OJUnit/OJTestCase.ji;41;../AccountValidators/SCAccountValidator.jt;1930;objj_executeFile("OJUnit/OJTestCase.j", NO);objj_executeFile("../AccountValidators/SCAccountValidator.j", YES);{var the_class = objj_allocateClassPair(OJTestCase, "SCAccountValidatorTest"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("testEmailWithNoAtSign"), function $SCEmailAccountValidatorTest__testEmailWithNoAtSign(self, _cmd)
+class_addMethods(the_class, [new objj_method(sel_getUid("testThatUsernamesValidate"), function $SCAccountValidatorTest__testThatUsernamesValidate(self, _cmd)
 {
-    objj_msgSend(self, "assertFalse:", objj_msgSend(SCEmailAccountValidator, "validateUsername:", "saikatgmail.com"));
+    var isValid = objj_msgSend(SCAccountValidator, "validateUsername:", "test_username");
+    objj_msgSend(self, "assertTrue:", isValid);
 }
-,["void"]), new objj_method(sel_getUid("testEmailWithNoDomain"), function $SCEmailAccountValidatorTest__testEmailWithNoDomain(self, _cmd)
+,["void"]), new objj_method(sel_getUid("testThatBlankPasswordDoesNotValidate"), function $SCAccountValidatorTest__testThatBlankPasswordDoesNotValidate(self, _cmd)
 {
-    objj_msgSend(self, "assertFalse:", objj_msgSend(SCEmailAccountValidator, "validateUsername:", "saikat@gmailcom"));
+    var errorMsg = objj_msgSend(SCAccountValidator, "validatePassword:withConfirmPassword:", "", "");
+    objj_msgSend(self, "assertFalse:", errorMsg === nil);
 }
-,["void"]), new objj_method(sel_getUid("testEmailWithPlus"), function $SCEmailAccountValidatorTest__testEmailWithPlus(self, _cmd)
+,["void"]), new objj_method(sel_getUid("testThatShortPasswordDoesNotValidate"), function $SCAccountValidatorTest__testThatShortPasswordDoesNotValidate(self, _cmd)
 {
-    objj_msgSend(self, "assertTrue:", objj_msgSend(SCEmailAccountValidator, "validateUsername:", "saikat+1@gmail.com"));
+    var errorMsg = objj_msgSend(SCAccountValidator, "validatePassword:withConfirmPassword:", "abc", "abc");
+    objj_msgSend(self, "assertFalse:", errorMsg === nil);
 }
-,["void"]), new objj_method(sel_getUid("testEmailWithHyphen"), function $SCEmailAccountValidatorTest__testEmailWithHyphen(self, _cmd)
+,["void"]), new objj_method(sel_getUid("testThatMismatchedPasswordsDoNotValidate"), function $SCAccountValidatorTest__testThatMismatchedPasswordsDoNotValidate(self, _cmd)
 {
-    objj_msgSend(self, "assertTrue:", objj_msgSend(SCEmailAccountValidator, "validateUsername:", "test-email@gmail.com"));
+    var errorMsg = objj_msgSend(SCAccountValidator, "validatePassword:withConfirmPassword:", "testpass", "testpasS");
+    objj_msgSend(self, "assertFalse:", errorMsg === nil);
 }
-,["void"]), new objj_method(sel_getUid("testComplexEmail"), function $SCEmailAccountValidatorTest__testComplexEmail(self, _cmd)
+,["void"]), new objj_method(sel_getUid("testThatValidPasswordValidates"), function $SCAccountValidatorTest__testThatValidPasswordValidates(self, _cmd)
 {
-    objj_msgSend(self, "assertTrue:", objj_msgSend(SCEmailAccountValidator, "validateUsername:", "TeSt_E-mail3a389hus.hello@gmai998e-l.neT"));
-}
-,["void"]), new objj_method(sel_getUid("testBadDomain"), function $SCEmailAccountValidatorTest__testBadDomain(self, _cmd)
-{
-    objj_msgSend(self, "assertFalse:", objj_msgSend(SCEmailAccountValidator, "validateUsername:", "TeSt_E-mail3a389hus.hello@gmai998e-_l.neTt"));
-}
-,["void"])]);
-}p;49;Frameworks/SCAuth/Test/SCUserSessionManagerTest.jt;590;@STATIC;1.0;I;19;OJUnit/OJTestCase.ji;25;../SCUserSessionManager.jt;518;objj_executeFile("OJUnit/OJTestCase.j", NO);objj_executeFile("../SCUserSessionManager.j", YES);{var the_class = objj_allocateClassPair(OJTestCase, "SCUserSessionManagerTest"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("sessionManager")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("setUp"), function $SCUserSessionManagerTest__setUp(self, _cmd)
-{
-    self.sessionManager = objj_msgSend(SCUserSessionManager, "defaultManager");
+    var errorMsg = objj_msgSend(SCAccountValidator, "validatePassword:withConfirmPassword:", "test_password080ABC", "test_password080ABC");
+    objj_msgSend(self, "assertTrue:", errorMsg === nil);
 }
 ,["void"])]);
 }p;52;Frameworks/SCAuth/Test/SCLoginDialogControllerTest.jt;17394;@STATIC;1.0;I;19;OJUnit/OJTestCase.ji;43;../LoginProviders/SCLoginDialogController.jI;13;OJMoq/OJMoq.jI;15;AppKit/AppKit.jt;17264;objj_executeFile("OJUnit/OJTestCase.j", NO);objj_executeFile("../LoginProviders/SCLoginDialogController.j", YES);objj_executeFile("OJMoq/OJMoq.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_msgSend_decorate(objj_backtrace_decorator);
@@ -558,32 +947,38 @@ class_addMethods(the_class, [new objj_method(sel_getUid("setUp"), function $SCLo
     objj_msgSend(self, "assert:notEqual:", objj_msgSend(objj_msgSend(self.testController, "errorMessage"), "stringValue"), "");
 }
 ,["void"])]);
-}p;47;Frameworks/SCAuth/Test/SCAccountValidatorTest.jt;2019;@STATIC;1.0;I;19;OJUnit/OJTestCase.ji;41;../AccountValidators/SCAccountValidator.jt;1930;objj_executeFile("OJUnit/OJTestCase.j", NO);objj_executeFile("../AccountValidators/SCAccountValidator.j", YES);{var the_class = objj_allocateClassPair(OJTestCase, "SCAccountValidatorTest"),
+}p;52;Frameworks/SCAuth/Test/SCEmailAccountValidatorTest.jt;1973;@STATIC;1.0;I;19;OJUnit/OJTestCase.ji;46;../AccountValidators/SCEmailAccountValidator.jt;1879;objj_executeFile("OJUnit/OJTestCase.j", NO);objj_executeFile("../AccountValidators/SCEmailAccountValidator.j", YES);{var the_class = objj_allocateClassPair(OJTestCase, "SCEmailAccountValidatorTest"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("testThatUsernamesValidate"), function $SCAccountValidatorTest__testThatUsernamesValidate(self, _cmd)
+class_addMethods(the_class, [new objj_method(sel_getUid("testEmailWithNoAtSign"), function $SCEmailAccountValidatorTest__testEmailWithNoAtSign(self, _cmd)
 {
-    var isValid = objj_msgSend(SCAccountValidator, "validateUsername:", "test_username");
-    objj_msgSend(self, "assertTrue:", isValid);
+    objj_msgSend(self, "assertFalse:", objj_msgSend(SCEmailAccountValidator, "validateUsername:", "saikatgmail.com"));
 }
-,["void"]), new objj_method(sel_getUid("testThatBlankPasswordDoesNotValidate"), function $SCAccountValidatorTest__testThatBlankPasswordDoesNotValidate(self, _cmd)
+,["void"]), new objj_method(sel_getUid("testEmailWithNoDomain"), function $SCEmailAccountValidatorTest__testEmailWithNoDomain(self, _cmd)
 {
-    var errorMsg = objj_msgSend(SCAccountValidator, "validatePassword:withConfirmPassword:", "", "");
-    objj_msgSend(self, "assertFalse:", errorMsg === nil);
+    objj_msgSend(self, "assertFalse:", objj_msgSend(SCEmailAccountValidator, "validateUsername:", "saikat@gmailcom"));
 }
-,["void"]), new objj_method(sel_getUid("testThatShortPasswordDoesNotValidate"), function $SCAccountValidatorTest__testThatShortPasswordDoesNotValidate(self, _cmd)
+,["void"]), new objj_method(sel_getUid("testEmailWithPlus"), function $SCEmailAccountValidatorTest__testEmailWithPlus(self, _cmd)
 {
-    var errorMsg = objj_msgSend(SCAccountValidator, "validatePassword:withConfirmPassword:", "abc", "abc");
-    objj_msgSend(self, "assertFalse:", errorMsg === nil);
+    objj_msgSend(self, "assertTrue:", objj_msgSend(SCEmailAccountValidator, "validateUsername:", "saikat+1@gmail.com"));
 }
-,["void"]), new objj_method(sel_getUid("testThatMismatchedPasswordsDoNotValidate"), function $SCAccountValidatorTest__testThatMismatchedPasswordsDoNotValidate(self, _cmd)
+,["void"]), new objj_method(sel_getUid("testEmailWithHyphen"), function $SCEmailAccountValidatorTest__testEmailWithHyphen(self, _cmd)
 {
-    var errorMsg = objj_msgSend(SCAccountValidator, "validatePassword:withConfirmPassword:", "testpass", "testpasS");
-    objj_msgSend(self, "assertFalse:", errorMsg === nil);
+    objj_msgSend(self, "assertTrue:", objj_msgSend(SCEmailAccountValidator, "validateUsername:", "test-email@gmail.com"));
 }
-,["void"]), new objj_method(sel_getUid("testThatValidPasswordValidates"), function $SCAccountValidatorTest__testThatValidPasswordValidates(self, _cmd)
+,["void"]), new objj_method(sel_getUid("testComplexEmail"), function $SCEmailAccountValidatorTest__testComplexEmail(self, _cmd)
 {
-    var errorMsg = objj_msgSend(SCAccountValidator, "validatePassword:withConfirmPassword:", "test_password080ABC", "test_password080ABC");
-    objj_msgSend(self, "assertTrue:", errorMsg === nil);
+    objj_msgSend(self, "assertTrue:", objj_msgSend(SCEmailAccountValidator, "validateUsername:", "TeSt_E-mail3a389hus.hello@gmai998e-l.neT"));
+}
+,["void"]), new objj_method(sel_getUid("testBadDomain"), function $SCEmailAccountValidatorTest__testBadDomain(self, _cmd)
+{
+    objj_msgSend(self, "assertFalse:", objj_msgSend(SCEmailAccountValidator, "validateUsername:", "TeSt_E-mail3a389hus.hello@gmai998e-_l.neTt"));
+}
+,["void"])]);
+}p;49;Frameworks/SCAuth/Test/SCUserSessionManagerTest.jt;590;@STATIC;1.0;I;19;OJUnit/OJTestCase.ji;25;../SCUserSessionManager.jt;518;objj_executeFile("OJUnit/OJTestCase.j", NO);objj_executeFile("../SCUserSessionManager.j", YES);{var the_class = objj_allocateClassPair(OJTestCase, "SCUserSessionManagerTest"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("sessionManager")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("setUp"), function $SCUserSessionManagerTest__setUp(self, _cmd)
+{
+    self.sessionManager = objj_msgSend(SCUserSessionManager, "defaultManager");
 }
 ,["void"])]);
 }p;58;Frameworks/SCAuth/LoginProviders/SCLoginDialogController.jt;38409;@STATIC;1.0;I;27;AppKit/CPWindowController.ji;41;../AccountValidators/SCAccountValidator.jt;38311;objj_executeFile("AppKit/CPWindowController.j", NO);objj_executeFile("../AccountValidators/SCAccountValidator.j", YES);var DefaultLoginDialogController = nil,
@@ -1240,4 +1635,30 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("defaultController"), f
     return DefaultLoginDialogController;
 }
 ,["SCLoginDialogController"])]);
+}p;61;Frameworks/SCAuth/AccountValidators/SCEmailAccountValidator.jt;605;@STATIC;1.0;I;21;Foundation/CPObject.ji;20;SCAccountValidator.jt;536;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("SCAccountValidator.j", YES);{var the_class = objj_allocateClassPair(SCAccountValidator, "SCEmailAccountValidator"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(meta_class, [new objj_method(sel_getUid("validateUsername:"), function $SCEmailAccountValidator__validateUsername_(self, _cmd, username)
+{
+    var reg = new RegExp("^[-a-zA-Z0-9+._]+@[-a-zA-Z0-9.]+\\.[a-zA-Z]{2,4}$");
+    return reg.test(username);
+}
+,["BOOL","CPString"])]);
+}p;56;Frameworks/SCAuth/AccountValidators/SCAccountValidator.jt;964;@STATIC;1.0;I;21;Foundation/CPObject.jt;920;objj_executeFile("Foundation/CPObject.j", NO);{var the_class = objj_allocateClassPair(CPObject, "SCAccountValidator"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(meta_class, [new objj_method(sel_getUid("validateUsername:"), function $SCAccountValidator__validateUsername_(self, _cmd, username)
+{
+    return YES;
+}
+,["BOOL","CPString"]), new objj_method(sel_getUid("validatePassword:withConfirmPassword:"), function $SCAccountValidator__validatePassword_withConfirmPassword_(self, _cmd, password, confirmPassword)
+{
+    var retVal = nil;
+    if (!password || password === "")
+        retVal = "Password can't be blank.";
+    else if (objj_msgSend(password, "length") < 9)
+        retVal = "Password must be at least 9 characters long.";
+    else if (password !== confirmPassword)
+        retVal = "Passwords don't match.";
+    return retVal;
+}
+,["CPString","CPString","CPString"])]);
 }e;
