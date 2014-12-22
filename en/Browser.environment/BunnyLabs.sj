@@ -85,7 +85,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLau
 ,["void","CPNotification"])]);
 }p;26;BunnylabsLoginController.jt;306;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;240;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPWindowController, "BunnylabsLoginController"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-}p;22;BunnylabsLoginWindow.jt;23871;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;20;TextFieldWithLabel.jt;23778;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("TextFieldWithLabel.j", YES);var LOGIN_STATE = 1;
+}p;22;BunnylabsLoginWindow.jt;23861;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;20;TextFieldWithLabel.jt;23768;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("TextFieldWithLabel.j", YES);var LOGIN_STATE = 1;
 var REGISTRATION_STATE = 2;
 var FORGOTPASSWORD_STATE = 3;
 var CHANGEPASSWORD_STATE = 4;
@@ -250,15 +250,31 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $Bunny
     switch(self.currentState) {
     case LOGIN_STATE:
         objj_msgSend(self, "setMessage:", "Please enter your username and password");
+        objj_msgSend(self.usernameField, "setValidator:", nil);
+        objj_msgSend(self.passwordField, "setValidator:", nil);
+        objj_msgSend(self.passwordConfirmField, "setValidator:", nil);
+        objj_msgSend(self.emailField, "setValidator:", nil);
         break;
     case REGISTRATION_STATE:
         objj_msgSend(self, "setMessage:", "Account registration: A validation e-mail will be sent to you which contains a link you need to click before you can use your account.\n" + objj_msgSend(self, "_getPasswordRules"));
+        objj_msgSend(self.usernameField, "setValidator:", sel_getUid("usernameIsValid:"));
+        objj_msgSend(self.passwordField, "setValidator:", sel_getUid("passwordIsValid:"));
+        objj_msgSend(self.passwordConfirmField, "setValidator:", sel_getUid("passwordsMatch:"));
+        objj_msgSend(self.emailField, "setValidator:", sel_getUid("emailIsValid:"));
         break;
     case FORGOTPASSWORD_STATE:
         objj_msgSend(self, "setMessage:", "Forgot your password? Fear not. Enter your username and e-mail here and a reset password link will be sent to your e-mail");
+        objj_msgSend(self.usernameField, "setValidator:", nil);
+        objj_msgSend(self.passwordField, "setValidator:", nil);
+        objj_msgSend(self.passwordConfirmField, "setValidator:", nil);
+        objj_msgSend(self.emailField, "setValidator:", nil);
         break;
     case CHANGEPASSWORD_STATE:
         objj_msgSend(self, "setMessage:", "Change your password to something memorable and long..\n" + objj_msgSend(self, "_getPasswordRules"));
+        objj_msgSend(self.usernameField, "setValidator:", nil);
+        objj_msgSend(self.passwordField, "setValidator:", sel_getUid("passwordIsValid:"));
+        objj_msgSend(self.passwordConfirmField, "setValidator:", sel_getUid("passwordsMatch:"));
+        objj_msgSend(self.emailField, "setValidator:", nil);
         break;
     }
     objj_msgSend(self, "_update");
@@ -269,6 +285,10 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $Bunny
 }
 ,["void","TextFieldWithLabel"]), new objj_method(sel_getUid("_update"), function $BunnylabsLoginWindow___update(self, _cmd)
 {
+    objj_msgSend(self.usernameField, "validate");
+    objj_msgSend(self.passwordField, "validate");
+    objj_msgSend(self.passwordConfirmField, "validate");
+    objj_msgSend(self.emailField, "validate");
     var errorString = objj_msgSend(objj_msgSend(self.errors, "allObjects"), "componentsJoinedByString:", "\n");
     objj_msgSend(self, "setError:", errorString);
     var targetWidth = objj_msgSend(self, "frame").size.width;
@@ -276,7 +296,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $Bunny
     var messageFieldSize = {width: objj_msgSend(self.messageField, "frame").size.width, height: 0};
     if (objj_msgSend(self.messageField, "stringValue") && objj_msgSend(self.messageField, "stringValue").length > 0)
     {
-        messageFieldSize = objj_msgSend(objj_msgSend(self.messageField, "stringValue"), "sizeWithFont:inWidth:", objj_msgSend(self.messageField, "font"), objj_msgSend(self.messageField, "frame").size.width + 18);
+        messageFieldSize = objj_msgSend(objj_msgSend(self.messageField, "stringValue"), "sizeWithFont:inWidth:", objj_msgSend(self.messageField, "font"), objj_msgSend(self.messageField, "frame").size.width);
         objj_msgSend(self.messageField, "setFrame:", CGRectMake(0, 0, messageFieldSize.width, messageFieldSize.height + 18));
     }
     else
@@ -286,7 +306,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $Bunny
     var errorFieldSize = {width: objj_msgSend(self.errorField, "frame").size.width, height: 0};
     if (objj_msgSend(self.errorField, "stringValue") && objj_msgSend(self.errorField, "stringValue").length > 0)
     {
-        errorFieldSize = objj_msgSend(objj_msgSend(self.errorField, "stringValue"), "sizeWithFont:inWidth:", objj_msgSend(self.errorField, "font"), objj_msgSend(self.errorField, "frame").size.width + 18);
+        errorFieldSize = objj_msgSend(objj_msgSend(self.errorField, "stringValue"), "sizeWithFont:inWidth:", objj_msgSend(self.errorField, "font"), objj_msgSend(self.errorField, "frame").size.width);
         objj_msgSend(self.errorField, "setFrame:", CGRectMake(0, objj_msgSend(self.messageField, "frame").size.height, errorFieldSize.width, errorFieldSize.height + 18));
     }
     else
@@ -314,10 +334,6 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $Bunny
         objj_msgSend(self.cancelButton, "setFrame:", CGRectMake(205, 80 + self.messageSize, 185, objj_msgSend(self.cancelButton, "bounds").size.height));
         objj_msgSend(self.newAccountButton, "setFrame:", CGRectMake(10, 110 + self.messageSize, 185, objj_msgSend(self.loginButton, "bounds").size.height));
         objj_msgSend(self.forgotPasswordButton, "setFrame:", CGRectMake(205, 110 + self.messageSize, 185, objj_msgSend(self.cancelButton, "bounds").size.height));
-        objj_msgSend(self.usernameField, "setValidator:", nil);
-        objj_msgSend(self.passwordField, "setValidator:", nil);
-        objj_msgSend(self.passwordConfirmField, "setValidator:", nil);
-        objj_msgSend(self.emailField, "setValidator:", nil);
         objj_msgSend(self, "setDefaultButton:", self.loginButton);
         targetWidth = 400;
         targetHeight = 180 + self.messageSize;
@@ -342,10 +358,6 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $Bunny
         objj_msgSend(self.registerButton, "setFrame:", CGRectMake(10, 140 + self.messageSize, 185, objj_msgSend(self.loginButton, "bounds").size.height));
         objj_msgSend(self.cancelButton, "setFrame:", CGRectMake(205, 140 + self.messageSize, 185, objj_msgSend(self.cancelButton, "bounds").size.height));
         objj_msgSend(self, "setDefaultButton:", self.registerButton);
-        objj_msgSend(self.usernameField, "setValidator:", sel_getUid("usernameIsValid:"));
-        objj_msgSend(self.passwordField, "setValidator:", sel_getUid("passwordIsValid:"));
-        objj_msgSend(self.passwordConfirmField, "setValidator:", sel_getUid("passwordsMatch:"));
-        objj_msgSend(self.emailField, "setValidator:", sel_getUid("emailIsValid:"));
         targetWidth = 400;
         targetHeight = 210 + self.messageSize;
         break;
@@ -367,10 +379,6 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $Bunny
         objj_msgSend(self.submitUsernameButton, "setFrame:", CGRectMake(10, 80 + self.messageSize, 185, objj_msgSend(self.loginButton, "bounds").size.height));
         objj_msgSend(self.cancelButton, "setFrame:", CGRectMake(205, 80 + self.messageSize, 185, objj_msgSend(self.cancelButton, "bounds").size.height));
         objj_msgSend(self, "setDefaultButton:", self.submitUsernameButton);
-        objj_msgSend(self.usernameField, "setValidator:", nil);
-        objj_msgSend(self.passwordField, "setValidator:", nil);
-        objj_msgSend(self.passwordConfirmField, "setValidator:", nil);
-        objj_msgSend(self.emailField, "setValidator:", nil);
         targetWidth = 400;
         targetHeight = 150 + self.messageSize;
         break;
@@ -392,18 +400,10 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $Bunny
         objj_msgSend(self.changePasswordButton, "setFrame:", CGRectMake(10, 80 + self.messageSize, 185, objj_msgSend(self.loginButton, "bounds").size.height));
         objj_msgSend(self.cancelButton, "setFrame:", CGRectMake(205, 80 + self.messageSize, 185, objj_msgSend(self.cancelButton, "bounds").size.height));
         objj_msgSend(self, "setDefaultButton:", self.changePasswordButton);
-        objj_msgSend(self.usernameField, "setValidator:", nil);
-        objj_msgSend(self.passwordField, "setValidator:", sel_getUid("passwordIsValid:"));
-        objj_msgSend(self.passwordConfirmField, "setValidator:", sel_getUid("passwordsMatch:"));
-        objj_msgSend(self.emailField, "setValidator:", nil);
         targetWidth = 400;
         targetHeight = 150 + self.messageSize;
         break;
     }
-    objj_msgSend(self.usernameField, "validate");
-    objj_msgSend(self.passwordField, "validate");
-    objj_msgSend(self.passwordConfirmField, "validate");
-    objj_msgSend(self.emailField, "validate");
     var xmargins = (targetWidth - objj_msgSend(self, "frame").size.width) / 2;
     var ymargins = (targetHeight - objj_msgSend(self, "frame").size.height) / 2;
     objj_msgSend(self, "setFrame:display:animate:", CGRectMake(objj_msgSend(self, "frame").origin.x - xmargins, objj_msgSend(self, "frame").origin.y - ymargins, targetWidth, targetHeight), YES, YES);
@@ -434,7 +434,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("loginState"), function
 {
     CPApplicationMain(args, namedArgs);
 }
-p;20;TextFieldWithLabel.jt;5255;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;5188;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "TextFieldWithLabel"),
+p;20;TextFieldWithLabel.jt;4772;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;4705;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "TextFieldWithLabel"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("textField"), new objj_ivar("label"), new objj_ivar("target"), new objj_ivar("validator"), new objj_ivar("textChangedSelector")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("target"), function $TextFieldWithLabel__target(self, _cmd)
 {
@@ -483,16 +483,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("target"), function $Tex
     }
     return self;
 }
-,["id","CPString","CPString","CPInteger","BOOL"]), new objj_method(sel_getUid("controlTextDidFocus:"), function $TextFieldWithLabel__controlTextDidFocus_(self, _cmd, aTextField)
-{
-}
-,["void","CPTextField"]), new objj_method(sel_getUid("controlTextDidBlur:"), function $TextFieldWithLabel__controlTextDidBlur_(self, _cmd, aTextField)
-{
-}
-,["void","CPTextField"]), new objj_method(sel_getUid("controlTextDidBeginEditing:"), function $TextFieldWithLabel__controlTextDidBeginEditing_(self, _cmd, aTextField)
-{
-}
-,["void","CPTextField"]), new objj_method(sel_getUid("controlTextDidChange:"), function $TextFieldWithLabel__controlTextDidChange_(self, _cmd, aTextField)
+,["id","CPString","CPString","CPInteger","BOOL"]), new objj_method(sel_getUid("controlTextDidChange:"), function $TextFieldWithLabel__controlTextDidChange_(self, _cmd, aTextField)
 {
     objj_msgSend(self, "validate");
     if (objj_msgSend(self.target, "respondsToSelector:", self.textChangedSelector))
