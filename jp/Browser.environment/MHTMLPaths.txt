@@ -1,1 +1,1 @@
-@STATIC;1.0;u;30;Resources/apple-touch-icon.png70;mhtml:Browser.environment/MHTMLData.txt!Resources/apple-touch-icon.pngu;30;Resources/Images/bunnylabs.png70;mhtml:Browser.environment/MHTMLData.txt!Resources/Images/bunnylabs.png
+@STATIC;1.0;u;30;Resources/Images/bunnylabs.png70;mhtml:Browser.environment/MHTMLData.txt!Resources/Images/bunnylabs.pngu;30;Resources/apple-touch-icon.png70;mhtml:Browser.environment/MHTMLData.txt!Resources/apple-touch-icon.png
