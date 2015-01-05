@@ -1,4 +1,15 @@
-@STATIC;1.0;p;15;AppController.jt;4587;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;SessionManager.jt;4499;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("SessionManager.j", YES);{var the_class = objj_allocateClassPair(CPObject, "AppController"),
+@STATIC;1.0;p;17;SessionMenuItem.jt;657;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;591;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPMenuItem, "SessionMenuItem"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $SessionMenuItem__init(self, _cmd)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("SessionMenuItem").super_class }, "initWithTitle:action:keyEquivalent:", "Not logged in", sel_getUid("menuItemClicked:"), nil);
+    if (self)
+    {
+    }
+    return self;
+}
+,["id"])]);
+}p;15;AppController.jt;3748;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;SessionManager.jt;3660;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("SessionManager.j", YES);{var the_class = objj_allocateClassPair(CPObject, "AppController"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("mainMenu"), new objj_ivar("contentView")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLaunching:"), function $AppController__applicationDidFinishLaunching_(self, _cmd, aNotification)
 {
@@ -9,10 +20,6 @@ class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLau
     objj_msgSend(CPMenu, "setMenuBarVisible:", YES);
     objj_msgSend(self, "refreshMenu");
     objj_msgSend(self, "setDesktop");
-    var button = objj_msgSend(CPButton, "buttonWithTitle:", "login");
-    objj_msgSend(button, "setTarget:", self);
-    objj_msgSend(button, "setAction:", sel_getUid("login:"));
-    objj_msgSend(self.contentView, "addSubview:", button);
     var cpbutton = objj_msgSend(CPButton, "buttonWithTitle:", "changepass");
     objj_msgSend(cpbutton, "setFrameOrigin:", CGPointMake(0, 20));
     objj_msgSend(cpbutton, "setTarget:", self);
@@ -24,11 +31,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLau
     objj_msgSend(ds, "setAction:", sel_getUid("ds:"));
     objj_msgSend(self.contentView, "addSubview:", ds);
 }
-,["void","CPNotification"]), new objj_method(sel_getUid("login:"), function $AppController__login_(self, _cmd, sender)
-{
-    objj_msgSend(objj_msgSend(SessionManager, "instance"), "showLoginWindow");
-}
-,["id","id"]), new objj_method(sel_getUid("changepass:"), function $AppController__changepass_(self, _cmd, sender)
+,["void","CPNotification"]), new objj_method(sel_getUid("changepass:"), function $AppController__changepass_(self, _cmd, sender)
 {
     objj_msgSend(objj_msgSend(SessionManager, "instance"), "showChangePasswordWindow");
 }
@@ -55,123 +58,291 @@ class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLau
         objj_msgSend(self.mainMenu, "removeItemAtIndex:", 0);
     }
     objj_msgSend(self.mainMenu, "removeAllItems");
-    var loginStatusTextField = objj_msgSend(CPTextField, "labelWithTitle:", "Not Logged In");
-    var font = objj_msgSend(CPFont, "fontWithName:size:", "Helvetica", 14);
-    objj_msgSend(loginStatusTextField, "setFrameOrigin:", CGPointMake(0, 6));
-    objj_msgSend(loginStatusTextField, "setFont:", font);
-    objj_msgSend(loginStatusTextField, "sizeToFit");
-    var item = objj_msgSend(objj_msgSend(CPMenuItem, "alloc"), "init");
-    objj_msgSend(item, "setView:", loginStatusTextField);
     objj_msgSend(self.mainMenu, "addItem:", objj_msgSend(CPMenuItem, "separatorItem"));
     objj_msgSend(self.mainMenu, "addItem:", objj_msgSend(CPMenuItem, "separatorItem"));
-    objj_msgSend(self.mainMenu, "addItem:", item);
+    objj_msgSend(self.mainMenu, "addItem:", objj_msgSend(objj_msgSend(SessionManager, "instance"), "sessionStatusMenuItem"));
 }
 ,["void"]), new objj_method(sel_getUid("windowDidResize:"), function $AppController__windowDidResize_(self, _cmd, notification)
 {
     objj_msgSend(self, "refreshMenu");
 }
 ,["void","CPNotification"])]);
-}p;6;main.jt;292;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;15;AppController.jt;206;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("AppController.j", YES);main = function(args, namedArgs)
+}p;16;SessionManager.jt;15624;@STATIC;1.0;I;23;Foundation/Foundation.ji;15;SessionWindow.ji;17;SessionMenuItem.jt;15534;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("SessionWindow.j", YES);objj_executeFile("SessionMenuItem.j", YES);var apiServerUrl = "http://bunnylabs-app.astrobunny.net";
+var session;
+{var the_class = objj_allocateClassPair(CPWindowController, "SessionManager"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("authToken"), new objj_ivar("currentResponseHandler"), new objj_ivar("currentStatusCode"), new objj_ivar("currentData"), new objj_ivar("statusMenuItem")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $SessionManager__init(self, _cmd)
 {
-    CPApplicationMain(args, namedArgs);
-}
-p;20;TextFieldWithLabel.jt;4772;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;4705;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "TextFieldWithLabel"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("textField"), new objj_ivar("label"), new objj_ivar("target"), new objj_ivar("validator"), new objj_ivar("textChangedSelector")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("target"), function $TextFieldWithLabel__target(self, _cmd)
-{
-    return self.target;
-}
-,["id"]), new objj_method(sel_getUid("setTarget:"), function $TextFieldWithLabel__setTarget_(self, _cmd, newValue)
-{
-    self.target = newValue;
-}
-,["void","id"]), new objj_method(sel_getUid("validator"), function $TextFieldWithLabel__validator(self, _cmd)
-{
-    return self.validator;
-}
-,["SEL"]), new objj_method(sel_getUid("setValidator:"), function $TextFieldWithLabel__setValidator_(self, _cmd, newValue)
-{
-    self.validator = newValue;
-}
-,["void","SEL"]), new objj_method(sel_getUid("textChangedSelector"), function $TextFieldWithLabel__textChangedSelector(self, _cmd)
-{
-    return self.textChangedSelector;
-}
-,["SEL"]), new objj_method(sel_getUid("setTextChangedSelector:"), function $TextFieldWithLabel__setTextChangedSelector_(self, _cmd, newValue)
-{
-    self.textChangedSelector = newValue;
-}
-,["void","SEL"]), new objj_method(sel_getUid("initWithLabel:andPlaceHolder:andWidth:"), function $TextFieldWithLabel__initWithLabel_andPlaceHolder_andWidth_(self, _cmd, aLabel, aPlaceholder, aWidth)
-{
-    return objj_msgSend(self, "initWithLabel:andPlaceHolder:andWidth:isSecure:", aLabel, aPlaceholder, aWidth, NO);
-}
-,["id","CPString","CPString","CPInteger"]), new objj_method(sel_getUid("initWithLabel:andPlaceHolder:andWidth:isSecure:"), function $TextFieldWithLabel__initWithLabel_andPlaceHolder_andWidth_isSecure_(self, _cmd, aLabel, aPlaceholder, aWidth, secure)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("TextFieldWithLabel").super_class }, "init");
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("SessionManager").super_class }, "initWithWindow:", objj_msgSend(objj_msgSend(SessionWindow, "alloc"), "init"));
     if (self)
     {
-        self.textField = objj_msgSend(CPTextField, "textFieldWithStringValue:placeholder:width:", "", aPlaceholder, aWidth - 125);
-        objj_msgSend(self.textField, "setDelegate:", self);
-        objj_msgSend(self.textField, "setSecure:", secure);
-        objj_msgSend(self.textField, "setFrameOrigin:", CGPointMake(125, 0));
-        objj_msgSend(self, "addSubview:", self.textField);
-        self.label = objj_msgSend(CPTextField, "labelWithTitle:", aLabel);
-        objj_msgSend(self.label, "setFrame:", CGRectMake(0, 0, 120, objj_msgSend(self.textField, "bounds").size.height));
-        objj_msgSend(self.label, "setVerticalAlignment:", CPCenterVerticalTextAlignment);
-        objj_msgSend(self.label, "setAlignment:", CPRightTextAlignment);
-        objj_msgSend(self, "addSubview:", self.label);
-        objj_msgSend(self, "setFrame:", CGRectMake(0, 0, aWidth, objj_msgSend(self.textField, "bounds").size.height));
+        objj_msgSend(objj_msgSend(self, "window"), "setDelegate:", self);
+        self.authToken = "";
+        self.currentResponseHandler = sel_getUid("noResponseHandler:data:");
+        self.statusMenuItem = objj_msgSend(objj_msgSend(SessionMenuItem, "alloc"), "init");
+        objj_msgSend(self.statusMenuItem, "setTarget:", self);
+        objj_msgSend(self, "getUserData");
     }
     return self;
 }
-,["id","CPString","CPString","CPInteger","BOOL"]), new objj_method(sel_getUid("controlTextDidChange:"), function $TextFieldWithLabel__controlTextDidChange_(self, _cmd, aTextField)
+,["id"]), new objj_method(sel_getUid("menuItemClicked:"), function $SessionManager__menuItemClicked_(self, _cmd, sender)
 {
-    objj_msgSend(self, "validate");
-    if (objj_msgSend(self.target, "respondsToSelector:", self.textChangedSelector))
+    objj_msgSend(self, "showLoginWindow");
+    return sender;
+}
+,["id","id"]), new objj_method(sel_getUid("getUserData"), function $SessionManager__getUserData(self, _cmd)
+{
+    if (self.authToken.length > 0)
     {
-        objj_msgSend(self.target, "performSelector:withObject:", self.textChangedSelector, self.textField);
+        self.currentResponseHandler = sel_getUid("getUserDataHandler:forData:");
+        objj_msgSend(self, "get:andNotify:", "/sessions/current", self);
+    }
+    else
+    {
+        objj_msgSend(self.statusMenuItem, "setTitle:", "Log In");
     }
 }
-,["void","CPTextField"]), new objj_method(sel_getUid("validate"), function $TextFieldWithLabel__validate(self, _cmd)
+,["void"]), new objj_method(sel_getUid("nullResponseHandler:forData:"), function $SessionManager__nullResponseHandler_forData_(self, _cmd, statusCode, data)
 {
-    if (objj_msgSend(self.target, "respondsToSelector:", self.validator))
+}
+,["void","int","CPString"]), new objj_method(sel_getUid("getUserDataHandler:forData:"), function $SessionManager__getUserDataHandler_forData_(self, _cmd, statusCode, data)
+{
+    if (statusCode == 200)
     {
-        var valid = objj_msgSend(self.target, "performSelector:withObject:", self.validator, objj_msgSend(self.textField, "stringValue"));
-        if (!valid)
-        {
-            objj_msgSend(self.textField, "setBackgroundColor:", objj_msgSend(CPColor, "redColor"));
-        }
-        else
-        {
-            objj_msgSend(self.textField, "setBackgroundColor:", objj_msgSend(CPColor, "clearColor"));
-        }
-        return valid;
+        var result = JSON.parse(data);
+        objj_msgSend(self.statusMenuItem, "setTitle:", objj_msgSend(CPString, "stringWithFormat:", "Logged in as %@", result.username));
     }
-    objj_msgSend(self.textField, "setBackgroundColor:", objj_msgSend(CPColor, "clearColor"));
-    return true;
+    else
+    {
+        objj_msgSend(objj_msgSend(self, "window"), "setState:andResetFields:", objj_msgSend(SessionWindow, "loginState"), NO);
+        objj_msgSend(objj_msgSend(self, "window"), "setCustomError:", data);
+        objj_msgSend(objj_msgSend(self, "window"), "update");
+    }
 }
-,["BOOL"]), new objj_method(sel_getUid("controlTextDidEndEditing:"), function $TextFieldWithLabel__controlTextDidEndEditing_(self, _cmd, aTextField)
+,["void","int","CPString"]), new objj_method(sel_getUid("loginResponseHandler:forData:"), function $SessionManager__loginResponseHandler_forData_(self, _cmd, statusCode, data)
 {
+    if (statusCode == 200)
+    {
+        self.authToken = data;
+        objj_msgSend(objj_msgSend(self, "window"), "close");
+    }
+    else
+    {
+        self.authToken = "";
+        objj_msgSend(objj_msgSend(self, "window"), "setState:andResetFields:", objj_msgSend(SessionWindow, "loginState"), NO);
+        objj_msgSend(objj_msgSend(self, "window"), "setCustomError:", data);
+        objj_msgSend(objj_msgSend(self, "window"), "update");
+    }
+    objj_msgSend(self, "getUserData");
 }
-,["void","CPTextField"]), new objj_method(sel_getUid("text"), function $TextFieldWithLabel__text(self, _cmd)
+,["void","int","CPString"]), new objj_method(sel_getUid("registerResponseHandler:forData:"), function $SessionManager__registerResponseHandler_forData_(self, _cmd, statusCode, data)
 {
-    return objj_msgSend(self.textField, "stringValue");
+    if (statusCode == 200)
+    {
+        objj_msgSend(objj_msgSend(self, "window"), "setState:", objj_msgSend(SessionWindow, "loginState"));
+        objj_msgSend(objj_msgSend(self, "window"), "setCustomMessage:", "You should receive an e-mail with an activation link. Go to that link and then you will be able to log in.");
+        objj_msgSend(objj_msgSend(self, "window"), "update");
+    }
+    else
+    {
+        objj_msgSend(objj_msgSend(self, "window"), "setState:andResetFields:", objj_msgSend(SessionWindow, "registrationState"), NO);
+        objj_msgSend(objj_msgSend(self, "window"), "setCustomError:", data);
+        objj_msgSend(objj_msgSend(self, "window"), "update");
+    }
 }
-,["CPString"]), new objj_method(sel_getUid("setText:"), function $TextFieldWithLabel__setText_(self, _cmd, aString)
+,["void","int","CPString"]), new objj_method(sel_getUid("submitUsernameResponseHandler:forData:"), function $SessionManager__submitUsernameResponseHandler_forData_(self, _cmd, statusCode, data)
 {
-    objj_msgSend(self.textField, "setStringValue:", aString);
+    if (statusCode == 200)
+    {
+        objj_msgSend(objj_msgSend(self, "window"), "setState:", objj_msgSend(SessionWindow, "loginState"));
+        objj_msgSend(objj_msgSend(self, "window"), "setCustomMessage:", "Your password has been changed. You may now log in with your new password");
+        objj_msgSend(objj_msgSend(self, "window"), "update");
+    }
+    else
+    {
+        objj_msgSend(objj_msgSend(self, "window"), "setState:andResetFields:", objj_msgSend(SessionWindow, "changePasswordState"), NO);
+        objj_msgSend(objj_msgSend(self, "window"), "setCustomError:", data);
+        objj_msgSend(objj_msgSend(self, "window"), "update");
+    }
 }
-,["void","CPString"])]);
-}p;15;SessionWindow.jt;30971;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;20;TextFieldWithLabel.jt;30878;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("TextFieldWithLabel.j", YES);var LOGIN_STATE = 1;
+,["void","int","CPString"]), new objj_method(sel_getUid("forgotPasswordResponseHandler:forData:"), function $SessionManager__forgotPasswordResponseHandler_forData_(self, _cmd, statusCode, data)
+{
+    if (statusCode == 200)
+    {
+        objj_msgSend(objj_msgSend(self, "window"), "setState:", objj_msgSend(SessionWindow, "loginState"));
+        objj_msgSend(objj_msgSend(self, "window"), "setCustomMessage:", "You should receive an e-mail containing instructions on how to change your password");
+        objj_msgSend(objj_msgSend(self, "window"), "update");
+    }
+    else
+    {
+        objj_msgSend(objj_msgSend(self, "window"), "setState:andResetFields:", objj_msgSend(SessionWindow, "forgotPasswordState"), NO);
+        objj_msgSend(objj_msgSend(self, "window"), "setCustomError:", data);
+        objj_msgSend(objj_msgSend(self, "window"), "update");
+    }
+}
+,["void","int","CPString"]), new objj_method(sel_getUid("get:andNotify:"), function $SessionManager__get_andNotify_(self, _cmd, aUrl, delegate)
+{
+    var url = objj_msgSend(CPURL, "URLWithString:", apiServerUrl + aUrl);
+    var request = objj_msgSend(CPURLRequest, "requestWithURL:", url);
+    objj_msgSend(request, "setHTTPMethod:", "GET");
+    objj_msgSend(request, "setValue:forHTTPHeaderField:", self.authToken, "Authentication-Token");
+    objj_msgSend(request, "setValue:forHTTPHeaderField:", "en", "Language");
+    var conn = objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", request, delegate);
+}
+,["id","CPString","id"]), new objj_method(sel_getUid("post:withData:andNotify:"), function $SessionManager__post_withData_andNotify_(self, _cmd, aUrl, json, delegate)
+{
+    var url = objj_msgSend(CPURL, "URLWithString:", apiServerUrl + aUrl);
+    var request = objj_msgSend(CPURLRequest, "requestWithURL:", url);
+    objj_msgSend(request, "setHTTPMethod:", "POST");
+    objj_msgSend(request, "setHTTPBody:", JSON.stringify(json));
+    objj_msgSend(request, "setValue:forHTTPHeaderField:", self.authToken, "Authentication-Token");
+    objj_msgSend(request, "setValue:forHTTPHeaderField:", "en", "Language");
+    var conn = objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", request, delegate);
+}
+,["id","CPString","id","id"]), new objj_method(sel_getUid("put:withData:andNotify:"), function $SessionManager__put_withData_andNotify_(self, _cmd, aUrl, json, delegate)
+{
+    var url = objj_msgSend(CPURL, "URLWithString:", apiServerUrl + aUrl);
+    var request = objj_msgSend(CPURLRequest, "requestWithURL:", url);
+    objj_msgSend(request, "setHTTPMethod:", "PUT");
+    objj_msgSend(request, "setHTTPBody:", JSON.stringify(json));
+    objj_msgSend(request, "setValue:forHTTPHeaderField:", self.authToken, "Authentication-Token");
+    objj_msgSend(request, "setValue:forHTTPHeaderField:", "en", "Language");
+    var conn = objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", request, delegate);
+}
+,["id","CPString","id","id"]), new objj_method(sel_getUid("delete:andNotify:"), function $SessionManager__delete_andNotify_(self, _cmd, aUrl, delegate)
+{
+    var url = objj_msgSend(CPURL, "URLWithString:", apiServerUrl + aUrl);
+    var request = objj_msgSend(CPURLRequest, "requestWithURL:", url);
+    objj_msgSend(request, "setHTTPMethod:", "DELETE");
+    objj_msgSend(request, "setValue:forHTTPHeaderField:", self.authToken, "Authentication-Token");
+    objj_msgSend(request, "setValue:forHTTPHeaderField:", "en", "Language");
+    var conn = objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", request, delegate);
+}
+,["id","CPString","id"]), new objj_method(sel_getUid("loginWithUsername:andPassword:"), function $SessionManager__loginWithUsername_andPassword_(self, _cmd, aUsername, aPassword)
+{
+    CPLog("Login: %@ %@", aUsername, aPassword);
+    self.currentResponseHandler = sel_getUid("loginResponseHandler:forData:");
+    objj_msgSend(self, "post:withData:andNotify:", "/sessions", {username: aUsername, password: aPassword}, self);
+}
+,["void","CPString","CPString"]), new objj_method(sel_getUid("register:withPassword:andEmail:"), function $SessionManager__register_withPassword_andEmail_(self, _cmd, aUsername, aPassword, anEmail)
+{
+    CPLog("Register: %@ %@ %@", aUsername, aPassword, anEmail);
+    self.currentResponseHandler = sel_getUid("registerResponseHandler:forData:");
+    objj_msgSend(self, "post:withData:andNotify:", "/users", {username: aUsername, password: aPassword, email: anEmail}, self);
+}
+,["void","CPString","CPString","CPString"]), new objj_method(sel_getUid("changePassword:forUser:"), function $SessionManager__changePassword_forUser_(self, _cmd, aPassword, aUsername)
+{
+    CPLog("ChangePassword: %@ %@", aUsername, aPassword);
+    self.currentResponseHandler = sel_getUid("submitUsernameResponseHandler:forData:");
+    objj_msgSend(self, "put:withData:andNotify:", "/users/" + aUsername, {password: aPassword}, self);
+}
+,["void","CPString","CPString"]), new objj_method(sel_getUid("requestForgottenPasswordForUser:andEmail:"), function $SessionManager__requestForgottenPasswordForUser_andEmail_(self, _cmd, aUsername, anEmail)
+{
+    CPLog("ForgotPassword: %@ %@", aUsername, anEmail);
+    self.currentResponseHandler = sel_getUid("forgotPasswordResponseHandler:forData:");
+    objj_msgSend(self, "post:withData:andNotify:", "/users/" + aUsername + "/forgotPassword", {}, self);
+}
+,["void","CPString","CPString"]), new objj_method(sel_getUid("logout"), function $SessionManager__logout(self, _cmd)
+{
+    CPLog("Logout");
+    self.currentResponseHandler = sel_getUid("nullResponseHandler:forData:");
+    objj_msgSend(self, "delete:andNotify:", "/sessions/current", self);
+    self.authToken = "";
+    objj_msgSend(self, "getUserData");
+}
+,["void"]), new objj_method(sel_getUid("connection:didFailWithError:"), function $SessionManager__connection_didFailWithError_(self, _cmd, connection, error)
+{
+    CPLog("Error: %@", error);
+}
+,["void","CPURLConnection","id"]), new objj_method(sel_getUid("connection:didReceiveResponse:"), function $SessionManager__connection_didReceiveResponse_(self, _cmd, connection, response)
+{
+    self.currentStatusCode = objj_msgSend(response, "statusCode");
+}
+,["void","CPURLConnection","CPHTTPURLResponse"]), new objj_method(sel_getUid("connection:didReceiveData:"), function $SessionManager__connection_didReceiveData_(self, _cmd, connection, data)
+{
+    self.currentData = data;
+}
+,["void","CPURLConnection","CPString"]), new objj_method(sel_getUid("connectionDidFinishLoading:"), function $SessionManager__connectionDidFinishLoading_(self, _cmd, connection)
+{
+    objj_msgSend(self, "performSelector:withObject:withObject:", self.currentResponseHandler, self.currentStatusCode, self.currentData);
+}
+,["void","CPURLConnection"]), new objj_method(sel_getUid("connectionDidReceiveAuthenticationChallenge:"), function $SessionManager__connectionDidReceiveAuthenticationChallenge_(self, _cmd, connection)
+{
+    self.authToken = "";
+    objj_msgSend(self, "getUserData");
+    objj_msgSend(self, "showLoginWindow");
+    objj_msgSend(objj_msgSend(self, "window"), "setCustomMessage:", "You need to log in to do this");
+    objj_msgSend(objj_msgSend(self, "window"), "update");
+}
+,["void","id"]), new objj_method(sel_getUid("showLoginWindow"), function $SessionManager__showLoginWindow(self, _cmd)
+{
+    if (self.authToken.length == 0)
+    {
+        objj_msgSend(self, "showWindow:", self);
+        objj_msgSend(objj_msgSend(self, "window"), "setState:", objj_msgSend(SessionWindow, "loginState"));
+    }
+    else
+    {
+        objj_msgSend(self, "showWindow:", self);
+        objj_msgSend(objj_msgSend(self, "window"), "setState:", objj_msgSend(SessionWindow, "logoutState"));
+    }
+}
+,["void"]), new objj_method(sel_getUid("showChangePasswordWindow"), function $SessionManager__showChangePasswordWindow(self, _cmd)
+{
+    objj_msgSend(self, "showWindow:", self);
+    objj_msgSend(objj_msgSend(self, "window"), "setState:", objj_msgSend(SessionWindow, "changePasswordState"));
+}
+,["void"]), new objj_method(sel_getUid("loginButtonClicked:"), function $SessionManager__loginButtonClicked_(self, _cmd, sender)
+{
+    objj_msgSend(self, "loginWithUsername:andPassword:", objj_msgSend(objj_msgSend(self, "window"), "username"), objj_msgSend(objj_msgSend(self, "window"), "password"));
+    objj_msgSend(objj_msgSend(self, "window"), "setState:", objj_msgSend(SessionWindow, "waitingState"));
+}
+,["id","id"]), new objj_method(sel_getUid("logoutButtonClicked:"), function $SessionManager__logoutButtonClicked_(self, _cmd, sender)
+{
+    objj_msgSend(self, "logout");
+    objj_msgSend(objj_msgSend(self, "window"), "close");
+}
+,["id","id"]), new objj_method(sel_getUid("registerButtonClicked:"), function $SessionManager__registerButtonClicked_(self, _cmd, sender)
+{
+    objj_msgSend(self, "register:withPassword:andEmail:", objj_msgSend(objj_msgSend(self, "window"), "username"), objj_msgSend(objj_msgSend(self, "window"), "password"), objj_msgSend(objj_msgSend(self, "window"), "email"));
+    objj_msgSend(objj_msgSend(self, "window"), "setState:", objj_msgSend(SessionWindow, "waitingState"));
+}
+,["id","id"]), new objj_method(sel_getUid("submitUsernameButtonClicked:"), function $SessionManager__submitUsernameButtonClicked_(self, _cmd, sender)
+{
+    objj_msgSend(self, "requestForgottenPasswordForUser:andEmail:", objj_msgSend(objj_msgSend(self, "window"), "username"), objj_msgSend(objj_msgSend(self, "window"), "email"));
+    objj_msgSend(objj_msgSend(self, "window"), "setState:", objj_msgSend(SessionWindow, "waitingState"));
+}
+,["id","id"]), new objj_method(sel_getUid("changePasswordButtonClicked:"), function $SessionManager__changePasswordButtonClicked_(self, _cmd, sender)
+{
+    objj_msgSend(self, "changePassword:forUser:", objj_msgSend(objj_msgSend(self, "window"), "password"), objj_msgSend(objj_msgSend(self, "window"), "username"));
+    objj_msgSend(objj_msgSend(self, "window"), "setState:", objj_msgSend(SessionWindow, "waitingState"));
+}
+,["id","id"]), new objj_method(sel_getUid("sessionStatusMenuItem"), function $SessionManager__sessionStatusMenuItem(self, _cmd)
+{
+    return self.statusMenuItem;
+}
+,["SessionMenuItem"])]);
+class_addMethods(meta_class, [new objj_method(sel_getUid("instance"), function $SessionManager__instance(self, _cmd)
+{
+    if (!session)
+    {
+        session = objj_msgSend(objj_msgSend(SessionManager, "alloc"), "init");
+        objj_msgSend(CPURLConnection, "setClassDelegate:", session);
+    }
+    return session;
+}
+,["SessionManager"])]);
+}p;15;SessionWindow.jt;33949;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;20;TextFieldWithLabel.jt;33856;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("TextFieldWithLabel.j", YES);var LOGIN_STATE = 1;
 var REGISTRATION_STATE = 2;
 var FORGOTPASSWORD_STATE = 3;
 var CHANGEPASSWORD_STATE = 4;
-var WAITING_STATE = 5;
+var LOGOUT_STATE = 5;
+var WAITING_STATE = 6;
 var MINIMUM_USERNAME_LENGTH = 4;
 var MINIMUM_PASSWORD_LENGTH = 8;
 var EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 {var the_class = objj_allocateClassPair(CPPanel, "SessionWindow"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("currentState"), new objj_ivar("contentView"), new objj_ivar("messageField"), new objj_ivar("errorField"), new objj_ivar("usernameField"), new objj_ivar("passwordField"), new objj_ivar("passwordConfirmField"), new objj_ivar("emailField"), new objj_ivar("loginButton"), new objj_ivar("newAccountButton"), new objj_ivar("forgotPasswordButton"), new objj_ivar("registerButton"), new objj_ivar("submitUsernameButton"), new objj_ivar("cancelButton"), new objj_ivar("changePasswordButton"), new objj_ivar("spinnerView"), new objj_ivar("messageSize"), new objj_ivar("errors"), new objj_ivar("message"), new objj_ivar("customMessage"), new objj_ivar("customError")]);objj_registerClassPair(the_class);
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("currentState"), new objj_ivar("contentView"), new objj_ivar("messageField"), new objj_ivar("errorField"), new objj_ivar("usernameField"), new objj_ivar("passwordField"), new objj_ivar("passwordConfirmField"), new objj_ivar("emailField"), new objj_ivar("loginButton"), new objj_ivar("newAccountButton"), new objj_ivar("forgotPasswordButton"), new objj_ivar("registerButton"), new objj_ivar("submitUsernameButton"), new objj_ivar("cancelButton"), new objj_ivar("changePasswordButton"), new objj_ivar("logoutButton"), new objj_ivar("spinnerView"), new objj_ivar("messageSize"), new objj_ivar("errors"), new objj_ivar("message"), new objj_ivar("customMessage"), new objj_ivar("customError")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("customMessage"), function $SessionWindow__customMessage(self, _cmd)
 {
     return self.customMessage;
@@ -244,6 +415,11 @@ class_addMethods(the_class, [new objj_method(sel_getUid("customMessage"), functi
         objj_msgSend(self.submitUsernameButton, "setTarget:", self);
         objj_msgSend(self.submitUsernameButton, "setAction:", sel_getUid("submitUsernameButtonClicked:"));
         objj_msgSend(self.contentView, "addSubview:", self.submitUsernameButton);
+        self.logoutButton = objj_msgSend(CPButton, "buttonWithTitle:", "Log out");
+        objj_msgSend(self.logoutButton, "setFrame:", CGRectMake(10, 180, 185, objj_msgSend(self.logoutButton, "bounds").size.height));
+        objj_msgSend(self.logoutButton, "setTarget:", self);
+        objj_msgSend(self.logoutButton, "setAction:", sel_getUid("logoutButtonClicked:"));
+        objj_msgSend(self.contentView, "addSubview:", self.logoutButton);
         self.cancelButton = objj_msgSend(CPButton, "buttonWithTitle:", "Cancel");
         objj_msgSend(self.cancelButton, "setFrame:", CGRectMake(205, 180, 185, objj_msgSend(self.cancelButton, "bounds").size.height));
         objj_msgSend(self.cancelButton, "setTarget:", self);
@@ -322,6 +498,14 @@ class_addMethods(the_class, [new objj_method(sel_getUid("customMessage"), functi
     if (objj_msgSend(objj_msgSend(self, "delegate"), "respondsToSelector:", sel_getUid("submitUsernameButtonClicked:")))
     {
         objj_msgSend(objj_msgSend(self, "delegate"), "submitUsernameButtonClicked:", self);
+    }
+    return sender;
+}
+,["id","id"]), new objj_method(sel_getUid("logoutButtonClicked:"), function $SessionWindow__logoutButtonClicked_(self, _cmd, sender)
+{
+    if (objj_msgSend(objj_msgSend(self, "delegate"), "respondsToSelector:", sel_getUid("logoutButtonClicked:")))
+    {
+        objj_msgSend(objj_msgSend(self, "delegate"), "logoutButtonClicked:", self);
     }
     return sender;
 }
@@ -451,6 +635,13 @@ class_addMethods(the_class, [new objj_method(sel_getUid("customMessage"), functi
         objj_msgSend(self.passwordConfirmField, "setValidator:", sel_getUid("passwordsMatch:"));
         objj_msgSend(self.emailField, "setValidator:", nil);
         break;
+    case LOGOUT_STATE:
+        self.message = "";
+        objj_msgSend(self.usernameField, "setValidator:", nil);
+        objj_msgSend(self.passwordField, "setValidator:", nil);
+        objj_msgSend(self.passwordConfirmField, "setValidator:", nil);
+        objj_msgSend(self.emailField, "setValidator:", nil);
+        break;
     case WAITING_STATE:
         self.message = "";
         objj_msgSend(self.usernameField, "setValidator:", nil);
@@ -531,6 +722,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("customMessage"), functi
         objj_msgSend(self.changePasswordButton, "setHidden:", YES);
         objj_msgSend(self.cancelButton, "setHidden:", NO);
         objj_msgSend(self.spinnerView, "setHidden:", YES);
+        objj_msgSend(self.logoutButton, "setHidden:", YES);
         objj_msgSend(self.usernameField, "setFrameOrigin:", CGPointMake(10, 10 + self.messageSize));
         objj_msgSend(self.passwordField, "setFrameOrigin:", CGPointMake(10, 40 + self.messageSize));
         objj_msgSend(self.loginButton, "setFrame:", CGRectMake(10, 80 + self.messageSize, 185, objj_msgSend(self.loginButton, "bounds").size.height));
@@ -555,6 +747,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("customMessage"), functi
         objj_msgSend(self.changePasswordButton, "setHidden:", YES);
         objj_msgSend(self.cancelButton, "setHidden:", NO);
         objj_msgSend(self.spinnerView, "setHidden:", YES);
+        objj_msgSend(self.logoutButton, "setHidden:", YES);
         objj_msgSend(self.usernameField, "setFrameOrigin:", CGPointMake(10, 10 + self.messageSize));
         objj_msgSend(self.passwordField, "setFrameOrigin:", CGPointMake(10, 40 + self.messageSize));
         objj_msgSend(self.passwordConfirmField, "setFrameOrigin:", CGPointMake(10, 70 + self.messageSize));
@@ -579,6 +772,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("customMessage"), functi
         objj_msgSend(self.changePasswordButton, "setHidden:", YES);
         objj_msgSend(self.cancelButton, "setHidden:", NO);
         objj_msgSend(self.spinnerView, "setHidden:", YES);
+        objj_msgSend(self.logoutButton, "setHidden:", YES);
         objj_msgSend(self.usernameField, "setFrameOrigin:", CGPointMake(10, 10 + self.messageSize));
         objj_msgSend(self.emailField, "setFrameOrigin:", CGPointMake(10, 40 + self.messageSize));
         objj_msgSend(self.submitUsernameButton, "setFrame:", CGRectMake(10, 80 + self.messageSize, 185, objj_msgSend(self.loginButton, "bounds").size.height));
@@ -601,6 +795,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("customMessage"), functi
         objj_msgSend(self.changePasswordButton, "setHidden:", NO);
         objj_msgSend(self.cancelButton, "setHidden:", NO);
         objj_msgSend(self.spinnerView, "setHidden:", YES);
+        objj_msgSend(self.logoutButton, "setHidden:", YES);
         objj_msgSend(self.passwordField, "setFrameOrigin:", CGPointMake(10, 10 + self.messageSize));
         objj_msgSend(self.passwordConfirmField, "setFrameOrigin:", CGPointMake(10, 40 + self.messageSize));
         objj_msgSend(self.changePasswordButton, "setFrame:", CGRectMake(10, 80 + self.messageSize, 185, objj_msgSend(self.loginButton, "bounds").size.height));
@@ -608,6 +803,27 @@ class_addMethods(the_class, [new objj_method(sel_getUid("customMessage"), functi
         objj_msgSend(self, "setDefaultButton:", self.changePasswordButton);
         targetWidth = 400;
         targetHeight = 150 + self.messageSize;
+        break;
+    case LOGOUT_STATE:
+        objj_msgSend(self, "setTitle:", "Log out");
+        objj_msgSend(self.usernameField, "setHidden:", YES);
+        objj_msgSend(self.passwordField, "setHidden:", YES);
+        objj_msgSend(self.passwordConfirmField, "setHidden:", YES);
+        objj_msgSend(self.emailField, "setHidden:", YES);
+        objj_msgSend(self.registerButton, "setHidden:", YES);
+        objj_msgSend(self.submitUsernameButton, "setHidden:", YES);
+        objj_msgSend(self.newAccountButton, "setHidden:", YES);
+        objj_msgSend(self.forgotPasswordButton, "setHidden:", YES);
+        objj_msgSend(self.loginButton, "setHidden:", YES);
+        objj_msgSend(self.changePasswordButton, "setHidden:", YES);
+        objj_msgSend(self.cancelButton, "setHidden:", NO);
+        objj_msgSend(self.spinnerView, "setHidden:", YES);
+        objj_msgSend(self.logoutButton, "setHidden:", NO);
+        objj_msgSend(self.logoutButton, "setFrame:", CGRectMake(10, 20 + self.messageSize, 185, objj_msgSend(self.logoutButton, "bounds").size.height));
+        objj_msgSend(self.cancelButton, "setFrame:", CGRectMake(205, 20 + self.messageSize, 185, objj_msgSend(self.cancelButton, "bounds").size.height));
+        objj_msgSend(self, "setDefaultButton:", self.logoutButton);
+        targetWidth = 400;
+        targetHeight = 100 + self.messageSize;
         break;
     case WAITING_STATE:
         objj_msgSend(self, "setTitle:", "Please wait");
@@ -623,6 +839,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("customMessage"), functi
         objj_msgSend(self.changePasswordButton, "setHidden:", YES);
         objj_msgSend(self.cancelButton, "setHidden:", YES);
         objj_msgSend(self.spinnerView, "setHidden:", NO);
+        objj_msgSend(self.logoutButton, "setHidden:", YES);
         objj_msgSend(self.spinnerView, "setFrameOrigin:", CGPointMake(170, 30 + self.messageSize));
         targetWidth = 400;
         targetHeight = 150 + self.messageSize;
@@ -661,213 +878,106 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("loginState"), function
 {
     return CHANGEPASSWORD_STATE;
 }
+,["CPInteger"]), new objj_method(sel_getUid("logoutState"), function $SessionWindow__logoutState(self, _cmd)
+{
+    return LOGOUT_STATE;
+}
 ,["CPInteger"]), new objj_method(sel_getUid("waitingState"), function $SessionWindow__waitingState(self, _cmd)
 {
     return WAITING_STATE;
 }
 ,["CPInteger"])]);
-}p;16;SessionManager.jt;12954;@STATIC;1.0;I;23;Foundation/Foundation.ji;15;SessionWindow.jt;12886;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("SessionWindow.j", YES);var apiServerUrl = "http://api.labs.astrobunny.net";
-var session;
-{var the_class = objj_allocateClassPair(CPWindowController, "SessionManager"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("authToken"), new objj_ivar("currentResponseHandler"), new objj_ivar("currentStatusCode"), new objj_ivar("currentData")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $SessionManager__init(self, _cmd)
+}p;6;main.jt;292;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;15;AppController.jt;206;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("AppController.j", YES);main = function(args, namedArgs)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("SessionManager").super_class }, "initWithWindow:", objj_msgSend(objj_msgSend(SessionWindow, "alloc"), "init"));
+    CPApplicationMain(args, namedArgs);
+}
+p;20;TextFieldWithLabel.jt;4772;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;4705;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "TextFieldWithLabel"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("textField"), new objj_ivar("label"), new objj_ivar("target"), new objj_ivar("validator"), new objj_ivar("textChangedSelector")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("target"), function $TextFieldWithLabel__target(self, _cmd)
+{
+    return self.target;
+}
+,["id"]), new objj_method(sel_getUid("setTarget:"), function $TextFieldWithLabel__setTarget_(self, _cmd, newValue)
+{
+    self.target = newValue;
+}
+,["void","id"]), new objj_method(sel_getUid("validator"), function $TextFieldWithLabel__validator(self, _cmd)
+{
+    return self.validator;
+}
+,["SEL"]), new objj_method(sel_getUid("setValidator:"), function $TextFieldWithLabel__setValidator_(self, _cmd, newValue)
+{
+    self.validator = newValue;
+}
+,["void","SEL"]), new objj_method(sel_getUid("textChangedSelector"), function $TextFieldWithLabel__textChangedSelector(self, _cmd)
+{
+    return self.textChangedSelector;
+}
+,["SEL"]), new objj_method(sel_getUid("setTextChangedSelector:"), function $TextFieldWithLabel__setTextChangedSelector_(self, _cmd, newValue)
+{
+    self.textChangedSelector = newValue;
+}
+,["void","SEL"]), new objj_method(sel_getUid("initWithLabel:andPlaceHolder:andWidth:"), function $TextFieldWithLabel__initWithLabel_andPlaceHolder_andWidth_(self, _cmd, aLabel, aPlaceholder, aWidth)
+{
+    return objj_msgSend(self, "initWithLabel:andPlaceHolder:andWidth:isSecure:", aLabel, aPlaceholder, aWidth, NO);
+}
+,["id","CPString","CPString","CPInteger"]), new objj_method(sel_getUid("initWithLabel:andPlaceHolder:andWidth:isSecure:"), function $TextFieldWithLabel__initWithLabel_andPlaceHolder_andWidth_isSecure_(self, _cmd, aLabel, aPlaceholder, aWidth, secure)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("TextFieldWithLabel").super_class }, "init");
     if (self)
     {
-        objj_msgSend(objj_msgSend(self, "window"), "setDelegate:", self);
-        self.authToken = "";
-        self.currentResponseHandler = sel_getUid("noResponseHandler:data:");
+        self.textField = objj_msgSend(CPTextField, "textFieldWithStringValue:placeholder:width:", "", aPlaceholder, aWidth - 125);
+        objj_msgSend(self.textField, "setDelegate:", self);
+        objj_msgSend(self.textField, "setSecure:", secure);
+        objj_msgSend(self.textField, "setFrameOrigin:", CGPointMake(125, 0));
+        objj_msgSend(self, "addSubview:", self.textField);
+        self.label = objj_msgSend(CPTextField, "labelWithTitle:", aLabel);
+        objj_msgSend(self.label, "setFrame:", CGRectMake(0, 0, 120, objj_msgSend(self.textField, "bounds").size.height));
+        objj_msgSend(self.label, "setVerticalAlignment:", CPCenterVerticalTextAlignment);
+        objj_msgSend(self.label, "setAlignment:", CPRightTextAlignment);
+        objj_msgSend(self, "addSubview:", self.label);
+        objj_msgSend(self, "setFrame:", CGRectMake(0, 0, aWidth, objj_msgSend(self.textField, "bounds").size.height));
     }
     return self;
 }
-,["id"]), new objj_method(sel_getUid("nullResponseHandler:forData:"), function $SessionManager__nullResponseHandler_forData_(self, _cmd, statusCode, data)
+,["id","CPString","CPString","CPInteger","BOOL"]), new objj_method(sel_getUid("controlTextDidChange:"), function $TextFieldWithLabel__controlTextDidChange_(self, _cmd, aTextField)
 {
-}
-,["void","int","CPString"]), new objj_method(sel_getUid("loginResponseHandler:forData:"), function $SessionManager__loginResponseHandler_forData_(self, _cmd, statusCode, data)
-{
-    if (statusCode == 200)
+    objj_msgSend(self, "validate");
+    if (objj_msgSend(self.target, "respondsToSelector:", self.textChangedSelector))
     {
-        self.authToken = data;
-        objj_msgSend(objj_msgSend(self, "window"), "close");
-    }
-    else
-    {
-        objj_msgSend(objj_msgSend(self, "window"), "setState:andResetFields:", objj_msgSend(SessionWindow, "loginState"), NO);
-        objj_msgSend(objj_msgSend(self, "window"), "setCustomError:", data);
-        objj_msgSend(objj_msgSend(self, "window"), "update");
+        objj_msgSend(self.target, "performSelector:withObject:", self.textChangedSelector, self.textField);
     }
 }
-,["void","int","CPString"]), new objj_method(sel_getUid("registerResponseHandler:forData:"), function $SessionManager__registerResponseHandler_forData_(self, _cmd, statusCode, data)
+,["void","CPTextField"]), new objj_method(sel_getUid("validate"), function $TextFieldWithLabel__validate(self, _cmd)
 {
-    if (statusCode == 200)
+    if (objj_msgSend(self.target, "respondsToSelector:", self.validator))
     {
-        objj_msgSend(objj_msgSend(self, "window"), "setState:", objj_msgSend(SessionWindow, "loginState"));
-        objj_msgSend(objj_msgSend(self, "window"), "setCustomMessage:", "You should receive an e-mail with an activation link. Go to that link and then you will be able to log in.");
-        objj_msgSend(objj_msgSend(self, "window"), "update");
+        var valid = objj_msgSend(self.target, "performSelector:withObject:", self.validator, objj_msgSend(self.textField, "stringValue"));
+        if (!valid)
+        {
+            objj_msgSend(self.textField, "setBackgroundColor:", objj_msgSend(CPColor, "redColor"));
+        }
+        else
+        {
+            objj_msgSend(self.textField, "setBackgroundColor:", objj_msgSend(CPColor, "clearColor"));
+        }
+        return valid;
     }
-    else
-    {
-        objj_msgSend(objj_msgSend(self, "window"), "setState:andResetFields:", objj_msgSend(SessionWindow, "registrationState"), NO);
-        objj_msgSend(objj_msgSend(self, "window"), "setCustomError:", data);
-        objj_msgSend(objj_msgSend(self, "window"), "update");
-    }
+    objj_msgSend(self.textField, "setBackgroundColor:", objj_msgSend(CPColor, "clearColor"));
+    return true;
 }
-,["void","int","CPString"]), new objj_method(sel_getUid("submitUsernameResponseHandler:forData:"), function $SessionManager__submitUsernameResponseHandler_forData_(self, _cmd, statusCode, data)
+,["BOOL"]), new objj_method(sel_getUid("controlTextDidEndEditing:"), function $TextFieldWithLabel__controlTextDidEndEditing_(self, _cmd, aTextField)
 {
-    if (statusCode == 200)
-    {
-        objj_msgSend(objj_msgSend(self, "window"), "setState:", objj_msgSend(SessionWindow, "loginState"));
-        objj_msgSend(objj_msgSend(self, "window"), "setCustomMessage:", "Your password has been changed. You may now log in with your new password");
-        objj_msgSend(objj_msgSend(self, "window"), "update");
-    }
-    else
-    {
-        objj_msgSend(objj_msgSend(self, "window"), "setState:andResetFields:", objj_msgSend(SessionWindow, "changePasswordState"), NO);
-        objj_msgSend(objj_msgSend(self, "window"), "setCustomError:", data);
-        objj_msgSend(objj_msgSend(self, "window"), "update");
-    }
 }
-,["void","int","CPString"]), new objj_method(sel_getUid("forgotPasswordResponseHandler:forData:"), function $SessionManager__forgotPasswordResponseHandler_forData_(self, _cmd, statusCode, data)
+,["void","CPTextField"]), new objj_method(sel_getUid("text"), function $TextFieldWithLabel__text(self, _cmd)
 {
-    if (statusCode == 200)
-    {
-        objj_msgSend(objj_msgSend(self, "window"), "setState:", objj_msgSend(SessionWindow, "loginState"));
-        objj_msgSend(objj_msgSend(self, "window"), "setCustomMessage:", "You should receive an e-mail containing instructions on how to change your password");
-        objj_msgSend(objj_msgSend(self, "window"), "update");
-    }
-    else
-    {
-        objj_msgSend(objj_msgSend(self, "window"), "setState:andResetFields:", objj_msgSend(SessionWindow, "forgotPasswordState"), NO);
-        objj_msgSend(objj_msgSend(self, "window"), "setCustomError:", data);
-        objj_msgSend(objj_msgSend(self, "window"), "update");
-    }
+    return objj_msgSend(self.textField, "stringValue");
 }
-,["void","int","CPString"]), new objj_method(sel_getUid("get:andNotify:"), function $SessionManager__get_andNotify_(self, _cmd, aUrl, delegate)
+,["CPString"]), new objj_method(sel_getUid("setText:"), function $TextFieldWithLabel__setText_(self, _cmd, aString)
 {
-    var url = objj_msgSend(CPURL, "URLWithString:", apiServerUrl + aUrl);
-    var request = objj_msgSend(CPURLRequest, "requestWithURL:", url);
-    objj_msgSend(request, "setHTTPMethod:", "GET");
-    objj_msgSend(request, "setValue:forHTTPHeaderField:", self.authToken, "Authentication-Token");
-    objj_msgSend(request, "setValue:forHTTPHeaderField:", "en", "Language");
-    var conn = objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", request, delegate);
+    objj_msgSend(self.textField, "setStringValue:", aString);
 }
-,["id","CPString","id"]), new objj_method(sel_getUid("post:withData:andNotify:"), function $SessionManager__post_withData_andNotify_(self, _cmd, aUrl, json, delegate)
-{
-    var url = objj_msgSend(CPURL, "URLWithString:", apiServerUrl + aUrl);
-    var request = objj_msgSend(CPURLRequest, "requestWithURL:", url);
-    objj_msgSend(request, "setHTTPMethod:", "POST");
-    objj_msgSend(request, "setHTTPBody:", JSON.stringify(json));
-    objj_msgSend(request, "setValue:forHTTPHeaderField:", self.authToken, "Authentication-Token");
-    objj_msgSend(request, "setValue:forHTTPHeaderField:", "en", "Language");
-    var conn = objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", request, delegate);
-}
-,["id","CPString","id","id"]), new objj_method(sel_getUid("put:withData:andNotify:"), function $SessionManager__put_withData_andNotify_(self, _cmd, aUrl, json, delegate)
-{
-    var url = objj_msgSend(CPURL, "URLWithString:", apiServerUrl + aUrl);
-    var request = objj_msgSend(CPURLRequest, "requestWithURL:", url);
-    objj_msgSend(request, "setHTTPMethod:", "PUT");
-    objj_msgSend(request, "setHTTPBody:", JSON.stringify(json));
-    objj_msgSend(request, "setValue:forHTTPHeaderField:", self.authToken, "Authentication-Token");
-    objj_msgSend(request, "setValue:forHTTPHeaderField:", "en", "Language");
-    var conn = objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", request, delegate);
-}
-,["id","CPString","id","id"]), new objj_method(sel_getUid("delete:andNotify:"), function $SessionManager__delete_andNotify_(self, _cmd, aUrl, delegate)
-{
-    var url = objj_msgSend(CPURL, "URLWithString:", apiServerUrl + aUrl);
-    var request = objj_msgSend(CPURLRequest, "requestWithURL:", url);
-    objj_msgSend(request, "setHTTPMethod:", "DELETE");
-    objj_msgSend(request, "setValue:forHTTPHeaderField:", self.authToken, "Authentication-Token");
-    objj_msgSend(request, "setValue:forHTTPHeaderField:", "en", "Language");
-    var conn = objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", request, delegate);
-}
-,["id","CPString","id"]), new objj_method(sel_getUid("loginWithUsername:andPassword:"), function $SessionManager__loginWithUsername_andPassword_(self, _cmd, aUsername, aPassword)
-{
-    CPLog("Login: %@ %@", aUsername, aPassword);
-    self.currentResponseHandler = sel_getUid("loginResponseHandler:forData:");
-    objj_msgSend(self, "post:withData:andNotify:", "/sessions", {username: aUsername, password: aPassword}, self);
-}
-,["void","CPString","CPString"]), new objj_method(sel_getUid("register:withPassword:andEmail:"), function $SessionManager__register_withPassword_andEmail_(self, _cmd, aUsername, aPassword, anEmail)
-{
-    CPLog("Register: %@ %@ %@", aUsername, aPassword, anEmail);
-    self.currentResponseHandler = sel_getUid("registerResponseHandler:forData:");
-    objj_msgSend(self, "post:withData:andNotify:", "/users", {username: aUsername, password: aPassword, email: anEmail}, self);
-}
-,["void","CPString","CPString","CPString"]), new objj_method(sel_getUid("changePassword:forUser:"), function $SessionManager__changePassword_forUser_(self, _cmd, aPassword, aUsername)
-{
-    CPLog("ChangePassword: %@ %@", aUsername, aPassword);
-    self.currentResponseHandler = sel_getUid("submitUsernameResponseHandler:forData:");
-    objj_msgSend(self, "put:withData:andNotify:", "/users/" + aUsername, {password: aPassword}, self);
-}
-,["void","CPString","CPString"]), new objj_method(sel_getUid("requestForgottenPasswordForUser:andEmail:"), function $SessionManager__requestForgottenPasswordForUser_andEmail_(self, _cmd, aUsername, anEmail)
-{
-    CPLog("ForgotPassword: %@ %@", aUsername, anEmail);
-    self.currentResponseHandler = sel_getUid("forgotPasswordResponseHandler:forData:");
-    objj_msgSend(self, "post:withData:andNotify:", "/users/" + aUsername + "/forgotPassword", {}, self);
-}
-,["void","CPString","CPString"]), new objj_method(sel_getUid("connection:didFailWithError:"), function $SessionManager__connection_didFailWithError_(self, _cmd, connection, error)
-{
-    CPLog("Error: %@", error);
-}
-,["void","CPURLConnection","id"]), new objj_method(sel_getUid("connection:didReceiveResponse:"), function $SessionManager__connection_didReceiveResponse_(self, _cmd, connection, response)
-{
-    self.currentStatusCode = objj_msgSend(response, "statusCode");
-}
-,["void","CPURLConnection","CPHTTPURLResponse"]), new objj_method(sel_getUid("connection:didReceiveData:"), function $SessionManager__connection_didReceiveData_(self, _cmd, connection, data)
-{
-    self.currentData = data;
-}
-,["void","CPURLConnection","CPString"]), new objj_method(sel_getUid("connectionDidFinishLoading:"), function $SessionManager__connectionDidFinishLoading_(self, _cmd, connection)
-{
-    objj_msgSend(self, "performSelector:withObject:withObject:", self.currentResponseHandler, self.currentStatusCode, self.currentData);
-}
-,["void","CPURLConnection"]), new objj_method(sel_getUid("connectionDidReceiveAuthenticationChallenge:"), function $SessionManager__connectionDidReceiveAuthenticationChallenge_(self, _cmd, connection)
-{
-    objj_msgSend(self, "showLoginWindow");
-    objj_msgSend(objj_msgSend(self, "window"), "setCustomMessage:", "You need to log in to do this");
-    objj_msgSend(objj_msgSend(self, "window"), "update");
-}
-,["void","id"]), new objj_method(sel_getUid("showLoginWindow"), function $SessionManager__showLoginWindow(self, _cmd)
-{
-    objj_msgSend(self, "showWindow:", self);
-    objj_msgSend(objj_msgSend(self, "window"), "setState:", objj_msgSend(SessionWindow, "loginState"));
-}
-,["void"]), new objj_method(sel_getUid("showChangePasswordWindow"), function $SessionManager__showChangePasswordWindow(self, _cmd)
-{
-    objj_msgSend(self, "showWindow:", self);
-    objj_msgSend(objj_msgSend(self, "window"), "setState:", objj_msgSend(SessionWindow, "changePasswordState"));
-}
-,["void"]), new objj_method(sel_getUid("loginButtonClicked:"), function $SessionManager__loginButtonClicked_(self, _cmd, sender)
-{
-    objj_msgSend(self, "loginWithUsername:andPassword:", objj_msgSend(objj_msgSend(self, "window"), "username"), objj_msgSend(objj_msgSend(self, "window"), "password"));
-    objj_msgSend(objj_msgSend(self, "window"), "setState:", objj_msgSend(SessionWindow, "waitingState"));
-}
-,["id","id"]), new objj_method(sel_getUid("registerButtonClicked:"), function $SessionManager__registerButtonClicked_(self, _cmd, sender)
-{
-    objj_msgSend(self, "register:withPassword:andEmail:", objj_msgSend(objj_msgSend(self, "window"), "username"), objj_msgSend(objj_msgSend(self, "window"), "password"), objj_msgSend(objj_msgSend(self, "window"), "email"));
-    objj_msgSend(objj_msgSend(self, "window"), "setState:", objj_msgSend(SessionWindow, "waitingState"));
-}
-,["id","id"]), new objj_method(sel_getUid("submitUsernameButtonClicked:"), function $SessionManager__submitUsernameButtonClicked_(self, _cmd, sender)
-{
-    objj_msgSend(self, "requestForgottenPasswordForUser:andEmail:", objj_msgSend(objj_msgSend(self, "window"), "username"), objj_msgSend(objj_msgSend(self, "window"), "email"));
-    objj_msgSend(objj_msgSend(self, "window"), "setState:", objj_msgSend(SessionWindow, "waitingState"));
-}
-,["id","id"]), new objj_method(sel_getUid("changePasswordButtonClicked:"), function $SessionManager__changePasswordButtonClicked_(self, _cmd, sender)
-{
-    objj_msgSend(self, "changePassword:forUser:", objj_msgSend(objj_msgSend(self, "window"), "password"), objj_msgSend(objj_msgSend(self, "window"), "username"));
-    objj_msgSend(objj_msgSend(self, "window"), "setState:", objj_msgSend(SessionWindow, "waitingState"));
-}
-,["id","id"])]);
-class_addMethods(meta_class, [new objj_method(sel_getUid("instance"), function $SessionManager__instance(self, _cmd)
-{
-    if (!session)
-    {
-        session = objj_msgSend(objj_msgSend(SessionManager, "alloc"), "init");
-        objj_msgSend(CPURLConnection, "setClassDelegate:", session);
-    }
-    return session;
-}
-,["SessionManager"])]);
+,["void","CPString"])]);
 }p;40;Frameworks/SCAuth/SCUserSessionManager.jt;9435;@STATIC;1.0;I;21;Foundation/CPObject.jI;28;Foundation/CPURLConnection.jI;33;Foundation/CPUserSessionManager.ji;40;LoginProviders/SCLoginDialogController.jt;9274;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPURLConnection.j", NO);objj_executeFile("Foundation/CPUserSessionManager.j", NO);objj_executeFile("LoginProviders/SCLoginDialogController.j", YES);var SCDefaultSessionManager = nil;
 {var the_class = objj_allocateClassPair(CPUserSessionManager, "SCUserSessionManager"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_loginDelegate"), new objj_ivar("_loginProvider"), new objj_ivar("_loginConnection"), new objj_ivar("_logoutConnection"), new objj_ivar("_sessionSyncConnection")]);objj_registerClassPair(the_class);
@@ -1040,6 +1150,34 @@ meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("sessionMana
 class_addMethods(the_class, [new objj_method(sel_getUid("setUp"), function $SCUserSessionManagerTest__setUp(self, _cmd)
 {
     self.sessionManager = objj_msgSend(SCUserSessionManager, "defaultManager");
+}
+,["void"])]);
+}p;47;Frameworks/SCAuth/Test/SCAccountValidatorTest.jt;2019;@STATIC;1.0;I;19;OJUnit/OJTestCase.ji;41;../AccountValidators/SCAccountValidator.jt;1930;objj_executeFile("OJUnit/OJTestCase.j", NO);objj_executeFile("../AccountValidators/SCAccountValidator.j", YES);{var the_class = objj_allocateClassPair(OJTestCase, "SCAccountValidatorTest"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("testThatUsernamesValidate"), function $SCAccountValidatorTest__testThatUsernamesValidate(self, _cmd)
+{
+    var isValid = objj_msgSend(SCAccountValidator, "validateUsername:", "test_username");
+    objj_msgSend(self, "assertTrue:", isValid);
+}
+,["void"]), new objj_method(sel_getUid("testThatBlankPasswordDoesNotValidate"), function $SCAccountValidatorTest__testThatBlankPasswordDoesNotValidate(self, _cmd)
+{
+    var errorMsg = objj_msgSend(SCAccountValidator, "validatePassword:withConfirmPassword:", "", "");
+    objj_msgSend(self, "assertFalse:", errorMsg === nil);
+}
+,["void"]), new objj_method(sel_getUid("testThatShortPasswordDoesNotValidate"), function $SCAccountValidatorTest__testThatShortPasswordDoesNotValidate(self, _cmd)
+{
+    var errorMsg = objj_msgSend(SCAccountValidator, "validatePassword:withConfirmPassword:", "abc", "abc");
+    objj_msgSend(self, "assertFalse:", errorMsg === nil);
+}
+,["void"]), new objj_method(sel_getUid("testThatMismatchedPasswordsDoNotValidate"), function $SCAccountValidatorTest__testThatMismatchedPasswordsDoNotValidate(self, _cmd)
+{
+    var errorMsg = objj_msgSend(SCAccountValidator, "validatePassword:withConfirmPassword:", "testpass", "testpasS");
+    objj_msgSend(self, "assertFalse:", errorMsg === nil);
+}
+,["void"]), new objj_method(sel_getUid("testThatValidPasswordValidates"), function $SCAccountValidatorTest__testThatValidPasswordValidates(self, _cmd)
+{
+    var errorMsg = objj_msgSend(SCAccountValidator, "validatePassword:withConfirmPassword:", "test_password080ABC", "test_password080ABC");
+    objj_msgSend(self, "assertTrue:", errorMsg === nil);
 }
 ,["void"])]);
 }p;52;Frameworks/SCAuth/Test/SCLoginDialogControllerTest.jt;17394;@STATIC;1.0;I;19;OJUnit/OJTestCase.ji;43;../LoginProviders/SCLoginDialogController.jI;13;OJMoq/OJMoq.jI;15;AppKit/AppKit.jt;17264;objj_executeFile("OJUnit/OJTestCase.j", NO);objj_executeFile("../LoginProviders/SCLoginDialogController.j", YES);objj_executeFile("OJMoq/OJMoq.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_msgSend_decorate(objj_backtrace_decorator);
@@ -1307,34 +1445,58 @@ class_addMethods(the_class, [new objj_method(sel_getUid("testEmailWithNoAtSign")
     objj_msgSend(self, "assertFalse:", objj_msgSend(SCEmailAccountValidator, "validateUsername:", "TeSt_E-mail3a389hus.hello@gmai998e-_l.neTt"));
 }
 ,["void"])]);
-}p;47;Frameworks/SCAuth/Test/SCAccountValidatorTest.jt;2019;@STATIC;1.0;I;19;OJUnit/OJTestCase.ji;41;../AccountValidators/SCAccountValidator.jt;1930;objj_executeFile("OJUnit/OJTestCase.j", NO);objj_executeFile("../AccountValidators/SCAccountValidator.j", YES);{var the_class = objj_allocateClassPair(OJTestCase, "SCAccountValidatorTest"),
+}p;61;Frameworks/SCAuth/AccountValidators/SCEmailAccountValidator.jt;605;@STATIC;1.0;I;21;Foundation/CPObject.ji;20;SCAccountValidator.jt;536;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("SCAccountValidator.j", YES);{var the_class = objj_allocateClassPair(SCAccountValidator, "SCEmailAccountValidator"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("testThatUsernamesValidate"), function $SCAccountValidatorTest__testThatUsernamesValidate(self, _cmd)
+class_addMethods(meta_class, [new objj_method(sel_getUid("validateUsername:"), function $SCEmailAccountValidator__validateUsername_(self, _cmd, username)
 {
-    var isValid = objj_msgSend(SCAccountValidator, "validateUsername:", "test_username");
-    objj_msgSend(self, "assertTrue:", isValid);
+    var reg = new RegExp("^[-a-zA-Z0-9+._]+@[-a-zA-Z0-9.]+\\.[a-zA-Z]{2,4}$");
+    return reg.test(username);
 }
-,["void"]), new objj_method(sel_getUid("testThatBlankPasswordDoesNotValidate"), function $SCAccountValidatorTest__testThatBlankPasswordDoesNotValidate(self, _cmd)
+,["BOOL","CPString"])]);
+}p;56;Frameworks/SCAuth/AccountValidators/SCAccountValidator.jt;966;@STATIC;1.0;I;21;Foundation/CPObject.jt;922;objj_executeFile("Foundation/CPObject.j", NO);{var the_class = objj_allocateClassPair(CPObject, "SCAccountValidator"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(meta_class, [new objj_method(sel_getUid("validateUsername:"), function $SCAccountValidator__validateUsername_(self, _cmd, username)
 {
-    var errorMsg = objj_msgSend(SCAccountValidator, "validatePassword:withConfirmPassword:", "", "");
-    objj_msgSend(self, "assertFalse:", errorMsg === nil);
+    return YES;
 }
-,["void"]), new objj_method(sel_getUid("testThatShortPasswordDoesNotValidate"), function $SCAccountValidatorTest__testThatShortPasswordDoesNotValidate(self, _cmd)
+,["BOOL","CPString"]), new objj_method(sel_getUid("validatePassword:withConfirmPassword:"), function $SCAccountValidator__validatePassword_withConfirmPassword_(self, _cmd, password, confirmPassword)
 {
-    var errorMsg = objj_msgSend(SCAccountValidator, "validatePassword:withConfirmPassword:", "abc", "abc");
-    objj_msgSend(self, "assertFalse:", errorMsg === nil);
+    var retVal = nil;
+    if (!password || password === "")
+        retVal = "Password can't be blank.";
+    else if (objj_msgSend(password, "length") < 10)
+        retVal = "Password must be at least 10 characters long.";
+    else if (password !== confirmPassword)
+        retVal = "Passwords don't match.";
+    return retVal;
 }
-,["void"]), new objj_method(sel_getUid("testThatMismatchedPasswordsDoNotValidate"), function $SCAccountValidatorTest__testThatMismatchedPasswordsDoNotValidate(self, _cmd)
+,["CPString","CPString","CPString"])]);
+}p;63;Frameworks/SCAuth/LoginProviders/SCEmailLoginDialogController.jt;2375;@STATIC;1.0;I;27;AppKit/CPWindowController.ji;46;../AccountValidators/SCEmailAccountValidator.ji;25;SCLoginDialogController.jt;2243;objj_executeFile("AppKit/CPWindowController.j", NO);objj_executeFile("../AccountValidators/SCEmailAccountValidator.j", YES);objj_executeFile("SCLoginDialogController.j", YES);var DefaultLoginDialogController = nil;
+{var the_class = objj_allocateClassPair(SCLoginDialogController, "SCEmailLoginDialogController"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("awakeFromCib"), function $SCEmailLoginDialogController__awakeFromCib(self, _cmd)
 {
-    var errorMsg = objj_msgSend(SCAccountValidator, "validatePassword:withConfirmPassword:", "testpass", "testpasS");
-    objj_msgSend(self, "assertFalse:", errorMsg === nil);
+    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("SCEmailLoginDialogController").super_class }, "awakeFromCib");
+    self._accountValidator = SCEmailAccountValidator;
+    objj_msgSend(self._userLabel, "setStringValue:", "E-mail:");
+    objj_msgSend(self._userLabel, "sizeToFit");
+    objj_msgSend(self._userLabel, "setFrameOrigin:", CGPointMake(objj_msgSend(self._userField, "frame").origin.x - 4.0 - objj_msgSend(self._userLabel, "frame").size.width, objj_msgSend(self._userField, "frame").origin.y + 4.0));
+    objj_msgSend(self._userCheckSpinner, "setFrameOrigin:", CGPointMake(objj_msgSend(self._userLabel, "frame").origin.x - objj_msgSend(self._userCheckSpinner, "frame").size.width - 3.0, objj_msgSend(self._userLabel, "frame").origin.y + 2.0));
 }
-,["void"]), new objj_method(sel_getUid("testThatValidPasswordValidates"), function $SCAccountValidatorTest__testThatValidPasswordValidates(self, _cmd)
+,["void"]), new objj_method(sel_getUid("_setErrorMessageText:"), function $SCEmailLoginDialogController___setErrorMessageText_(self, _cmd, anErrorMessage)
 {
-    var errorMsg = objj_msgSend(SCAccountValidator, "validatePassword:withConfirmPassword:", "test_password080ABC", "test_password080ABC");
-    objj_msgSend(self, "assertTrue:", errorMsg === nil);
+    anErrorMessage = objj_msgSend(anErrorMessage, "stringByReplacingOccurrencesOfString:withString:", "username", "e-mail address");
+    anErrorMessage = objj_msgSend(anErrorMessage, "stringByReplacingOccurrencesOfString:withString:", "Username", "E-mail address");
+    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("SCEmailLoginDialogController").super_class }, "_setErrorMessageText:", anErrorMessage);
 }
-,["void"])]);
+,["void","CPString"])]);
+class_addMethods(meta_class, [new objj_method(sel_getUid("defaultController"), function $SCEmailLoginDialogController__defaultController(self, _cmd)
+{
+    if (!DefaultLoginDialogController)
+        DefaultLoginDialogController = objj_msgSend(self, "newLoginDialogController");
+    return DefaultLoginDialogController;
+}
+,["SCLoginDialogController"])]);
 }p;58;Frameworks/SCAuth/LoginProviders/SCLoginDialogController.jt;38409;@STATIC;1.0;I;27;AppKit/CPWindowController.ji;41;../AccountValidators/SCAccountValidator.jt;38311;objj_executeFile("AppKit/CPWindowController.j", NO);objj_executeFile("../AccountValidators/SCAccountValidator.j", YES);var DefaultLoginDialogController = nil,
     DefaultLoginTitle = "Login/Register",
     LoginTitle = "Login",
@@ -1963,56 +2125,4 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("newLoginDialogControll
     return DefaultLoginDialogController;
 }
 ,["SCLoginDialogController"])]);
-}p;63;Frameworks/SCAuth/LoginProviders/SCEmailLoginDialogController.jt;2375;@STATIC;1.0;I;27;AppKit/CPWindowController.ji;46;../AccountValidators/SCEmailAccountValidator.ji;25;SCLoginDialogController.jt;2243;objj_executeFile("AppKit/CPWindowController.j", NO);objj_executeFile("../AccountValidators/SCEmailAccountValidator.j", YES);objj_executeFile("SCLoginDialogController.j", YES);var DefaultLoginDialogController = nil;
-{var the_class = objj_allocateClassPair(SCLoginDialogController, "SCEmailLoginDialogController"),
-meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("awakeFromCib"), function $SCEmailLoginDialogController__awakeFromCib(self, _cmd)
-{
-    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("SCEmailLoginDialogController").super_class }, "awakeFromCib");
-    self._accountValidator = SCEmailAccountValidator;
-    objj_msgSend(self._userLabel, "setStringValue:", "E-mail:");
-    objj_msgSend(self._userLabel, "sizeToFit");
-    objj_msgSend(self._userLabel, "setFrameOrigin:", CGPointMake(objj_msgSend(self._userField, "frame").origin.x - 4.0 - objj_msgSend(self._userLabel, "frame").size.width, objj_msgSend(self._userField, "frame").origin.y + 4.0));
-    objj_msgSend(self._userCheckSpinner, "setFrameOrigin:", CGPointMake(objj_msgSend(self._userLabel, "frame").origin.x - objj_msgSend(self._userCheckSpinner, "frame").size.width - 3.0, objj_msgSend(self._userLabel, "frame").origin.y + 2.0));
-}
-,["void"]), new objj_method(sel_getUid("_setErrorMessageText:"), function $SCEmailLoginDialogController___setErrorMessageText_(self, _cmd, anErrorMessage)
-{
-    anErrorMessage = objj_msgSend(anErrorMessage, "stringByReplacingOccurrencesOfString:withString:", "username", "e-mail address");
-    anErrorMessage = objj_msgSend(anErrorMessage, "stringByReplacingOccurrencesOfString:withString:", "Username", "E-mail address");
-    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("SCEmailLoginDialogController").super_class }, "_setErrorMessageText:", anErrorMessage);
-}
-,["void","CPString"])]);
-class_addMethods(meta_class, [new objj_method(sel_getUid("defaultController"), function $SCEmailLoginDialogController__defaultController(self, _cmd)
-{
-    if (!DefaultLoginDialogController)
-        DefaultLoginDialogController = objj_msgSend(self, "newLoginDialogController");
-    return DefaultLoginDialogController;
-}
-,["SCLoginDialogController"])]);
-}p;61;Frameworks/SCAuth/AccountValidators/SCEmailAccountValidator.jt;605;@STATIC;1.0;I;21;Foundation/CPObject.ji;20;SCAccountValidator.jt;536;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("SCAccountValidator.j", YES);{var the_class = objj_allocateClassPair(SCAccountValidator, "SCEmailAccountValidator"),
-meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(meta_class, [new objj_method(sel_getUid("validateUsername:"), function $SCEmailAccountValidator__validateUsername_(self, _cmd, username)
-{
-    var reg = new RegExp("^[-a-zA-Z0-9+._]+@[-a-zA-Z0-9.]+\\.[a-zA-Z]{2,4}$");
-    return reg.test(username);
-}
-,["BOOL","CPString"])]);
-}p;56;Frameworks/SCAuth/AccountValidators/SCAccountValidator.jt;966;@STATIC;1.0;I;21;Foundation/CPObject.jt;922;objj_executeFile("Foundation/CPObject.j", NO);{var the_class = objj_allocateClassPair(CPObject, "SCAccountValidator"),
-meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(meta_class, [new objj_method(sel_getUid("validateUsername:"), function $SCAccountValidator__validateUsername_(self, _cmd, username)
-{
-    return YES;
-}
-,["BOOL","CPString"]), new objj_method(sel_getUid("validatePassword:withConfirmPassword:"), function $SCAccountValidator__validatePassword_withConfirmPassword_(self, _cmd, password, confirmPassword)
-{
-    var retVal = nil;
-    if (!password || password === "")
-        retVal = "Password can't be blank.";
-    else if (objj_msgSend(password, "length") < 10)
-        retVal = "Password must be at least 10 characters long.";
-    else if (password !== confirmPassword)
-        retVal = "Passwords don't match.";
-    return retVal;
-}
-,["CPString","CPString","CPString"])]);
 }e;
