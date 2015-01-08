@@ -1,11 +1,4 @@
-@STATIC;1.0;p;15;AppController.jt;4741;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;SessionManager.ji;19;GithubLoginWindow.jt;4629;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("SessionManager.j", YES);objj_executeFile("GithubLoginWindow.j", YES);{var the_class = objj_allocateClassPair(CPObject, "HashFragment"),
-meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(meta_class, [new objj_method(sel_getUid("fragment"), function $HashFragment__fragment(self, _cmd)
-{
-    return window.location.hash;
-}
-,["CPString"])]);
-}{var the_class = objj_allocateClassPair(CPObject, "AppController"),
+@STATIC;1.0;p;15;AppController.jt;5275;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;SessionManager.ji;20;Utils/HashFragment.jt;5162;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("SessionManager.j", YES);objj_executeFile("Utils/HashFragment.j", YES);{var the_class = objj_allocateClassPair(CPObject, "AppController"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("mainMenu"), new objj_ivar("contentView")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLaunching:"), function $AppController__applicationDidFinishLaunching_(self, _cmd, aNotification)
 {
@@ -16,7 +9,11 @@ class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLau
     objj_msgSend(CPMenu, "setMenuBarVisible:", YES);
     objj_msgSend(self, "refreshMenu");
     objj_msgSend(self, "setDesktop");
-    CPLog("hash: " + objj_msgSend(HashFragment, "fragment"));
+    objj_msgSend(self, "performHash");
+    var button = objj_msgSend(CPButton, "buttonWithTitle:", "test");
+    objj_msgSend(button, "setTarget:", self);
+    objj_msgSend(button, "setAction:", sel_getUid("test:"));
+    objj_msgSend(self.contentView, "addSubview:", button);
     var ghlogin = objj_msgSend(CPButton, "buttonWithTitle:", "ghlogin");
     objj_msgSend(ghlogin, "setFrameOrigin:", CGPointMake(0, 80));
     objj_msgSend(ghlogin, "setTarget:", self);
@@ -33,10 +30,13 @@ class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLau
     objj_msgSend(ds, "setAction:", sel_getUid("ds:"));
     objj_msgSend(self.contentView, "addSubview:", ds);
 }
-,["void","CPNotification"]), new objj_method(sel_getUid("ghlogin:"), function $AppController__ghlogin_(self, _cmd, sender)
+,["void","CPNotification"]), new objj_method(sel_getUid("test:"), function $AppController__test_(self, _cmd, sender)
 {
-    var loginWindow = objj_msgSend(objj_msgSend(GithubLoginWindow, "alloc"), "init");
-    objj_msgSend(loginWindow, "orderFront:", self);
+    objj_msgSend(objj_msgSend(SessionManager, "instance"), "get:andNotify:", "/admin/usercount", self);
+}
+,["id","id"]), new objj_method(sel_getUid("ghlogin:"), function $AppController__ghlogin_(self, _cmd, sender)
+{
+    objj_msgSend(objj_msgSend(SessionManager, "instance"), "loginWithGithub");
 }
 ,["id","id"]), new objj_method(sel_getUid("changepass:"), function $AppController__changepass_(self, _cmd, sender)
 {
@@ -46,7 +46,19 @@ class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLau
 {
     objj_msgSend(objj_msgSend(SessionManager, "instance"), "get:andNotify:", "/", self);
 }
-,["id","id"]), new objj_method(sel_getUid("setDesktop"), function $AppController__setDesktop(self, _cmd)
+,["id","id"]), new objj_method(sel_getUid("performHash"), function $AppController__performHash(self, _cmd)
+{
+    var hash = objj_msgSend(HashFragment, "fragmentAsObject");
+    if (hash.validate)
+    {
+        objj_msgSend(objj_msgSend(SessionManager, "instance"), "validateUser:withToken:", hash.validateUsername, hash.validate);
+    }
+    if (hash.forgotPassword)
+    {
+        objj_msgSend(objj_msgSend(SessionManager, "instance"), "showChangePasswordWindow");
+    }
+}
+,["void"]), new objj_method(sel_getUid("setDesktop"), function $AppController__setDesktop(self, _cmd)
 {
     var bundle = objj_msgSend(CPBundle, "mainBundle");
     var file = objj_msgSend(bundle, "pathForResource:", "Images/bunnylabs.png");
@@ -165,7 +177,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("target"), function $Tex
     objj_msgSend(self.textField, "setStringValue:", aString);
 }
 ,["void","CPString"])]);
-}p;15;SessionWindow.jt;33949;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;20;TextFieldWithLabel.jt;33856;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("TextFieldWithLabel.j", YES);var LOGIN_STATE = 1;
+}p;15;SessionWindow.jt;34000;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;20;TextFieldWithLabel.jt;33907;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("TextFieldWithLabel.j", YES);var LOGIN_STATE = 1;
 var REGISTRATION_STATE = 2;
 var FORGOTPASSWORD_STATE = 3;
 var CHANGEPASSWORD_STATE = 4;
@@ -456,10 +468,10 @@ class_addMethods(the_class, [new objj_method(sel_getUid("customMessage"), functi
         break;
     case FORGOTPASSWORD_STATE:
         self.message = "Forgot your password? Fear not. Enter your username and e-mail here and a reset password link will be sent to your e-mail";
-        objj_msgSend(self.usernameField, "setValidator:", nil);
+        objj_msgSend(self.usernameField, "setValidator:", sel_getUid("usernameIsValid:"));
         objj_msgSend(self.passwordField, "setValidator:", nil);
         objj_msgSend(self.passwordConfirmField, "setValidator:", nil);
-        objj_msgSend(self.emailField, "setValidator:", nil);
+        objj_msgSend(self.emailField, "setValidator:", sel_getUid("emailIsValid:"));
         break;
     case CHANGEPASSWORD_STATE:
         self.message = "Change your password to something memorable and long..\n" + objj_msgSend(self, "_getPasswordRules");
@@ -731,8 +743,15 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $Sessi
     return self;
 }
 ,["id"])]);
-}p;16;SessionManager.jt;15625;@STATIC;1.0;I;23;Foundation/Foundation.ji;15;SessionWindow.ji;17;SessionMenuItem.jt;15535;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("SessionWindow.j", YES);objj_executeFile("SessionMenuItem.j", YES);var apiServerUrl = "https://bunnylabs-api.astrobunny.net";
+}p;16;SessionManager.jt;18724;@STATIC;1.0;I;23;Foundation/Foundation.ji;15;SessionWindow.ji;17;SessionMenuItem.ji;20;Utils/HashFragment.ji;22;Utils/URLQueryString.jt;18582;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("SessionWindow.j", YES);objj_executeFile("SessionMenuItem.j", YES);objj_executeFile("Utils/HashFragment.j", YES);objj_executeFile("Utils/URLQueryString.j", YES);var GITHUB_CLIENT_ID = "";
+var apiServerUrl = "https://bunnylabs-api.astrobunny.net";
 var session;
+popupwindow = function(url, title, w, h)
+{
+    var left = screen.width / 2 - w / 2;
+    var top = screen.height / 2 - h / 2;
+    return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+}
 {var the_class = objj_allocateClassPair(CPWindowController, "SessionManager"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("authToken"), new objj_ivar("currentResponseHandler"), new objj_ivar("currentStatusCode"), new objj_ivar("currentData"), new objj_ivar("statusMenuItem")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $SessionManager__init(self, _cmd)
@@ -746,10 +765,41 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $Sessi
         self.statusMenuItem = objj_msgSend(objj_msgSend(SessionMenuItem, "alloc"), "init");
         objj_msgSend(self.statusMenuItem, "setTarget:", self);
         objj_msgSend(self, "getUserData");
+        window.addEventListener('message', function(event)
+        {
+            try            {
+                var obj = objj_msgSend(URLQueryString, "deserialize:", event.data);
+                objj_msgSend(self, "handleSessionManagerMessage:", obj);
+            }
+            catch(e)             {
+                CPLog("Received bad message");
+            }        });
     }
     return self;
 }
-,["id"]), new objj_method(sel_getUid("menuItemClicked:"), function $SessionManager__menuItemClicked_(self, _cmd, sender)
+,["id"]), new objj_method(sel_getUid("handleSessionManagerMessage:"), function $SessionManager__handleSessionManagerMessage_(self, _cmd, anObject)
+{
+    console.log(anObject);
+    if (anObject.type === "githubLogin")
+    {
+        if (anObject.authToken)
+        {
+            self.authToken = anObject.authToken;
+            objj_msgSend(self, "getUserData");
+        }
+        else if (anObject.error)
+        {
+            objj_msgSend(self, "showLoginWindow");
+            objj_msgSend(objj_msgSend(self, "window"), "setCustomError:", objj_msgSend(CPString, "stringWithFormat:", "Unable to login using Github. Reason: %@", anObject.error));
+            objj_msgSend(objj_msgSend(self, "window"), "update");
+        }
+        else
+        {
+            console.log("wtf");
+        }
+    }
+}
+,["void","id"]), new objj_method(sel_getUid("menuItemClicked:"), function $SessionManager__menuItemClicked_(self, _cmd, sender)
 {
     objj_msgSend(self, "showLoginWindow");
     return sender;
@@ -781,6 +831,20 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $Sessi
         objj_msgSend(objj_msgSend(self, "window"), "setState:andResetFields:", objj_msgSend(SessionWindow, "loginState"), NO);
         objj_msgSend(objj_msgSend(self, "window"), "setCustomError:", data);
         objj_msgSend(objj_msgSend(self, "window"), "update");
+    }
+}
+,["void","int","CPString"]), new objj_method(sel_getUid("validationResponseHandler:forData:"), function $SessionManager__validationResponseHandler_forData_(self, _cmd, statusCode, data)
+{
+    if (statusCode == 200)
+    {
+        var alert = objj_msgSend(CPAlert, "alertWithError:", objj_msgSend(CPString, "stringWithFormat:", "Your account is now validated. You may log in now."));
+        objj_msgSend(alert, "setAlertStyle:", CPInformationalAlertStyle);
+        objj_msgSend(alert, "runModal");
+    }
+    else
+    {
+        var alert = objj_msgSend(CPAlert, "alertWithError:", objj_msgSend(CPString, "stringWithFormat:", "Something went wrong. Maybe you already validated."));
+        objj_msgSend(alert, "runModal");
     }
 }
 ,["void","int","CPString"]), new objj_method(sel_getUid("loginResponseHandler:forData:"), function $SessionManager__loginResponseHandler_forData_(self, _cmd, statusCode, data)
@@ -844,42 +908,40 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $Sessi
         objj_msgSend(objj_msgSend(self, "window"), "update");
     }
 }
-,["void","int","CPString"]), new objj_method(sel_getUid("get:andNotify:"), function $SessionManager__get_andNotify_(self, _cmd, aUrl, delegate)
+,["void","int","CPString"]), new objj_method(sel_getUid("_buildUrl:"), function $SessionManager___buildUrl_(self, _cmd, apiPath)
 {
-    var url = objj_msgSend(CPURL, "URLWithString:", apiServerUrl + aUrl);
+    var query = {auth: self.authToken, lang: "en"};
+    var url = objj_msgSend(CPURL, "URLWithString:", objj_msgSend(CPString, "stringWithFormat:", "%@%@?%@", apiServerUrl, apiPath, objj_msgSend(URLQueryString, "serialize:", query)));
+    return url;
+}
+,["CPURL","CPString"]), new objj_method(sel_getUid("get:andNotify:"), function $SessionManager__get_andNotify_(self, _cmd, aUrl, delegate)
+{
+    var url = objj_msgSend(self, "_buildUrl:", aUrl);
     var request = objj_msgSend(CPURLRequest, "requestWithURL:", url);
     objj_msgSend(request, "setHTTPMethod:", "GET");
-    objj_msgSend(request, "setValue:forHTTPHeaderField:", self.authToken, "Authentication-Token");
-    objj_msgSend(request, "setValue:forHTTPHeaderField:", "en", "Language");
     var conn = objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", request, delegate);
 }
 ,["id","CPString","id"]), new objj_method(sel_getUid("post:withData:andNotify:"), function $SessionManager__post_withData_andNotify_(self, _cmd, aUrl, json, delegate)
 {
-    var url = objj_msgSend(CPURL, "URLWithString:", apiServerUrl + aUrl);
+    var url = objj_msgSend(self, "_buildUrl:", aUrl);
     var request = objj_msgSend(CPURLRequest, "requestWithURL:", url);
     objj_msgSend(request, "setHTTPMethod:", "POST");
     objj_msgSend(request, "setHTTPBody:", JSON.stringify(json));
-    objj_msgSend(request, "setValue:forHTTPHeaderField:", self.authToken, "Authentication-Token");
-    objj_msgSend(request, "setValue:forHTTPHeaderField:", "en", "Language");
     var conn = objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", request, delegate);
 }
 ,["id","CPString","id","id"]), new objj_method(sel_getUid("put:withData:andNotify:"), function $SessionManager__put_withData_andNotify_(self, _cmd, aUrl, json, delegate)
 {
-    var url = objj_msgSend(CPURL, "URLWithString:", apiServerUrl + aUrl);
+    var url = objj_msgSend(self, "_buildUrl:", aUrl);
     var request = objj_msgSend(CPURLRequest, "requestWithURL:", url);
     objj_msgSend(request, "setHTTPMethod:", "PUT");
     objj_msgSend(request, "setHTTPBody:", JSON.stringify(json));
-    objj_msgSend(request, "setValue:forHTTPHeaderField:", self.authToken, "Authentication-Token");
-    objj_msgSend(request, "setValue:forHTTPHeaderField:", "en", "Language");
     var conn = objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", request, delegate);
 }
 ,["id","CPString","id","id"]), new objj_method(sel_getUid("delete:andNotify:"), function $SessionManager__delete_andNotify_(self, _cmd, aUrl, delegate)
 {
-    var url = objj_msgSend(CPURL, "URLWithString:", apiServerUrl + aUrl);
+    var url = objj_msgSend(self, "_buildUrl:", aUrl);
     var request = objj_msgSend(CPURLRequest, "requestWithURL:", url);
     objj_msgSend(request, "setHTTPMethod:", "DELETE");
-    objj_msgSend(request, "setValue:forHTTPHeaderField:", self.authToken, "Authentication-Token");
-    objj_msgSend(request, "setValue:forHTTPHeaderField:", "en", "Language");
     var conn = objj_msgSend(CPURLConnection, "connectionWithRequest:delegate:", request, delegate);
 }
 ,["id","CPString","id"]), new objj_method(sel_getUid("loginWithUsername:andPassword:"), function $SessionManager__loginWithUsername_andPassword_(self, _cmd, aUsername, aPassword)
@@ -896,15 +958,22 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $Sessi
 }
 ,["void","CPString","CPString","CPString"]), new objj_method(sel_getUid("changePassword:forUser:"), function $SessionManager__changePassword_forUser_(self, _cmd, aPassword, aUsername)
 {
-    CPLog("ChangePassword: %@ %@", aUsername, aPassword);
+    var hash = objj_msgSend(HashFragment, "fragmentAsObject");
+    CPLog("ChangePassword: %@ %@ %@", hash.validateUsername, aPassword, hash.forgotPassword);
     self.currentResponseHandler = sel_getUid("submitUsernameResponseHandler:forData:");
-    objj_msgSend(self, "put:withData:andNotify:", "/users/" + aUsername, {password: aPassword}, self);
+    objj_msgSend(self, "post:withData:andNotify:", "/users/" + hash.validateUsername + "/password", {name: hash.validateUsername, password: aPassword, validationToken: hash.forgotPassword}, self);
 }
 ,["void","CPString","CPString"]), new objj_method(sel_getUid("requestForgottenPasswordForUser:andEmail:"), function $SessionManager__requestForgottenPasswordForUser_andEmail_(self, _cmd, aUsername, anEmail)
 {
     CPLog("ForgotPassword: %@ %@", aUsername, anEmail);
     self.currentResponseHandler = sel_getUid("forgotPasswordResponseHandler:forData:");
-    objj_msgSend(self, "post:withData:andNotify:", "/users/" + aUsername + "/forgotPassword", {}, self);
+    objj_msgSend(self, "post:withData:andNotify:", "/users/" + aUsername + "/forgotPassword", {name: aUsername, email: anEmail}, self);
+}
+,["void","CPString","CPString"]), new objj_method(sel_getUid("validateUser:withToken:"), function $SessionManager__validateUser_withToken_(self, _cmd, aUsername, aToken)
+{
+    CPLog("Validating User: %@ %@", aUsername, aToken);
+    self.currentResponseHandler = sel_getUid("validationResponseHandler:forData:");
+    objj_msgSend(self, "post:withData:andNotify:", "/users/" + aUsername + "/validation", {name: aUsername, validationToken: aToken}, self);
 }
 ,["void","CPString","CPString"]), new objj_method(sel_getUid("logout"), function $SessionManager__logout(self, _cmd)
 {
@@ -938,7 +1007,13 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $Sessi
     objj_msgSend(objj_msgSend(self, "window"), "setCustomMessage:", "You need to log in to do this");
     objj_msgSend(objj_msgSend(self, "window"), "update");
 }
-,["void","id"]), new objj_method(sel_getUid("showLoginWindow"), function $SessionManager__showLoginWindow(self, _cmd)
+,["void","id"]), new objj_method(sel_getUid("loginWithGithub"), function $SessionManager__loginWithGithub(self, _cmd)
+{
+    var queryString = objj_msgSend(URLQueryString, "serialize:", {client_id: GITHUB_CLIENT_ID, scope: "gist,user:email"});
+    var request = objj_msgSend(CPString, "stringWithFormat:", "https://github.com/login/oauth/authorize?%@", queryString);
+    popupwindow(request, "asd", 1024, 768);
+}
+,["void"]), new objj_method(sel_getUid("showLoginWindow"), function $SessionManager__showLoginWindow(self, _cmd)
 {
     if (self.authToken.length == 0)
     {
@@ -996,35 +1071,6 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("instance"), function $
     return session;
 }
 ,["SessionManager"])]);
-}p;19;GithubLoginWindow.jt;1828;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;22;Utils/URLQueryString.jt;1734;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("Utils/URLQueryString.j", YES);var GITHUB_CLIENT_ID = "";
-popupwindow = function(url, title, w, h)
-{
-    var left = screen.width / 2 - w / 2;
-    var top = screen.height / 2 - h / 2;
-    return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
-}
-{var the_class = objj_allocateClassPair(CPWindow, "GithubLoginWindow"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("contentView"), new objj_ivar("webView")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $GithubLoginWindow__init(self, _cmd)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("GithubLoginWindow").super_class }, "init");
-    if (self)
-    {
-        self.contentView = objj_msgSend(self, "contentView");
-        objj_msgSend(self, "setFrame:", CGRectMake(0, 0, 300, 300));
-        objj_msgSend(self, "center");
-        objj_msgSend(self, "setFrameOrigin:", CGPointMake(objj_msgSend(self, "frame").origin.x, objj_msgSend(self, "frame").origin.y - 50));
-        var queryString = objj_msgSend(URLQueryString, "serialize:", {client_id: GITHUB_CLIENT_ID, scope: "gist,user:email"});
-        var request = objj_msgSend(CPString, "stringWithFormat:", "https://github.com/login/oauth/authorize?%@", queryString);
-        popupwindow(request, "asd", 1024, 768);
-        window.addEventListener('message', function(event)
-        {
-            console.log(event);
-        });
-    }
-    return self;
-}
-,["id"])]);
 }p;22;Utils/URLQueryString.jt;1640;@STATIC;1.0;I;23;Foundation/Foundation.jt;1593;objj_executeFile("Foundation/Foundation.j", NO);{var the_class = objj_allocateClassPair(CPObject, "URLQueryString"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
 class_addMethods(meta_class, [new objj_method(sel_getUid("deserialize:"), function $URLQueryString__deserialize_(self, _cmd, str)
@@ -1076,6 +1122,17 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("deserialize:"), functi
     })).join('&') : '';
 }
 ,["CPString","id"])]);
+}p;20;Utils/HashFragment.jt;664;@STATIC;1.0;I;23;Foundation/Foundation.ji;16;URLQueryString.jt;597;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("URLQueryString.j", YES);{var the_class = objj_allocateClassPair(CPObject, "HashFragment"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(meta_class, [new objj_method(sel_getUid("fragment"), function $HashFragment__fragment(self, _cmd)
+{
+    return window.location.hash;
+}
+,["CPString"]), new objj_method(sel_getUid("fragmentAsObject"), function $HashFragment__fragmentAsObject(self, _cmd)
+{
+    return objj_msgSend(URLQueryString, "deserialize:", window.location.hash.substring(1));
+}
+,["id"])]);
 }p;40;Frameworks/SCAuth/SCUserSessionManager.jt;9435;@STATIC;1.0;I;21;Foundation/CPObject.jI;28;Foundation/CPURLConnection.jI;33;Foundation/CPUserSessionManager.ji;40;LoginProviders/SCLoginDialogController.jt;9274;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPURLConnection.j", NO);objj_executeFile("Foundation/CPUserSessionManager.j", NO);objj_executeFile("LoginProviders/SCLoginDialogController.j", YES);var SCDefaultSessionManager = nil;
 {var the_class = objj_allocateClassPair(CPUserSessionManager, "SCUserSessionManager"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_loginDelegate"), new objj_ivar("_loginProvider"), new objj_ivar("_loginConnection"), new objj_ivar("_logoutConnection"), new objj_ivar("_sessionSyncConnection")]);objj_registerClassPair(the_class);
