@@ -4,7 +4,7 @@
  index.html
  BunnyLabs
 
- Created by David Siaw on Fri Jan  9 08:13:34 2015.
+ Created by David Siaw on Sat Jan 10 00:11:45 2015.
  Copyright 2014, BunnyLabs All rights reserved.
 -->
     <head>
@@ -30,7 +30,34 @@
         <!-- Custom javascript goes here -->
         <!-- End custom javascript -->
 
+        <script type="text/javascript" src="/en/Resources/scream.min.js"></script>
+
         <script type="text/javascript">
+
+            var scream = gajus.Scream({
+                width: {
+                    portrait: screen.width,
+                    landscape: screen.height
+                }
+            });
+
+            function updateViewPort()
+            {
+                var cappBody = document.getElementById("cappuccino-body");
+                if (scream.isMinimalView() || scream.getOrientation() == "portrait")
+                {
+                    cappBody.style.top = "0px";
+                }
+                else
+                {
+                    cappBody.style.top = "45px";
+                }
+
+            }
+
+            scream.on('orientationchangeend', updateViewPort);
+            scream.on('viewchange', updateViewPort);
+
             OBJJ_MAIN_FILE = "/en/main.j";
 
             var progressBar = null;
@@ -67,13 +94,14 @@
             #cappuccino-body {
                 /* Position it absolutely so it will fill the height without content */
                 position: absolute;
-                top: 0;
-                bottom: 0;
+                top: 0px;
+                bottom: 0px;
                 width: 100%;
 
                 /* Put it at the bottom of the stack so it doesn't interfere with UI */
                 z-index: -1000;
             }
+
 
             #cappuccino-body .container {
                 display: table;
