@@ -41,27 +41,61 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("instance"), function $
     return instance;
 }
 ,["AdminManager"])]);
-}p;11;AdminView.jt;1488;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;1421;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "AdminView"),
-meta_class = the_class.isa;objj_registerClassPair(the_class);
+}p;11;AdminView.jt;3748;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;3681;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "AdminView"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("menuData"), new objj_ivar("scrollTableView"), new objj_ivar("anotherView")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $AdminView__init(self, _cmd)
 {
     self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("AdminView").super_class }, "initWithFrame:", CGRectMake(0, 0, 500, 500));
     if (self)
     {
         var splitView = objj_msgSend(objj_msgSend(CPSplitView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 500, 500));
+        objj_msgSend(splitView, "setDelegate:", self);
         objj_msgSend(splitView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
         objj_msgSend(self, "addSubview:", splitView);
+        self.menuData = [{name: "Users"}, {name: "Sessions"}];
         var menuTableView = objj_msgSend(objj_msgSend(CPTableView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 150, 500));
-        var anotherView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 350, 500));
-        objj_msgSend(anotherView, "setBackgroundColor:", objj_msgSend(CPColor, "redColor"));
-        objj_msgSend(splitView, "addSubview:", menuTableView);
-        objj_msgSend(splitView, "addSubview:", anotherView);
-        objj_msgSend(splitView, "setPosition:ofDividerAtIndex:", 150, 0);
+        objj_msgSend(menuTableView, "setDataSource:", self);
+        objj_msgSend(menuTableView, "setHeaderView:", nil);
+        objj_msgSend(menuTableView, "addTableColumn:", objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "menuitems"));
+        self.scrollTableView = objj_msgSend(objj_msgSend(CPScrollView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 150, 500));
+        objj_msgSend(self.scrollTableView, "setDocumentView:", menuTableView);
+        objj_msgSend(splitView, "addSubview:", self.scrollTableView);
+        self.anotherView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 350, 500));
+        objj_msgSend(self.anotherView, "setBackgroundColor:", objj_msgSend(CPColor, "redColor"));
+        objj_msgSend(splitView, "addSubview:", self.anotherView);
         objj_msgSend(self, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
     }
     return self;
 }
-,["id"])]);
+,["id"]), new objj_method(sel_getUid("numberOfRowsInTableView:"), function $AdminView__numberOfRowsInTableView_(self, _cmd, aTableView)
+{
+    return self.menuData.length;
+}
+,["int","CPTableView"]), new objj_method(sel_getUid("tableView:objectValueForTableColumn:row:"), function $AdminView__tableView_objectValueForTableColumn_row_(self, _cmd, aTableView, aColumn, aRowIndex)
+{
+    return self.menuData[aRowIndex].name;
+}
+,["id","CPTableView","CPTableColumn","int"]), new objj_method(sel_getUid("splitView:constrainSplitPosition:ofSubviewAt:"), function $AdminView__splitView_constrainSplitPosition_ofSubviewAt_(self, _cmd, aSpiltView, proposedPosition, subviewIndex)
+{
+    if (subviewIndex === 0)
+    {
+        return 150;
+    }
+    return proposedPosition;
+}
+,["float","CPSplitView","float","int"]), new objj_method(sel_getUid("splitView:resizeSubviewsWithOldSize:"), function $AdminView__splitView_resizeSubviewsWithOldSize_(self, _cmd, aSplitView, oldSize)
+{
+    var splitViewSize = objj_msgSend(aSplitView, "frame").size;
+    var leftSize = objj_msgSend(aSplitView, "frame").size;
+    leftSize.width = 150;
+    objj_msgSend(self.scrollTableView, "setFrameSize:", leftSize);
+    objj_msgSend(self.anotherView, "setFrame:", CGRectMake(150 + objj_msgSend(aSplitView, "dividerThickness"), 0, splitViewSize.width - objj_msgSend(aSplitView, "dividerThickness") - 150, splitViewSize.height));
+}
+,["void","CPSplitView","CGSize"]), new objj_method(sel_getUid("splitViewDidResizeSubviews:"), function $AdminView__splitViewDidResizeSubviews_(self, _cmd, aNotification)
+{
+    CPLog("resize");
+}
+,["void","CPNotification"])]);
 }p;21;AdminViewController.jt;879;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;11;AdminView.jt;797;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("AdminView.j", YES);{var the_class = objj_allocateClassPair(CPViewController, "AdminViewController"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $AdminViewController__init(self, _cmd)
