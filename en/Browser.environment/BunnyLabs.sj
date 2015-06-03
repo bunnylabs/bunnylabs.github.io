@@ -1,4 +1,274 @@
-@STATIC;1.0;p;20;ApplicationManager.jt;2867;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;SessionManager.ji;27;ApplicationViewController.ji;13;MenuManager.jt;2729;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("SessionManager.j", YES);objj_executeFile("ApplicationViewController.j", YES);objj_executeFile("MenuManager.j", YES);var instance;
+@STATIC;1.0;p;14;AdminManager.jt;2761;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;SessionManager.ji;21;AdminViewController.ji;13;MenuManager.jt;2629;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("SessionManager.j", YES);objj_executeFile("AdminViewController.j", YES);objj_executeFile("MenuManager.j", YES);var instance;
+{var the_class = objj_allocateClassPair(CPObject, "AdminManager"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("controller"), new objj_ivar("adminItem")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $AdminManager__init(self, _cmd)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("AdminManager").super_class }, "init");
+    if (self)
+    {
+        self.controller = objj_msgSend(objj_msgSend(AdminViewController, "alloc"), "init");
+        objj_msgSend(objj_msgSend(CPNotificationCenter, "defaultCenter"), "addObserver:selector:name:object:", self, sel_getUid("loginStateChanged"), NOTIFICATION_LOGIN_DATA_UPDATED, nil);
+        self.adminItem = objj_msgSend(objj_msgSend(CPMenuItem, "alloc"), "initWithTitle:action:keyEquivalent:", "Admin", sel_getUid("menuItemClicked:"), nil);
+        objj_msgSend(self.adminItem, "setTarget:", self);
+    }
+    return self;
+}
+,["id"]), new objj_method(sel_getUid("menuItemClicked:"), function $AdminManager__menuItemClicked_(self, _cmd, sender)
+{
+    if (objj_msgSend(objj_msgSend(DesktopManager, "instance"), "topViewController") !== self.controller)
+    {
+        objj_msgSend(objj_msgSend(DesktopManager, "instance"), "pushTopViewController:", self.controller);
+    }
+    else
+    {
+        objj_msgSend(objj_msgSend(DesktopManager, "instance"), "removeViewController:", self.controller);
+    }
+    return sender;
+}
+,["id","id"]), new objj_method(sel_getUid("loginStateChanged"), function $AdminManager__loginStateChanged(self, _cmd)
+{
+    objj_msgSend(objj_msgSend(objj_msgSend(MenuManager, "instance"), "leftStack"), "removeObject:", self.adminItem);
+    if (objj_msgSend(objj_msgSend(SessionManager, "instance"), "isAdmin"))
+    {
+        objj_msgSend(objj_msgSend(objj_msgSend(MenuManager, "instance"), "leftStack"), "addObject:", self.adminItem);
+    }
+    else
+    {
+        objj_msgSend(objj_msgSend(DesktopManager, "instance"), "removeViewController:", self.controller);
+    }
+    objj_msgSend(objj_msgSend(MenuManager, "instance"), "refreshMenu");
+}
+,["void"])]);
+class_addMethods(meta_class, [new objj_method(sel_getUid("instance"), function $AdminManager__instance(self, _cmd)
+{
+    if (!instance)
+    {
+        instance = objj_msgSend(objj_msgSend(AdminManager, "alloc"), "init");
+    }
+    return instance;
+}
+,["AdminManager"])]);
+}p;11;AdminView.jt;3619;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;3552;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "AdminView"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("menuTableView"), new objj_ivar("scrollTableView"), new objj_ivar("anotherView")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("menuTableView"), function $AdminView__menuTableView(self, _cmd)
+{
+    return self.menuTableView;
+}
+,["CPTableView"]), new objj_method(sel_getUid("setMenuTableView:"), function $AdminView__setMenuTableView_(self, _cmd, newValue)
+{
+    self.menuTableView = newValue;
+}
+,["void","CPTableView"]), new objj_method(sel_getUid("anotherView"), function $AdminView__anotherView(self, _cmd)
+{
+    return self.anotherView;
+}
+,["CPView"]), new objj_method(sel_getUid("setAnotherView:"), function $AdminView__setAnotherView_(self, _cmd, newValue)
+{
+    self.anotherView = newValue;
+}
+,["void","CPView"]), new objj_method(sel_getUid("init"), function $AdminView__init(self, _cmd)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("AdminView").super_class }, "initWithFrame:", CGRectMake(0, 0, 500, 500));
+    if (self)
+    {
+        var splitView = objj_msgSend(objj_msgSend(CPSplitView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 500, 500));
+        objj_msgSend(splitView, "setDelegate:", self);
+        objj_msgSend(splitView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+        objj_msgSend(self, "addSubview:", splitView);
+        self.menuTableView = objj_msgSend(objj_msgSend(CPTableView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 150, 500));
+        objj_msgSend(self.menuTableView, "setHeaderView:", nil);
+        objj_msgSend(self.menuTableView, "addTableColumn:", objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "menuitems"));
+        self.scrollTableView = objj_msgSend(objj_msgSend(CPScrollView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 150, 500));
+        objj_msgSend(self.scrollTableView, "setDocumentView:", self.menuTableView);
+        objj_msgSend(splitView, "addSubview:", self.scrollTableView);
+        self.anotherView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 350, 500));
+        objj_msgSend(self.anotherView, "setBackgroundColor:", objj_msgSend(CPColor, "grayColor"));
+        objj_msgSend(splitView, "addSubview:", self.anotherView);
+        objj_msgSend(self, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+    }
+    return self;
+}
+,["id"]), new objj_method(sel_getUid("splitView:constrainSplitPosition:ofSubviewAt:"), function $AdminView__splitView_constrainSplitPosition_ofSubviewAt_(self, _cmd, aSpiltView, proposedPosition, subviewIndex)
+{
+    if (subviewIndex === 0)
+    {
+        return 150;
+    }
+    return proposedPosition;
+}
+,["float","CPSplitView","float","int"]), new objj_method(sel_getUid("splitView:resizeSubviewsWithOldSize:"), function $AdminView__splitView_resizeSubviewsWithOldSize_(self, _cmd, aSplitView, oldSize)
+{
+    var splitViewSize = objj_msgSend(aSplitView, "frame").size;
+    var leftSize = objj_msgSend(aSplitView, "frame").size;
+    leftSize.width = 150;
+    objj_msgSend(self.scrollTableView, "setFrameSize:", leftSize);
+    objj_msgSend(self.anotherView, "setFrame:", CGRectMake(150 + objj_msgSend(aSplitView, "dividerThickness"), 0, splitViewSize.width - objj_msgSend(aSplitView, "dividerThickness") - 150, splitViewSize.height));
+}
+,["void","CPSplitView","CGSize"])]);
+}p;21;AdminViewController.jt;3078;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;11;AdminView.ji;25;UserTableViewController.ji;28;SessionTableViewController.jt;2932;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("AdminView.j", YES);objj_executeFile("UserTableViewController.j", YES);objj_executeFile("SessionTableViewController.j", YES);{var the_class = objj_allocateClassPair(CPViewController, "AdminViewController"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("menuData"), new objj_ivar("view")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $AdminViewController__init(self, _cmd)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("AdminViewController").super_class }, "init");
+    if (self)
+    {
+        self.view = objj_msgSend(objj_msgSend(AdminView, "alloc"), "init");
+        objj_msgSend(self, "setView:", self.view);
+        self.menuData = [{name: "Users", vc: objj_msgSend(objj_msgSend(UserTableViewController, "alloc"), "init")}, {name: "Sessions", vc: objj_msgSend(objj_msgSend(SessionTableViewController, "alloc"), "init")}];
+        objj_msgSend(objj_msgSend(self.view, "menuTableView"), "setDelegate:", self);
+        objj_msgSend(objj_msgSend(self.view, "menuTableView"), "setDataSource:", self);
+        objj_msgSend(objj_msgSend(self.view, "menuTableView"), "reloadData");
+    }
+    return self;
+}
+,["id"]), new objj_method(sel_getUid("viewFillsDesktop"), function $AdminViewController__viewFillsDesktop(self, _cmd)
+{
+    return YES;
+}
+,["BOOL"]), new objj_method(sel_getUid("numberOfRowsInTableView:"), function $AdminViewController__numberOfRowsInTableView_(self, _cmd, aTableView)
+{
+    return self.menuData.length;
+}
+,["int","CPTableView"]), new objj_method(sel_getUid("tableView:objectValueForTableColumn:row:"), function $AdminViewController__tableView_objectValueForTableColumn_row_(self, _cmd, aTableView, aColumn, aRowIndex)
+{
+    return self.menuData[aRowIndex].name;
+}
+,["id","CPTableView","CPTableColumn","int"]), new objj_method(sel_getUid("tableViewSelectionDidChange:"), function $AdminViewController__tableViewSelectionDidChange_(self, _cmd, aNotification)
+{
+    var rowIndex = objj_msgSend(objj_msgSend(self.view, "menuTableView"), "selectedRow");
+    if (rowIndex > -1)
+    {
+        while (objj_msgSend(objj_msgSend(self.view, "anotherView"), "subviews").length != 0)
+        {
+            objj_msgSend(objj_msgSend(objj_msgSend(self.view, "anotherView"), "subviews")[0], "removeFromSuperview");
+        }
+        var newView = objj_msgSend(self.menuData[rowIndex].vc, "view");
+        var rect = objj_msgSend(objj_msgSend(self.view, "anotherView"), "frame");
+        rect.origin.x = 0;
+        rect.origin.y = 0;
+        objj_msgSend(newView, "setFrame:", rect);
+        objj_msgSend(newView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+        objj_msgSend(objj_msgSend(self.view, "anotherView"), "addSubview:", newView);
+    }
+}
+,["void","CPNotification"])]);
+}p;15;AppController.jt;4450;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;DesktopManager.ji;16;SessionManager.ji;13;MenuManager.ji;20;ApplicationManager.ji;14;AdminManager.ji;29;BunnyLabsIconViewController.ji;20;Utils/HashFragment.jt;4220;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("DesktopManager.j", YES);objj_executeFile("SessionManager.j", YES);objj_executeFile("MenuManager.j", YES);objj_executeFile("ApplicationManager.j", YES);objj_executeFile("AdminManager.j", YES);objj_executeFile("BunnyLabsIconViewController.j", YES);objj_executeFile("Utils/HashFragment.j", YES);{var the_class = objj_allocateClassPair(CPView, "MyWebView"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_iframe")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), function $MyWebView__initWithFrame_(self, _cmd, frame)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("MyWebView").super_class }, "initWithFrame:", frame);
+    if (self)
+    {
+        self._iframe = document.createElement("iframe");
+        self._iframe.name = "iframe_" + FLOOR(RAND() * 10000);
+        self._iframe.style.width = "100%";
+        self._iframe.style.height = "100%";
+        self._iframe.style.borderWidth = "0px";
+        self._iframe.frameBorder = "0";
+        self._DOMElement.appendChild(self._iframe);
+    }
+    return self;
+}
+,["id","CGRect"]), new objj_method(sel_getUid("setMainFrameURL:"), function $MyWebView__setMainFrameURL_(self, _cmd, aUrl)
+{
+    self._iframe.src = aUrl;
+}
+,["void","CPString"])]);
+}{var the_class = objj_allocateClassPair(CPViewController, "BlogViewController"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $BlogViewController__init(self, _cmd)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("BlogViewController").super_class }, "init");
+    if (self)
+    {
+        var view = objj_msgSend(objj_msgSend(MyWebView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 100, 100));
+        objj_msgSend(view, "setMainFrameURL:", "https://blog.davidsiaw.net");
+        objj_msgSend(view, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+        objj_msgSend(self, "setView:", view);
+    }
+    return self;
+}
+,["id"]), new objj_method(sel_getUid("viewFillsDesktop"), function $BlogViewController__viewFillsDesktop(self, _cmd)
+{
+    return YES;
+}
+,["BOOL"])]);
+}{var the_class = objj_allocateClassPair(CPObject, "AppController"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("contentView")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLaunching:"), function $AppController__applicationDidFinishLaunching_(self, _cmd, aNotification)
+{
+    var theWindow = objj_msgSend(objj_msgSend(CPWindow, "alloc"), "initWithContentRect:styleMask:", CGRectMakeZero(), CPBorderlessBridgeWindowMask);
+    self.contentView = objj_msgSend(theWindow, "contentView");
+    objj_msgSend(theWindow, "setDelegate:", self);
+    objj_msgSend(theWindow, "orderFront:", self);
+    objj_msgSend(CPMenu, "setMenuBarVisible:", YES);
+    objj_msgSend(objj_msgSend(DesktopManager, "instance"), "pushTopViewController:", objj_msgSend(objj_msgSend(BunnyLabsIconViewController, "alloc"), "init"));
+    objj_msgSend(objj_msgSend(MenuManager, "instance"), "rightStack").push(objj_msgSend(objj_msgSend(SessionManager, "instance"), "sessionStatusMenuItem"));
+    objj_msgSend(ApplicationManager, "instance");
+    objj_msgSend(AdminManager, "instance");
+    objj_msgSend(self, "performHash");
+}
+,["void","CPNotification"]), new objj_method(sel_getUid("performHash"), function $AppController__performHash(self, _cmd)
+{
+    var hash = objj_msgSend(HashFragment, "fragmentAsObject");
+    if (hash.validate)
+    {
+        objj_msgSend(objj_msgSend(SessionManager, "instance"), "validateUser:withToken:", hash.validateUsername, hash.validate);
+    }
+    if (hash.forgotPassword)
+    {
+        objj_msgSend(objj_msgSend(SessionManager, "instance"), "showChangePasswordWindow");
+    }
+}
+,["void"]), new objj_method(sel_getUid("windowDidResize:"), function $AppController__windowDidResize_(self, _cmd, notification)
+{
+    objj_msgSend(objj_msgSend(DesktopManager, "instance"), "desktopResized");
+}
+,["void","CPNotification"])]);
+}p;17;ApplicationInfo.jt;2180;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;2113;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPObject, "ApplicationInfo"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("icon"), new objj_ivar("application"), new objj_ivar("bundle")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("icon"), function $ApplicationInfo__icon(self, _cmd)
+{
+    return self.icon;
+}
+,["CPImage"]), new objj_method(sel_getUid("setIcon:"), function $ApplicationInfo__setIcon_(self, _cmd, newValue)
+{
+    self.icon = newValue;
+}
+,["void","CPImage"]), new objj_method(sel_getUid("application"), function $ApplicationInfo__application(self, _cmd)
+{
+    return self.application;
+}
+,["id"]), new objj_method(sel_getUid("setApplication:"), function $ApplicationInfo__setApplication_(self, _cmd, newValue)
+{
+    self.application = newValue;
+}
+,["void","id"]), new objj_method(sel_getUid("bundle"), function $ApplicationInfo__bundle(self, _cmd)
+{
+    return self.bundle;
+}
+,["CPBundle"]), new objj_method(sel_getUid("setBundle:"), function $ApplicationInfo__setBundle_(self, _cmd, newValue)
+{
+    self.bundle = newValue;
+}
+,["void","CPBundle"]), new objj_method(sel_getUid("name"), function $ApplicationInfo__name(self, _cmd)
+{
+    var name = objj_msgSend(objj_msgSend(self.bundle, "infoDictionary"), "objectForKey:", "CPBundleName");
+    return name;
+}
+,["CPString"])]);
+class_addMethods(meta_class, [new objj_method(sel_getUid("applicationInfoOf:withBundle:"), function $ApplicationInfo__applicationInfoOf_withBundle_(self, _cmd, anApp, aBundle)
+{
+    var result = objj_msgSend(objj_msgSend(ApplicationInfo, "alloc"), "init");
+    var file = objj_msgSend(aBundle, "pathForResource:", "Images/icon.png");
+    var icon = objj_msgSend(objj_msgSend(CPImage, "alloc"), "initWithContentsOfFile:size:", file, CGSizeMake(200.0, 200.0));
+    objj_msgSend(result, "setApplication:", anApp);
+    objj_msgSend(result, "setIcon:", icon);
+    objj_msgSend(result, "setBundle:", aBundle);
+    return result;
+}
+,["ApplicationInfo","CPString","CPBundle"])]);
+}p;20;ApplicationManager.jt;2867;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;SessionManager.ji;27;ApplicationViewController.ji;13;MenuManager.jt;2729;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("SessionManager.j", YES);objj_executeFile("ApplicationViewController.j", YES);objj_executeFile("MenuManager.j", YES);var instance;
 {var the_class = objj_allocateClassPair(CPObject, "ApplicationManager"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("controller"), new objj_ivar("applicationItem")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $ApplicationManager__init(self, _cmd)
@@ -48,71 +318,107 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("instance"), function $
     return instance;
 }
 ,["ApplicationManager"])]);
-}p;13;MenuManager.jt;2365;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;19;CPArray+Additions.jt;2274;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("CPArray+Additions.j", YES);var menuManagerInstance;
-{var the_class = objj_allocateClassPair(CPObject, "MenuManager"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("leftStack"), new objj_ivar("centerStack"), new objj_ivar("rightStack")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $MenuManager__init(self, _cmd)
+}p;17;ApplicationView.jt;4038;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;17;ApplicationInfo.ji;20;IconCollectionView.ji;32;Applications/TestApp2/TestApp2.ji;32;Applications/TestApp1/TestApp1.ji;38;Applications/DesignerApp/DesignerApp.jt;3807;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("ApplicationInfo.j", YES);objj_executeFile("IconCollectionView.j", YES);objj_executeFile("Applications/TestApp2/TestApp2.j", YES);objj_executeFile("Applications/TestApp1/TestApp1.j", YES);objj_executeFile("Applications/DesignerApp/DesignerApp.j", YES);{var the_class = objj_allocateClassPair(CPView, "ApplicationView"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("iconsView"), new objj_ivar("scrollView"), new objj_ivar("items")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("iconsView"), function $ApplicationView__iconsView(self, _cmd)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("MenuManager").super_class }, "init");
+    return self.iconsView;
+}
+,["CPCollectionView"]), new objj_method(sel_getUid("setIconsView:"), function $ApplicationView__setIconsView_(self, _cmd, newValue)
+{
+    self.iconsView = newValue;
+}
+,["void","CPCollectionView"]), new objj_method(sel_getUid("init"), function $ApplicationView__init(self, _cmd)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("ApplicationView").super_class }, "initWithFrame:", CGRectMake(0, 0, 500, 500));
     if (self)
     {
-        self.leftStack = objj_msgSend(CPArray, "array");
-        self.centerStack = objj_msgSend(CPArray, "array");
-        self.rightStack = objj_msgSend(CPArray, "array");
+        self.items = [];
+        self.scrollView = objj_msgSend(objj_msgSend(CPScrollView, "alloc"), "initWithFrame:", objj_msgSend(self, "frame"));
+        objj_msgSend(self.scrollView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+        objj_msgSend(self.scrollView, "setAutohidesScrollers:", YES);
+        self.iconsView = objj_msgSend(objj_msgSend(IconCollectionView, "alloc"), "initWithFrame:", objj_msgSend(self, "frame"));
+        objj_msgSend(self.iconsView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+        objj_msgSend(self, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+    {
+        var appBundle = objj_msgSend(CPBundle, "bundleWithPath:", "Applications/TestApp2");
+        appBundle["_appclass"] = objj_msgSend(TestApp2, "class");
+        if (objj_msgSend(appBundle, "isLoaded"))
+        {
+            objj_msgSend(self, "bundleDidFinishLoading:", appBundle);
+        }
+        else
+        {
+            objj_msgSend(appBundle, "loadWithDelegate:", self);
+        }
+    }
+    {
+        var appBundle = objj_msgSend(CPBundle, "bundleWithPath:", "Applications/TestApp1");
+        appBundle["_appclass"] = objj_msgSend(TestApp1, "class");
+        if (objj_msgSend(appBundle, "isLoaded"))
+        {
+            objj_msgSend(self, "bundleDidFinishLoading:", appBundle);
+        }
+        else
+        {
+            objj_msgSend(appBundle, "loadWithDelegate:", self);
+        }
+    }
+    {
+        var appBundle = objj_msgSend(CPBundle, "bundleWithPath:", "Applications/DesignerApp");
+        appBundle["_appclass"] = objj_msgSend(DesignerApp, "class");
+        if (objj_msgSend(appBundle, "isLoaded"))
+        {
+            objj_msgSend(self, "bundleDidFinishLoading:", appBundle);
+        }
+        else
+        {
+            objj_msgSend(appBundle, "loadWithDelegate:", self);
+        }
+    }
+        objj_msgSend(self.iconsView, "setContent:", self.items);
+        objj_msgSend(self.scrollView, "setDocumentView:", self.iconsView);
+        objj_msgSend(self, "addSubview:", self.scrollView);
     }
     return self;
 }
-,["id"]), new objj_method(sel_getUid("leftStack"), function $MenuManager__leftStack(self, _cmd)
+,["id"]), new objj_method(sel_getUid("bundleDidFinishLoading:"), function $ApplicationView__bundleDidFinishLoading_(self, _cmd, appBundle)
 {
-    return self.leftStack;
+    var app = objj_msgSend(objj_msgSend(appBundle["_appclass"], "alloc"), "initWithBundle:", appBundle);
+    var item = objj_msgSend(ApplicationInfo, "applicationInfoOf:withBundle:", app, appBundle);
+    self.items.push(item);
+    objj_msgSend(self.iconsView, "setContent:", self.items);
+    objj_msgSend(self.iconsView, "reloadContent");
 }
-,["CPArray"]), new objj_method(sel_getUid("centerStack"), function $MenuManager__centerStack(self, _cmd)
+,["void","CPBundle"])]);
+}p;27;ApplicationViewController.jt;1592;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;17;ApplicationView.jt;1503;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("ApplicationView.j", YES);{var the_class = objj_allocateClassPair(CPViewController, "ApplicationViewController"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("menuData"), new objj_ivar("view")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $ApplicationViewController__init(self, _cmd)
 {
-    return self.centerStack;
-}
-,["CPArray"]), new objj_method(sel_getUid("rightStack"), function $MenuManager__rightStack(self, _cmd)
-{
-    return self.rightStack;
-}
-,["CPArray"]), new objj_method(sel_getUid("refreshMenu"), function $MenuManager__refreshMenu(self, _cmd)
-{
-    var mainMenu = objj_msgSend(objj_msgSend(CPApplication, "sharedApplication"), "mainMenu");
-    while (objj_msgSend(mainMenu, "countOfItems") > 0)
-    {
-        objj_msgSend(mainMenu, "removeItemAtIndex:", 0);
-    }
-    objj_msgSend(mainMenu, "removeAllItems");
-addItem = function(menuItem)
-    {
-        objj_msgSend(mainMenu, "addItem:", menuItem);
-    }
-    objj_msgSend(self.leftStack, "foreach:", addItem);
-    objj_msgSend(self.centerStack, "foreach:", addItem);
-    objj_msgSend(mainMenu, "addItem:", objj_msgSend(CPMenuItem, "separatorItem"));
-    objj_msgSend(self.rightStack, "foreach:", addItem);
-}
-,["void"])]);
-class_addMethods(meta_class, [new objj_method(sel_getUid("instance"), function $MenuManager__instance(self, _cmd)
-{
-    if (!menuManagerInstance)
-    {
-        menuManagerInstance = objj_msgSend(objj_msgSend(MenuManager, "alloc"), "init");
-    }
-    return menuManagerInstance;
-}
-,["MenuManager"])]);
-}p;17;SessionMenuItem.jt;650;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;584;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPMenuItem, "SessionMenuItem"),
-meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $SessionMenuItem__init(self, _cmd)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("SessionMenuItem").super_class }, "initWithTitle:action:keyEquivalent:", "Log In", sel_getUid("menuItemClicked:"), nil);
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("ApplicationViewController").super_class }, "init");
     if (self)
     {
+        self.view = objj_msgSend(objj_msgSend(ApplicationView, "alloc"), "init");
+        objj_msgSend(objj_msgSend(self.view, "iconsView"), "setDelegate:", self);
+        objj_msgSend(self, "setView:", self.view);
     }
     return self;
 }
-,["id"])]);
-}p;25;UserTableViewController.jt;4961;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;SessionManager.ji;16;BunnyTableView.jt;4852;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("SessionManager.j", YES);objj_executeFile("BunnyTableView.j", YES);{var the_class = objj_allocateClassPair(CPViewController, "UserTableViewController"),
+,["id"]), new objj_method(sel_getUid("viewFillsDesktop"), function $ApplicationViewController__viewFillsDesktop(self, _cmd)
+{
+    return YES;
+}
+,["BOOL"]), new objj_method(sel_getUid("collectionView:didDoubleClickOnItemAtIndex:"), function $ApplicationViewController__collectionView_didDoubleClickOnItemAtIndex_(self, _cmd, collectionView, index)
+{
+    var app = objj_msgSend(objj_msgSend(objj_msgSend(collectionView, "items")[index], "representedObject"), "application");
+    objj_msgSend(objj_msgSend(DesktopManager, "instance"), "pushTopViewController:", objj_msgSend(app, "viewController"));
+}
+,["void","CPCollectionView","int"])]);
+}p;6;main.jt;292;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;15;AppController.jt;206;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("AppController.j", YES);main = function(args, namedArgs)
+{
+    CPApplicationMain(args, namedArgs);
+}
+p;25;UserTableViewController.jt;4961;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;SessionManager.ji;16;BunnyTableView.jt;4852;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("SessionManager.j", YES);objj_executeFile("BunnyTableView.j", YES);{var the_class = objj_allocateClassPair(CPViewController, "UserTableViewController"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("tableView"), new objj_ivar("userTable"), new objj_ivar("currentStatusCode"), new objj_ivar("currentData")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $UserTableViewController__init(self, _cmd)
 {
@@ -198,254 +504,6 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $UserT
     }
 }
 ,["void","CPURLConnection"])]);
-}p;17;ApplicationView.jt;4038;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;17;ApplicationInfo.ji;20;IconCollectionView.ji;32;Applications/TestApp2/TestApp2.ji;38;Applications/DesignerApp/DesignerApp.ji;32;Applications/TestApp1/TestApp1.jt;3807;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("ApplicationInfo.j", YES);objj_executeFile("IconCollectionView.j", YES);objj_executeFile("Applications/TestApp2/TestApp2.j", YES);objj_executeFile("Applications/DesignerApp/DesignerApp.j", YES);objj_executeFile("Applications/TestApp1/TestApp1.j", YES);{var the_class = objj_allocateClassPair(CPView, "ApplicationView"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("iconsView"), new objj_ivar("scrollView"), new objj_ivar("items")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("iconsView"), function $ApplicationView__iconsView(self, _cmd)
-{
-    return self.iconsView;
-}
-,["CPCollectionView"]), new objj_method(sel_getUid("setIconsView:"), function $ApplicationView__setIconsView_(self, _cmd, newValue)
-{
-    self.iconsView = newValue;
-}
-,["void","CPCollectionView"]), new objj_method(sel_getUid("init"), function $ApplicationView__init(self, _cmd)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("ApplicationView").super_class }, "initWithFrame:", CGRectMake(0, 0, 500, 500));
-    if (self)
-    {
-        self.items = [];
-        self.scrollView = objj_msgSend(objj_msgSend(CPScrollView, "alloc"), "initWithFrame:", objj_msgSend(self, "frame"));
-        objj_msgSend(self.scrollView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
-        objj_msgSend(self.scrollView, "setAutohidesScrollers:", YES);
-        self.iconsView = objj_msgSend(objj_msgSend(IconCollectionView, "alloc"), "initWithFrame:", objj_msgSend(self, "frame"));
-        objj_msgSend(self.iconsView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
-        objj_msgSend(self, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
-    {
-        var appBundle = objj_msgSend(CPBundle, "bundleWithPath:", "Applications/TestApp2");
-        appBundle["_appclass"] = objj_msgSend(TestApp2, "class");
-        if (objj_msgSend(appBundle, "isLoaded"))
-        {
-            objj_msgSend(self, "bundleDidFinishLoading:", appBundle);
-        }
-        else
-        {
-            objj_msgSend(appBundle, "loadWithDelegate:", self);
-        }
-    }
-    {
-        var appBundle = objj_msgSend(CPBundle, "bundleWithPath:", "Applications/DesignerApp");
-        appBundle["_appclass"] = objj_msgSend(DesignerApp, "class");
-        if (objj_msgSend(appBundle, "isLoaded"))
-        {
-            objj_msgSend(self, "bundleDidFinishLoading:", appBundle);
-        }
-        else
-        {
-            objj_msgSend(appBundle, "loadWithDelegate:", self);
-        }
-    }
-    {
-        var appBundle = objj_msgSend(CPBundle, "bundleWithPath:", "Applications/TestApp1");
-        appBundle["_appclass"] = objj_msgSend(TestApp1, "class");
-        if (objj_msgSend(appBundle, "isLoaded"))
-        {
-            objj_msgSend(self, "bundleDidFinishLoading:", appBundle);
-        }
-        else
-        {
-            objj_msgSend(appBundle, "loadWithDelegate:", self);
-        }
-    }
-        objj_msgSend(self.iconsView, "setContent:", self.items);
-        objj_msgSend(self.scrollView, "setDocumentView:", self.iconsView);
-        objj_msgSend(self, "addSubview:", self.scrollView);
-    }
-    return self;
-}
-,["id"]), new objj_method(sel_getUid("bundleDidFinishLoading:"), function $ApplicationView__bundleDidFinishLoading_(self, _cmd, appBundle)
-{
-    var app = objj_msgSend(objj_msgSend(appBundle["_appclass"], "alloc"), "initWithBundle:", appBundle);
-    var item = objj_msgSend(ApplicationInfo, "applicationInfoOf:withBundle:", app, appBundle);
-    self.items.push(item);
-    objj_msgSend(self.iconsView, "setContent:", self.items);
-    objj_msgSend(self.iconsView, "reloadContent");
-}
-,["void","CPBundle"])]);
-}p;27;ApplicationViewController.jt;1592;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;17;ApplicationView.jt;1503;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("ApplicationView.j", YES);{var the_class = objj_allocateClassPair(CPViewController, "ApplicationViewController"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("menuData"), new objj_ivar("view")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $ApplicationViewController__init(self, _cmd)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("ApplicationViewController").super_class }, "init");
-    if (self)
-    {
-        self.view = objj_msgSend(objj_msgSend(ApplicationView, "alloc"), "init");
-        objj_msgSend(objj_msgSend(self.view, "iconsView"), "setDelegate:", self);
-        objj_msgSend(self, "setView:", self.view);
-    }
-    return self;
-}
-,["id"]), new objj_method(sel_getUid("viewFillsDesktop"), function $ApplicationViewController__viewFillsDesktop(self, _cmd)
-{
-    return YES;
-}
-,["BOOL"]), new objj_method(sel_getUid("collectionView:didDoubleClickOnItemAtIndex:"), function $ApplicationViewController__collectionView_didDoubleClickOnItemAtIndex_(self, _cmd, collectionView, index)
-{
-    var app = objj_msgSend(objj_msgSend(objj_msgSend(collectionView, "items")[index], "representedObject"), "application");
-    objj_msgSend(objj_msgSend(DesktopManager, "instance"), "pushTopViewController:", objj_msgSend(app, "viewController"));
-}
-,["void","CPCollectionView","int"])]);
-}p;16;BunnyTableView.jt;4233;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;4166;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "BunnyTableView"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("scrollView"), new objj_ivar("tableView"), new objj_ivar("reloadButton")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $BunnyTableView__init(self, _cmd)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("BunnyTableView").super_class }, "initWithFrame:", CGRectMake(0, 0, 100, 100));
-    if (self)
-    {
-        self.tableView = objj_msgSend(objj_msgSend(CPTableView, "alloc"), "init");
-        objj_msgSend(self.tableView, "setColumnAutoresizingStyle:", CPTableViewUniformColumnAutoresizingStyle);
-        objj_msgSend(self.tableView, "setAlternatingRowBackgroundColors:", [objj_msgSend(CPColor, "grayColor"), objj_msgSend(CPColor, "whiteColor")]);
-        self.reloadButton = objj_msgSend(CPButton, "buttonWithTitle:", "Reload");
-        objj_msgSend(self.reloadButton, "setFrameOrigin:", CGPointMake(3, 3));
-        objj_msgSend(self.reloadButton, "setTarget:", self);
-        objj_msgSend(self.reloadButton, "setAction:", sel_getUid("reloadButtonClicked:"));
-        objj_msgSend(self, "addSubview:", self.reloadButton);
-        self.scrollView = objj_msgSend(objj_msgSend(CPScrollView, "alloc"), "initWithFrame:", CGRectMake(0, 30, 100, 70));
-        objj_msgSend(self.scrollView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
-        objj_msgSend(self.scrollView, "setDocumentView:", self.tableView);
-        objj_msgSend(self, "addSubview:", self.scrollView);
-    }
-    return self;
-}
-,["id"]), new objj_method(sel_getUid("reloadButtonClicked:"), function $BunnyTableView__reloadButtonClicked_(self, _cmd, sender)
-{
-    if (objj_msgSend(objj_msgSend(self, "delegate"), "respondsToSelector:", sel_getUid("reloadButtonClicked:")))
-    {
-        objj_msgSend(objj_msgSend(self, "delegate"), "reloadButtonClicked:", self);
-    }
-}
-,["void","id"]), new objj_method(sel_getUid("reloadData"), function $BunnyTableView__reloadData(self, _cmd)
-{
-    objj_msgSend(self.tableView, "reloadData");
-}
-,["void"]), new objj_method(sel_getUid("addColumnNamed:"), function $BunnyTableView__addColumnNamed_(self, _cmd, anIdentifier)
-{
-    var column = objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", anIdentifier);
-    objj_msgSend(objj_msgSend(column, "headerView"), "setStringValue:", anIdentifier);
-    objj_msgSend(column, "setResizingMask:", CPTableColumnAutoresizingMask | CPTableColumnUserResizingMask);
-    objj_msgSend(column, "setEditable:", YES);
-    objj_msgSend(self.tableView, "addTableColumn:", column);
-}
-,["void","CPString"]), new objj_method(sel_getUid("addBooleanColumnNamed:"), function $BunnyTableView__addBooleanColumnNamed_(self, _cmd, anIdentifier)
-{
-    var column = objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", anIdentifier);
-    objj_msgSend(objj_msgSend(column, "headerView"), "setStringValue:", anIdentifier);
-    objj_msgSend(column, "setResizingMask:", CPTableColumnNoResizing);
-    objj_msgSend(column, "setEditable:", YES);
-    objj_msgSend(column, "setMaxWidth:", 50);
-    objj_msgSend(column, "setDataView:", objj_msgSend(objj_msgSend(CPCheckBox, "alloc"), "init"));
-    objj_msgSend(self.tableView, "addTableColumn:", column);
-}
-,["void","CPString"]), new objj_method(sel_getUid("setDataSource:"), function $BunnyTableView__setDataSource_(self, _cmd, aDataSource)
-{
-    objj_msgSend(self.tableView, "setDataSource:", aDataSource);
-}
-,["void","id"]), new objj_method(sel_getUid("setDelegate:"), function $BunnyTableView__setDelegate_(self, _cmd, aDelegate)
-{
-    objj_msgSend(self.tableView, "setDelegate:", aDelegate);
-}
-,["void","id"]), new objj_method(sel_getUid("delegate"), function $BunnyTableView__delegate(self, _cmd)
-{
-    return objj_msgSend(self.tableView, "delegate");
-}
-,["id"]), new objj_method(sel_getUid("dataSource"), function $BunnyTableView__dataSource(self, _cmd)
-{
-    return objj_msgSend(self.tableView, "dataSource");
-}
-,["id"])]);
-}p;21;AdminViewController.jt;3078;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;11;AdminView.ji;25;UserTableViewController.ji;28;SessionTableViewController.jt;2932;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("AdminView.j", YES);objj_executeFile("UserTableViewController.j", YES);objj_executeFile("SessionTableViewController.j", YES);{var the_class = objj_allocateClassPair(CPViewController, "AdminViewController"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("menuData"), new objj_ivar("view")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $AdminViewController__init(self, _cmd)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("AdminViewController").super_class }, "init");
-    if (self)
-    {
-        self.view = objj_msgSend(objj_msgSend(AdminView, "alloc"), "init");
-        objj_msgSend(self, "setView:", self.view);
-        self.menuData = [{name: "Users", vc: objj_msgSend(objj_msgSend(UserTableViewController, "alloc"), "init")}, {name: "Sessions", vc: objj_msgSend(objj_msgSend(SessionTableViewController, "alloc"), "init")}];
-        objj_msgSend(objj_msgSend(self.view, "menuTableView"), "setDelegate:", self);
-        objj_msgSend(objj_msgSend(self.view, "menuTableView"), "setDataSource:", self);
-        objj_msgSend(objj_msgSend(self.view, "menuTableView"), "reloadData");
-    }
-    return self;
-}
-,["id"]), new objj_method(sel_getUid("viewFillsDesktop"), function $AdminViewController__viewFillsDesktop(self, _cmd)
-{
-    return YES;
-}
-,["BOOL"]), new objj_method(sel_getUid("numberOfRowsInTableView:"), function $AdminViewController__numberOfRowsInTableView_(self, _cmd, aTableView)
-{
-    return self.menuData.length;
-}
-,["int","CPTableView"]), new objj_method(sel_getUid("tableView:objectValueForTableColumn:row:"), function $AdminViewController__tableView_objectValueForTableColumn_row_(self, _cmd, aTableView, aColumn, aRowIndex)
-{
-    return self.menuData[aRowIndex].name;
-}
-,["id","CPTableView","CPTableColumn","int"]), new objj_method(sel_getUid("tableViewSelectionDidChange:"), function $AdminViewController__tableViewSelectionDidChange_(self, _cmd, aNotification)
-{
-    var rowIndex = objj_msgSend(objj_msgSend(self.view, "menuTableView"), "selectedRow");
-    if (rowIndex > -1)
-    {
-        while (objj_msgSend(objj_msgSend(self.view, "anotherView"), "subviews").length != 0)
-        {
-            objj_msgSend(objj_msgSend(objj_msgSend(self.view, "anotherView"), "subviews")[0], "removeFromSuperview");
-        }
-        var newView = objj_msgSend(self.menuData[rowIndex].vc, "view");
-        var rect = objj_msgSend(objj_msgSend(self.view, "anotherView"), "frame");
-        rect.origin.x = 0;
-        rect.origin.y = 0;
-        objj_msgSend(newView, "setFrame:", rect);
-        objj_msgSend(newView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
-        objj_msgSend(objj_msgSend(self.view, "anotherView"), "addSubview:", newView);
-    }
-}
-,["void","CPNotification"])]);
-}p;10;IconView.jt;2488;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;17;ApplicationInfo.jt;2399;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("ApplicationInfo.j", YES);{var the_class = objj_allocateClassPair(CPView, "IconView"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_imageView"), new objj_ivar("_textField")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $IconView__initWithCoder_(self, _cmd, aCoder)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("IconView").super_class }, "initWithCoder:", aCoder);
-    if (self)
-    {
-        self._imageView = objj_msgSend(objj_msgSend(CPImageView, "alloc"), "initWithFrame:", CGRectMake(25, 5, 100, 100));
-        objj_msgSend(self._imageView, "setImageScaling:", CPScaleProportionally);
-        objj_msgSend(self, "addSubview:", self._imageView);
-        var textRect = CGRectMake(5, 107, 140, 40);
-        self._textField = objj_msgSend(objj_msgSend(CPTextField, "alloc"), "initWithFrame:", textRect);
-        objj_msgSend(self._textField, "setLineBreakMode:", CPLineBreakByWordWrapping);
-        objj_msgSend(self._textField, "setAlignment:", CPCenterTextAlignment);
-        objj_msgSend(self._textField, "setVerticalAlignment:", CPCenterVerticalTextAlignment);
-        objj_msgSend(self._textField, "setTextShadowColor:", objj_msgSend(CPColor, "whiteColor"));
-        objj_msgSend(self._textField, "setTextShadowOffset:", CGSizeMake(1, 1));
-        var font = objj_msgSend(CPFont, "boldFontWithName:size:", "Helvetica", 12);
-        objj_msgSend(self._textField, "setFont:", font);
-        objj_msgSend(self._textField, "setTextColor:", objj_msgSend(CPColor, "blackColor"));
-        objj_msgSend(self, "addSubview:", self._textField);
-    }
-    return self;
-}
-,["id","CPCoder"]), new objj_method(sel_getUid("setRepresentedObject:"), function $IconView__setRepresentedObject_(self, _cmd, appInfo)
-{
-    if (appInfo)
-    {
-        objj_msgSend(self._textField, "setStringValue:", objj_msgSend(appInfo, "name"));
-        objj_msgSend(self._imageView, "setImage:", objj_msgSend(appInfo, "icon"));
-    }
-}
-,["void","ApplicationInfo"]), new objj_method(sel_getUid("setSelected:"), function $IconView__setSelected_(self, _cmd, isSelected)
-{
-    objj_msgSend(self, "setBackgroundColor:", isSelected ? objj_msgSend(CPColor, "grayColor") : nil);
-}
-,["void","BOOL"])]);
 }p;20;TextFieldWithLabel.jt;5228;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;5161;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "TextFieldWithLabel"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("textField"), new objj_ivar("label"), new objj_ivar("target"), new objj_ivar("validator"), new objj_ivar("textChangedSelector")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("textField"), function $TextFieldWithLabel__textField(self, _cmd)
@@ -543,255 +601,6 @@ class_addMethods(the_class, [new objj_method(sel_getUid("textField"), function $
     objj_msgSend(self.textField, "setStringValue:", aString);
 }
 ,["void","CPString"])]);
-}p;20;IconCollectionView.jt;1614;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;17;ApplicationInfo.ji;10;IconView.jt;1510;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("ApplicationInfo.j", YES);objj_executeFile("IconView.j", YES);{var the_class = objj_allocateClassPair(CPCollectionView, "IconCollectionView"),
-meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("_prepare"), function $IconCollectionView___prepare(self, _cmd)
-{
-    objj_msgSend(self, "setMinItemSize:", CGSizeMake(150, 150));
-    objj_msgSend(self, "setMaxItemSize:", CGSizeMake(150, 150));
-    var itemPrototype = objj_msgSend(objj_msgSend(CPCollectionViewItem, "alloc"), "init"),
-        iconView = objj_msgSend(objj_msgSend(IconView, "alloc"), "initWithFrame:", CGRectMakeZero());
-    objj_msgSend(itemPrototype, "setView:", iconView);
-    objj_msgSend(self, "setItemPrototype:", itemPrototype);
-}
-,["void"]), new objj_method(sel_getUid("init"), function $IconCollectionView__init(self, _cmd)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("IconCollectionView").super_class }, "init");
-    if (self)
-    {
-        objj_msgSend(self, "_prepare");
-    }
-    return self;
-}
-,["id"]), new objj_method(sel_getUid("initWithFrame:"), function $IconCollectionView__initWithFrame_(self, _cmd, frame)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("IconCollectionView").super_class }, "initWithFrame:", frame);
-{
-    objj_msgSend(self, "_prepare");
-}
-    return self;
-}
-,["id","CGRect"])]);
-}p;15;AppController.jt;4450;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;DesktopManager.ji;16;SessionManager.ji;13;MenuManager.ji;20;ApplicationManager.ji;14;AdminManager.ji;29;BunnyLabsIconViewController.ji;20;Utils/HashFragment.jt;4220;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("DesktopManager.j", YES);objj_executeFile("SessionManager.j", YES);objj_executeFile("MenuManager.j", YES);objj_executeFile("ApplicationManager.j", YES);objj_executeFile("AdminManager.j", YES);objj_executeFile("BunnyLabsIconViewController.j", YES);objj_executeFile("Utils/HashFragment.j", YES);{var the_class = objj_allocateClassPair(CPView, "MyWebView"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_iframe")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), function $MyWebView__initWithFrame_(self, _cmd, frame)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("MyWebView").super_class }, "initWithFrame:", frame);
-    if (self)
-    {
-        self._iframe = document.createElement("iframe");
-        self._iframe.name = "iframe_" + FLOOR(RAND() * 10000);
-        self._iframe.style.width = "100%";
-        self._iframe.style.height = "100%";
-        self._iframe.style.borderWidth = "0px";
-        self._iframe.frameBorder = "0";
-        self._DOMElement.appendChild(self._iframe);
-    }
-    return self;
-}
-,["id","CGRect"]), new objj_method(sel_getUid("setMainFrameURL:"), function $MyWebView__setMainFrameURL_(self, _cmd, aUrl)
-{
-    self._iframe.src = aUrl;
-}
-,["void","CPString"])]);
-}{var the_class = objj_allocateClassPair(CPViewController, "BlogViewController"),
-meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $BlogViewController__init(self, _cmd)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("BlogViewController").super_class }, "init");
-    if (self)
-    {
-        var view = objj_msgSend(objj_msgSend(MyWebView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 100, 100));
-        objj_msgSend(view, "setMainFrameURL:", "https://blog.davidsiaw.net");
-        objj_msgSend(view, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
-        objj_msgSend(self, "setView:", view);
-    }
-    return self;
-}
-,["id"]), new objj_method(sel_getUid("viewFillsDesktop"), function $BlogViewController__viewFillsDesktop(self, _cmd)
-{
-    return YES;
-}
-,["BOOL"])]);
-}{var the_class = objj_allocateClassPair(CPObject, "AppController"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("contentView")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLaunching:"), function $AppController__applicationDidFinishLaunching_(self, _cmd, aNotification)
-{
-    var theWindow = objj_msgSend(objj_msgSend(CPWindow, "alloc"), "initWithContentRect:styleMask:", CGRectMakeZero(), CPBorderlessBridgeWindowMask);
-    self.contentView = objj_msgSend(theWindow, "contentView");
-    objj_msgSend(theWindow, "setDelegate:", self);
-    objj_msgSend(theWindow, "orderFront:", self);
-    objj_msgSend(CPMenu, "setMenuBarVisible:", YES);
-    objj_msgSend(objj_msgSend(DesktopManager, "instance"), "pushTopViewController:", objj_msgSend(objj_msgSend(BunnyLabsIconViewController, "alloc"), "init"));
-    objj_msgSend(objj_msgSend(MenuManager, "instance"), "rightStack").push(objj_msgSend(objj_msgSend(SessionManager, "instance"), "sessionStatusMenuItem"));
-    objj_msgSend(ApplicationManager, "instance");
-    objj_msgSend(AdminManager, "instance");
-    objj_msgSend(self, "performHash");
-}
-,["void","CPNotification"]), new objj_method(sel_getUid("performHash"), function $AppController__performHash(self, _cmd)
-{
-    var hash = objj_msgSend(HashFragment, "fragmentAsObject");
-    if (hash.validate)
-    {
-        objj_msgSend(objj_msgSend(SessionManager, "instance"), "validateUser:withToken:", hash.validateUsername, hash.validate);
-    }
-    if (hash.forgotPassword)
-    {
-        objj_msgSend(objj_msgSend(SessionManager, "instance"), "showChangePasswordWindow");
-    }
-}
-,["void"]), new objj_method(sel_getUid("windowDidResize:"), function $AppController__windowDidResize_(self, _cmd, notification)
-{
-    objj_msgSend(objj_msgSend(DesktopManager, "instance"), "desktopResized");
-}
-,["void","CPNotification"])]);
-}p;11;AdminView.jt;3619;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;3552;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "AdminView"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("menuTableView"), new objj_ivar("scrollTableView"), new objj_ivar("anotherView")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("menuTableView"), function $AdminView__menuTableView(self, _cmd)
-{
-    return self.menuTableView;
-}
-,["CPTableView"]), new objj_method(sel_getUid("setMenuTableView:"), function $AdminView__setMenuTableView_(self, _cmd, newValue)
-{
-    self.menuTableView = newValue;
-}
-,["void","CPTableView"]), new objj_method(sel_getUid("anotherView"), function $AdminView__anotherView(self, _cmd)
-{
-    return self.anotherView;
-}
-,["CPView"]), new objj_method(sel_getUid("setAnotherView:"), function $AdminView__setAnotherView_(self, _cmd, newValue)
-{
-    self.anotherView = newValue;
-}
-,["void","CPView"]), new objj_method(sel_getUid("init"), function $AdminView__init(self, _cmd)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("AdminView").super_class }, "initWithFrame:", CGRectMake(0, 0, 500, 500));
-    if (self)
-    {
-        var splitView = objj_msgSend(objj_msgSend(CPSplitView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 500, 500));
-        objj_msgSend(splitView, "setDelegate:", self);
-        objj_msgSend(splitView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
-        objj_msgSend(self, "addSubview:", splitView);
-        self.menuTableView = objj_msgSend(objj_msgSend(CPTableView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 150, 500));
-        objj_msgSend(self.menuTableView, "setHeaderView:", nil);
-        objj_msgSend(self.menuTableView, "addTableColumn:", objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "menuitems"));
-        self.scrollTableView = objj_msgSend(objj_msgSend(CPScrollView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 150, 500));
-        objj_msgSend(self.scrollTableView, "setDocumentView:", self.menuTableView);
-        objj_msgSend(splitView, "addSubview:", self.scrollTableView);
-        self.anotherView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 350, 500));
-        objj_msgSend(self.anotherView, "setBackgroundColor:", objj_msgSend(CPColor, "grayColor"));
-        objj_msgSend(splitView, "addSubview:", self.anotherView);
-        objj_msgSend(self, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
-    }
-    return self;
-}
-,["id"]), new objj_method(sel_getUid("splitView:constrainSplitPosition:ofSubviewAt:"), function $AdminView__splitView_constrainSplitPosition_ofSubviewAt_(self, _cmd, aSpiltView, proposedPosition, subviewIndex)
-{
-    if (subviewIndex === 0)
-    {
-        return 150;
-    }
-    return proposedPosition;
-}
-,["float","CPSplitView","float","int"]), new objj_method(sel_getUid("splitView:resizeSubviewsWithOldSize:"), function $AdminView__splitView_resizeSubviewsWithOldSize_(self, _cmd, aSplitView, oldSize)
-{
-    var splitViewSize = objj_msgSend(aSplitView, "frame").size;
-    var leftSize = objj_msgSend(aSplitView, "frame").size;
-    leftSize.width = 150;
-    objj_msgSend(self.scrollTableView, "setFrameSize:", leftSize);
-    objj_msgSend(self.anotherView, "setFrame:", CGRectMake(150 + objj_msgSend(aSplitView, "dividerThickness"), 0, splitViewSize.width - objj_msgSend(aSplitView, "dividerThickness") - 150, splitViewSize.height));
-}
-,["void","CPSplitView","CGSize"])]);
-}p;19;CPArray+Additions.jt;1409;@STATIC;1.0;I;23;Foundation/Foundation.jt;1362;objj_executeFile("Foundation/Foundation.j", NO);{
-var the_class = objj_getClass("CPArray")
-if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPArray\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("last"), function $CPArray__last(self, _cmd)
-{
-    return objj_msgSend(self, "objectAtIndex:", objj_msgSend(self, "count") - 1);
-}
-,["id"]), new objj_method(sel_getUid("first"), function $CPArray__first(self, _cmd)
-{
-    return objj_msgSend(self, "objectAtIndex:", 0);
-}
-,["id"]), new objj_method(sel_getUid("filterWithPredicate:"), function $CPArray__filterWithPredicate_(self, _cmd, predicate)
-{
-    var i = 0,
-        newArray = [],
-        currItem,
-        count = objj_msgSend(self, "count");
-    for (i = 0; i < count; i++)
-    {
-        currItem = objj_msgSend(self, "objectAtIndex:", i);
-        if (predicate(currItem))
-        {
-            newArray.push(currItem);
-        }
-    }
-    return newArray;
-}
-,["CPArray","Function"]), new objj_method(sel_getUid("foreach:"), function $CPArray__foreach_(self, _cmd, action)
-{
-    var i = 0,
-        newArray = [],
-        currItem,
-        count = objj_msgSend(self, "count");
-    for (i = 0; i < count; i++)
-    {
-        currItem = objj_msgSend(self, "objectAtIndex:", i);
-        action(currItem);
-    }
-}
-,["void","Function"])]);
-}p;14;AdminManager.jt;2761;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;SessionManager.ji;21;AdminViewController.ji;13;MenuManager.jt;2629;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("SessionManager.j", YES);objj_executeFile("AdminViewController.j", YES);objj_executeFile("MenuManager.j", YES);var instance;
-{var the_class = objj_allocateClassPair(CPObject, "AdminManager"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("controller"), new objj_ivar("adminItem")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $AdminManager__init(self, _cmd)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("AdminManager").super_class }, "init");
-    if (self)
-    {
-        self.controller = objj_msgSend(objj_msgSend(AdminViewController, "alloc"), "init");
-        objj_msgSend(objj_msgSend(CPNotificationCenter, "defaultCenter"), "addObserver:selector:name:object:", self, sel_getUid("loginStateChanged"), NOTIFICATION_LOGIN_DATA_UPDATED, nil);
-        self.adminItem = objj_msgSend(objj_msgSend(CPMenuItem, "alloc"), "initWithTitle:action:keyEquivalent:", "Admin", sel_getUid("menuItemClicked:"), nil);
-        objj_msgSend(self.adminItem, "setTarget:", self);
-    }
-    return self;
-}
-,["id"]), new objj_method(sel_getUid("menuItemClicked:"), function $AdminManager__menuItemClicked_(self, _cmd, sender)
-{
-    if (objj_msgSend(objj_msgSend(DesktopManager, "instance"), "topViewController") !== self.controller)
-    {
-        objj_msgSend(objj_msgSend(DesktopManager, "instance"), "pushTopViewController:", self.controller);
-    }
-    else
-    {
-        objj_msgSend(objj_msgSend(DesktopManager, "instance"), "removeViewController:", self.controller);
-    }
-    return sender;
-}
-,["id","id"]), new objj_method(sel_getUid("loginStateChanged"), function $AdminManager__loginStateChanged(self, _cmd)
-{
-    objj_msgSend(objj_msgSend(objj_msgSend(MenuManager, "instance"), "leftStack"), "removeObject:", self.adminItem);
-    if (objj_msgSend(objj_msgSend(SessionManager, "instance"), "isAdmin"))
-    {
-        objj_msgSend(objj_msgSend(objj_msgSend(MenuManager, "instance"), "leftStack"), "addObject:", self.adminItem);
-    }
-    else
-    {
-        objj_msgSend(objj_msgSend(DesktopManager, "instance"), "removeViewController:", self.controller);
-    }
-    objj_msgSend(objj_msgSend(MenuManager, "instance"), "refreshMenu");
-}
-,["void"])]);
-class_addMethods(meta_class, [new objj_method(sel_getUid("instance"), function $AdminManager__instance(self, _cmd)
-{
-    if (!instance)
-    {
-        instance = objj_msgSend(objj_msgSend(AdminManager, "alloc"), "init");
-    }
-    return instance;
-}
-,["AdminManager"])]);
 }p;15;SessionWindow.jt;38125;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;20;TextFieldWithLabel.jt;38032;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("TextFieldWithLabel.j", YES);var LOGIN_STATE = 1;
 var REGISTRATION_STATE = 2;
 var FORGOTPASSWORD_STATE = 3;
@@ -1393,159 +1202,78 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("loginState"), function
     return WAITING_STATE;
 }
 ,["CPInteger"])]);
-}p;16;DesktopManager.jt;7172;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;13;MenuManager.ji;19;CPArray+Additions.jt;7063;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("MenuManager.j", YES);objj_executeFile("CPArray+Additions.j", YES);var desktopInstance;
-{var the_class = objj_allocateClassPair(CPButton, "BreadcrumbButton"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("representedObject")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("representedObject"), function $BreadcrumbButton__representedObject(self, _cmd)
+}p;28;SessionTableViewController.jt;3794;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;SessionManager.ji;16;BunnyTableView.jt;3685;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("SessionManager.j", YES);objj_executeFile("BunnyTableView.j", YES);{var the_class = objj_allocateClassPair(CPViewController, "SessionTableViewController"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("tableView"), new objj_ivar("sessionTable"), new objj_ivar("currentStatusCode"), new objj_ivar("currentData")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $SessionTableViewController__init(self, _cmd)
 {
-    return self.representedObject;
-}
-,["id"]), new objj_method(sel_getUid("setRepresentedObject:"), function $BreadcrumbButton__setRepresentedObject_(self, _cmd, newValue)
-{
-    self.representedObject = newValue;
-}
-,["void","id"])]);
-}{var the_class = objj_allocateClassPair(CPObject, "DesktopManager"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("topWindow"), new objj_ivar("contentView"), new objj_ivar("viewControllerStack")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $DesktopManager__init(self, _cmd)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DesktopManager").super_class }, "init");
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("SessionTableViewController").super_class }, "init");
     if (self)
     {
-        self.topWindow = objj_msgSend(objj_msgSend(CPApplication, "sharedApplication"), "mainWindow");
-        self.contentView = objj_msgSend(self.topWindow, "contentView");
-        self.viewControllerStack = objj_msgSend(CPArray, "array");
+        self.tableView = objj_msgSend(objj_msgSend(BunnyTableView, "alloc"), "init");
+        objj_msgSend(self.tableView, "setDataSource:", self);
+        objj_msgSend(self.tableView, "setDelegate:", self);
+        objj_msgSend(self.tableView, "addColumnNamed:", "userid");
+        objj_msgSend(self.tableView, "addColumnNamed:", "loginTime");
+        objj_msgSend(self.tableView, "addColumnNamed:", "ip");
+        objj_msgSend(self.tableView, "addColumnNamed:", "lastUseTime");
+        objj_msgSend(self.tableView, "addColumnNamed:", "expiryTime");
+        objj_msgSend(self, "reloadData");
+        objj_msgSend(self, "setView:", self.tableView);
     }
     return self;
 }
-,["id"]), new objj_method(sel_getUid("desktopResized"), function $DesktopManager__desktopResized(self, _cmd)
+,["id"]), new objj_method(sel_getUid("reloadData"), function $SessionTableViewController__reloadData(self, _cmd)
 {
-    if (self.viewControllerStack.length != 0 && objj_msgSend(objj_msgSend(self.viewControllerStack, "last"), "respondsToSelector:", sel_getUid("desktopDidResizeToRect:")))
+    objj_msgSend(objj_msgSend(SessionManager, "instance"), "get:andNotify:", "/admin/sessions", self);
+}
+,["void"]), new objj_method(sel_getUid("reloadButtonClicked:"), function $SessionTableViewController__reloadButtonClicked_(self, _cmd, sender)
+{
+    objj_msgSend(self, "reloadData");
+}
+,["void","id"]), new objj_method(sel_getUid("numberOfRowsInTableView:"), function $SessionTableViewController__numberOfRowsInTableView_(self, _cmd, aTableView)
+{
+    if (self.sessionTable)
     {
-        objj_msgSend(objj_msgSend(self.viewControllerStack, "last"), "desktopDidResizeToRect:", objj_msgSend(self.contentView, "frame"));
+        return self.sessionTable.length;
     }
-    objj_msgSend(objj_msgSend(objj_msgSend(MenuManager, "instance"), "centerStack"), "removeAllObjects");
-    var i = 0;
-    for (i = 0; i < self.viewControllerStack.length; i++)
-    {
-        var name = self.viewControllerStack[i].isa.name;
-        if (name === "BunnyLabsIconViewController")
-        {
-            continue;
-        }
-        if (objj_msgSend(self.viewControllerStack[i], "respondsToSelector:", sel_getUid("breadcrumbName")))
-        {
-            name = objj_msgSend(self.viewControllerStack[i], "breadcrumbName");
-        }
-        var title = "[" + name + "]";
-        var layer = objj_msgSend(objj_msgSend(CPMenuItem, "alloc"), "initWithTitle:action:keyEquivalent:", "", nil, "");
-        var button = objj_msgSend(BreadcrumbButton, "buttonWithTitle:", title);
-        objj_msgSend(button, "setAction:", sel_getUid("breadcrumbMoveToTop:"));
-        objj_msgSend(button, "setTarget:", self);
-        objj_msgSend(button, "setRepresentedObject:", self.viewControllerStack[i]);
-        var menu = objj_msgSend(objj_msgSend(CPMenu, "alloc"), "init");
-        var menuCloseItem = objj_msgSend(objj_msgSend(CPMenuItem, "alloc"), "initWithTitle:action:keyEquivalent:", "Close", sel_getUid("breadcrumbClose:"), "");
-        objj_msgSend(menuCloseItem, "setTarget:", self);
-        objj_msgSend(menuCloseItem, "setRepresentedObject:", self.viewControllerStack[i]);
-        objj_msgSend(menu, "addItem:", menuCloseItem);
-        objj_msgSend(button, "setMenu:", menu);
-        objj_msgSend(layer, "setView:", button);
-        objj_msgSend(objj_msgSend(objj_msgSend(MenuManager, "instance"), "centerStack"), "addObject:", layer);
-    }
-    objj_msgSend(objj_msgSend(MenuManager, "instance"), "refreshMenu");
+    return 0;
 }
-,["void"]), new objj_method(sel_getUid("breadcrumbMoveToTop:"), function $DesktopManager__breadcrumbMoveToTop_(self, _cmd, sender)
+,["int","CPTableView"]), new objj_method(sel_getUid("tableView:objectValueForTableColumn:row:"), function $SessionTableViewController__tableView_objectValueForTableColumn_row_(self, _cmd, aTableView, aColumn, aRowIndex)
 {
-    objj_msgSend(self, "pushTopViewController:", objj_msgSend(sender, "representedObject"));
+    return self.sessionTable[aRowIndex][objj_msgSend(aColumn, "identifier")];
 }
-,["void","id"]), new objj_method(sel_getUid("breadcrumbClose:"), function $DesktopManager__breadcrumbClose_(self, _cmd, sender)
+,["id","CPTableView","CPTableColumn","int"]), new objj_method(sel_getUid("tableView:shouldEditTableColumn:row:"), function $SessionTableViewController__tableView_shouldEditTableColumn_row_(self, _cmd, aTableView, aTableColumn, rowIndex)
 {
-    objj_msgSend(self, "removeViewController:", objj_msgSend(sender, "representedObject"));
+    return NO;
 }
-,["void","id"]), new objj_method(sel_getUid("setDefaultButton:"), function $DesktopManager__setDefaultButton_(self, _cmd, aButton)
+,["BOOL","CPTableView","CPTableColumn","int"]), new objj_method(sel_getUid("connection:didFailWithError:"), function $SessionTableViewController__connection_didFailWithError_(self, _cmd, connection, error)
 {
-    objj_msgSend(self.topWindow, "setDefaultButton:", aButton);
 }
-,["void","CPButton"]), new objj_method(sel_getUid("defaultButton"), function $DesktopManager__defaultButton(self, _cmd)
+,["void","CPURLConnection","id"]), new objj_method(sel_getUid("connection:didReceiveResponse:"), function $SessionTableViewController__connection_didReceiveResponse_(self, _cmd, connection, response)
 {
-    return objj_msgSend(self.topWindow, "defaultButton");
+    self.currentStatusCode = objj_msgSend(response, "statusCode");
 }
-,["CPButton"]), new objj_method(sel_getUid("topViewController"), function $DesktopManager__topViewController(self, _cmd)
+,["void","CPURLConnection","CPHTTPURLResponse"]), new objj_method(sel_getUid("connection:didReceiveData:"), function $SessionTableViewController__connection_didReceiveData_(self, _cmd, connection, data)
 {
-    if (self.viewControllerStack.length != 0)
-    {
-        return objj_msgSend(self.viewControllerStack, "last");
-    }
-    return nil;
+    self.currentData = data;
 }
-,["CPViewController"]), new objj_method(sel_getUid("pushTopViewController:"), function $DesktopManager__pushTopViewController_(self, _cmd, aViewController)
+,["void","CPURLConnection","CPString"]), new objj_method(sel_getUid("connectionDidFinishLoading:"), function $SessionTableViewController__connectionDidFinishLoading_(self, _cmd, connection)
 {
-    objj_msgSend(self, "_remove:", aViewController);
-    self.viewControllerStack = objj_msgSend(self.viewControllerStack, "arrayByAddingObject:", aViewController);
-    objj_msgSend(self, "_update");
+    self.sessionTable = JSON.parse(self.currentData);
+    objj_msgSend(self.tableView, "reloadData");
 }
-,["void","CPViewController"]), new objj_method(sel_getUid("removeViewController:"), function $DesktopManager__removeViewController_(self, _cmd, aViewController)
-{
-    objj_msgSend(self, "_remove:", aViewController);
-    objj_msgSend(self, "_update");
-}
-,["void","CPViewController"]), new objj_method(sel_getUid("_remove:"), function $DesktopManager___remove_(self, _cmd, aViewController)
-{
-    self.viewControllerStack = objj_msgSend(self.viewControllerStack, "filterWithPredicate:", function(item)
-    {
-        return item !== aViewController;
-    });
-}
-,["void","CPViewController"]), new objj_method(sel_getUid("_update"), function $DesktopManager___update(self, _cmd)
-{
-    while (objj_msgSend(self.contentView, "subviews").length != 0)
-    {
-        objj_msgSend(objj_msgSend(self.contentView, "subviews")[0], "removeFromSuperview");
-    }
-    if (self.viewControllerStack.length != 0)
-    {
-        var currentViewController = objj_msgSend(self.viewControllerStack, "last");
-        objj_msgSend(self.contentView, "addSubview:", objj_msgSend(currentViewController, "view"));
-        objj_msgSend(objj_msgSend(currentViewController, "view"), "setCenter:", objj_msgSend(self.contentView, "center"));
-        if (objj_msgSend(objj_msgSend(self.viewControllerStack, "last"), "respondsToSelector:", sel_getUid("viewFillsDesktop")) && objj_msgSend(objj_msgSend(self.viewControllerStack, "last"), "viewFillsDesktop"))
-        {
-            objj_msgSend(objj_msgSend(currentViewController, "view"), "setFrame:", objj_msgSend(self.contentView, "frame"));
-        }
-    }
-    objj_msgSend(self, "desktopResized");
-}
-,["void"])]);
-class_addMethods(meta_class, [new objj_method(sel_getUid("instance"), function $DesktopManager__instance(self, _cmd)
-{
-    if (!desktopInstance)
-    {
-        desktopInstance = objj_msgSend(objj_msgSend(DesktopManager, "alloc"), "init");
-    }
-    return desktopInstance;
-}
-,["DesktopManager"])]);
-}p;29;BunnyLabsIconViewController.jt;1368;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;1301;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPViewController, "BunnyLabsIconViewController"),
+,["void","CPURLConnection"])]);
+}p;17;SessionMenuItem.jt;650;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;584;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPMenuItem, "SessionMenuItem"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $BunnyLabsIconViewController__init(self, _cmd)
+class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $SessionMenuItem__init(self, _cmd)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("BunnyLabsIconViewController").super_class }, "init");
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("SessionMenuItem").super_class }, "initWithTitle:action:keyEquivalent:", "Log In", sel_getUid("menuItemClicked:"), nil);
     if (self)
     {
-        var bundle = objj_msgSend(CPBundle, "mainBundle");
-        var file = objj_msgSend(bundle, "pathForResource:", "Images/bunnylabs.png");
-        var image = objj_msgSend(objj_msgSend(CPImage, "alloc"), "initWithContentsOfFile:", file);
-        var imageView = objj_msgSend(objj_msgSend(CPImageView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 200, 200));
-        objj_msgSend(imageView, "setImage:", image);
-        objj_msgSend(imageView, "setAutoresizingMask:", CPViewMinXMargin | CPViewMaxXMargin | CPViewMinYMargin | CPViewMaxYMargin);
-        objj_msgSend(self, "setView:", imageView);
     }
     return self;
 }
-,["id"]), new objj_method(sel_getUid("breadcrumbName"), function $BunnyLabsIconViewController__breadcrumbName(self, _cmd)
-{
-    return "Desktop";
-}
-,["CPString"])]);
+,["id"])]);
 }p;16;SessionManager.jt;21777;@STATIC;1.0;I;23;Foundation/Foundation.ji;15;SessionWindow.ji;17;SessionMenuItem.ji;16;DesktopManager.ji;20;Utils/HashFragment.ji;22;Utils/URLQueryString.jt;21614;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("SessionWindow.j", YES);objj_executeFile("SessionMenuItem.j", YES);objj_executeFile("DesktopManager.j", YES);objj_executeFile("Utils/HashFragment.j", YES);objj_executeFile("Utils/URLQueryString.j", YES);var GITHUB_CLIENT_ID = "39cee75ce85db5da2576";
 var apiServerUrl = "https://bunnylabs-api.astrobunny.net";
 var session;
@@ -1946,129 +1674,386 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("instance"), function $
     return session;
 }
 ,["SessionManager"])]);
-}p;28;SessionTableViewController.jt;3794;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;SessionManager.ji;16;BunnyTableView.jt;3685;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("SessionManager.j", YES);objj_executeFile("BunnyTableView.j", YES);{var the_class = objj_allocateClassPair(CPViewController, "SessionTableViewController"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("tableView"), new objj_ivar("sessionTable"), new objj_ivar("currentStatusCode"), new objj_ivar("currentData")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $SessionTableViewController__init(self, _cmd)
+}p;13;MenuManager.jt;2365;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;19;CPArray+Additions.jt;2274;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("CPArray+Additions.j", YES);var menuManagerInstance;
+{var the_class = objj_allocateClassPair(CPObject, "MenuManager"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("leftStack"), new objj_ivar("centerStack"), new objj_ivar("rightStack")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $MenuManager__init(self, _cmd)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("SessionTableViewController").super_class }, "init");
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("MenuManager").super_class }, "init");
     if (self)
     {
-        self.tableView = objj_msgSend(objj_msgSend(BunnyTableView, "alloc"), "init");
-        objj_msgSend(self.tableView, "setDataSource:", self);
-        objj_msgSend(self.tableView, "setDelegate:", self);
-        objj_msgSend(self.tableView, "addColumnNamed:", "userid");
-        objj_msgSend(self.tableView, "addColumnNamed:", "loginTime");
-        objj_msgSend(self.tableView, "addColumnNamed:", "ip");
-        objj_msgSend(self.tableView, "addColumnNamed:", "lastUseTime");
-        objj_msgSend(self.tableView, "addColumnNamed:", "expiryTime");
-        objj_msgSend(self, "reloadData");
-        objj_msgSend(self, "setView:", self.tableView);
+        self.leftStack = objj_msgSend(CPArray, "array");
+        self.centerStack = objj_msgSend(CPArray, "array");
+        self.rightStack = objj_msgSend(CPArray, "array");
     }
     return self;
 }
-,["id"]), new objj_method(sel_getUid("reloadData"), function $SessionTableViewController__reloadData(self, _cmd)
+,["id"]), new objj_method(sel_getUid("leftStack"), function $MenuManager__leftStack(self, _cmd)
 {
-    objj_msgSend(objj_msgSend(SessionManager, "instance"), "get:andNotify:", "/admin/sessions", self);
+    return self.leftStack;
 }
-,["void"]), new objj_method(sel_getUid("reloadButtonClicked:"), function $SessionTableViewController__reloadButtonClicked_(self, _cmd, sender)
+,["CPArray"]), new objj_method(sel_getUid("centerStack"), function $MenuManager__centerStack(self, _cmd)
 {
-    objj_msgSend(self, "reloadData");
+    return self.centerStack;
 }
-,["void","id"]), new objj_method(sel_getUid("numberOfRowsInTableView:"), function $SessionTableViewController__numberOfRowsInTableView_(self, _cmd, aTableView)
+,["CPArray"]), new objj_method(sel_getUid("rightStack"), function $MenuManager__rightStack(self, _cmd)
 {
-    if (self.sessionTable)
+    return self.rightStack;
+}
+,["CPArray"]), new objj_method(sel_getUid("refreshMenu"), function $MenuManager__refreshMenu(self, _cmd)
+{
+    var mainMenu = objj_msgSend(objj_msgSend(CPApplication, "sharedApplication"), "mainMenu");
+    while (objj_msgSend(mainMenu, "countOfItems") > 0)
     {
-        return self.sessionTable.length;
+        objj_msgSend(mainMenu, "removeItemAtIndex:", 0);
     }
-    return 0;
-}
-,["int","CPTableView"]), new objj_method(sel_getUid("tableView:objectValueForTableColumn:row:"), function $SessionTableViewController__tableView_objectValueForTableColumn_row_(self, _cmd, aTableView, aColumn, aRowIndex)
-{
-    return self.sessionTable[aRowIndex][objj_msgSend(aColumn, "identifier")];
-}
-,["id","CPTableView","CPTableColumn","int"]), new objj_method(sel_getUid("tableView:shouldEditTableColumn:row:"), function $SessionTableViewController__tableView_shouldEditTableColumn_row_(self, _cmd, aTableView, aTableColumn, rowIndex)
-{
-    return NO;
-}
-,["BOOL","CPTableView","CPTableColumn","int"]), new objj_method(sel_getUid("connection:didFailWithError:"), function $SessionTableViewController__connection_didFailWithError_(self, _cmd, connection, error)
-{
-}
-,["void","CPURLConnection","id"]), new objj_method(sel_getUid("connection:didReceiveResponse:"), function $SessionTableViewController__connection_didReceiveResponse_(self, _cmd, connection, response)
-{
-    self.currentStatusCode = objj_msgSend(response, "statusCode");
-}
-,["void","CPURLConnection","CPHTTPURLResponse"]), new objj_method(sel_getUid("connection:didReceiveData:"), function $SessionTableViewController__connection_didReceiveData_(self, _cmd, connection, data)
-{
-    self.currentData = data;
-}
-,["void","CPURLConnection","CPString"]), new objj_method(sel_getUid("connectionDidFinishLoading:"), function $SessionTableViewController__connectionDidFinishLoading_(self, _cmd, connection)
-{
-    self.sessionTable = JSON.parse(self.currentData);
-    objj_msgSend(self.tableView, "reloadData");
-}
-,["void","CPURLConnection"])]);
-}p;17;ApplicationInfo.jt;2180;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;2113;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPObject, "ApplicationInfo"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("icon"), new objj_ivar("application"), new objj_ivar("bundle")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("icon"), function $ApplicationInfo__icon(self, _cmd)
-{
-    return self.icon;
-}
-,["CPImage"]), new objj_method(sel_getUid("setIcon:"), function $ApplicationInfo__setIcon_(self, _cmd, newValue)
-{
-    self.icon = newValue;
-}
-,["void","CPImage"]), new objj_method(sel_getUid("application"), function $ApplicationInfo__application(self, _cmd)
-{
-    return self.application;
-}
-,["id"]), new objj_method(sel_getUid("setApplication:"), function $ApplicationInfo__setApplication_(self, _cmd, newValue)
-{
-    self.application = newValue;
-}
-,["void","id"]), new objj_method(sel_getUid("bundle"), function $ApplicationInfo__bundle(self, _cmd)
-{
-    return self.bundle;
-}
-,["CPBundle"]), new objj_method(sel_getUid("setBundle:"), function $ApplicationInfo__setBundle_(self, _cmd, newValue)
-{
-    self.bundle = newValue;
-}
-,["void","CPBundle"]), new objj_method(sel_getUid("name"), function $ApplicationInfo__name(self, _cmd)
-{
-    var name = objj_msgSend(objj_msgSend(self.bundle, "infoDictionary"), "objectForKey:", "CPBundleName");
-    return name;
-}
-,["CPString"])]);
-class_addMethods(meta_class, [new objj_method(sel_getUid("applicationInfoOf:withBundle:"), function $ApplicationInfo__applicationInfoOf_withBundle_(self, _cmd, anApp, aBundle)
-{
-    var result = objj_msgSend(objj_msgSend(ApplicationInfo, "alloc"), "init");
-    var file = objj_msgSend(aBundle, "pathForResource:", "Images/icon.png");
-    var icon = objj_msgSend(objj_msgSend(CPImage, "alloc"), "initWithContentsOfFile:size:", file, CGSizeMake(200.0, 200.0));
-    objj_msgSend(result, "setApplication:", anApp);
-    objj_msgSend(result, "setIcon:", icon);
-    objj_msgSend(result, "setBundle:", aBundle);
-    return result;
-}
-,["ApplicationInfo","CPString","CPBundle"])]);
-}p;6;main.jt;292;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;15;AppController.jt;206;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("AppController.j", YES);main = function(args, namedArgs)
-{
-    CPApplicationMain(args, namedArgs);
-}
-p;20;Utils/HashFragment.jt;806;@STATIC;1.0;I;23;Foundation/Foundation.ji;16;URLQueryString.jt;739;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("URLQueryString.j", YES);{var the_class = objj_allocateClassPair(CPObject, "HashFragment"),
-meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(meta_class, [new objj_method(sel_getUid("fragment"), function $HashFragment__fragment(self, _cmd)
-{
-    return window.location.hash;
-}
-,["CPString"]), new objj_method(sel_getUid("fragmentAsObject"), function $HashFragment__fragmentAsObject(self, _cmd)
-{
-    return objj_msgSend(URLQueryString, "deserialize:", window.location.hash.substring(1));
-}
-,["id"]), new objj_method(sel_getUid("clearFragment"), function $HashFragment__clearFragment(self, _cmd)
-{
-    window.location.hash = "";
+    objj_msgSend(mainMenu, "removeAllItems");
+addItem = function(menuItem)
+    {
+        objj_msgSend(mainMenu, "addItem:", menuItem);
+    }
+    objj_msgSend(self.leftStack, "foreach:", addItem);
+    objj_msgSend(self.centerStack, "foreach:", addItem);
+    objj_msgSend(mainMenu, "addItem:", objj_msgSend(CPMenuItem, "separatorItem"));
+    objj_msgSend(self.rightStack, "foreach:", addItem);
 }
 ,["void"])]);
+class_addMethods(meta_class, [new objj_method(sel_getUid("instance"), function $MenuManager__instance(self, _cmd)
+{
+    if (!menuManagerInstance)
+    {
+        menuManagerInstance = objj_msgSend(objj_msgSend(MenuManager, "alloc"), "init");
+    }
+    return menuManagerInstance;
+}
+,["MenuManager"])]);
+}p;29;BunnyLabsIconViewController.jt;1368;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;1301;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPViewController, "BunnyLabsIconViewController"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $BunnyLabsIconViewController__init(self, _cmd)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("BunnyLabsIconViewController").super_class }, "init");
+    if (self)
+    {
+        var bundle = objj_msgSend(CPBundle, "mainBundle");
+        var file = objj_msgSend(bundle, "pathForResource:", "Images/bunnylabs.png");
+        var image = objj_msgSend(objj_msgSend(CPImage, "alloc"), "initWithContentsOfFile:", file);
+        var imageView = objj_msgSend(objj_msgSend(CPImageView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 200, 200));
+        objj_msgSend(imageView, "setImage:", image);
+        objj_msgSend(imageView, "setAutoresizingMask:", CPViewMinXMargin | CPViewMaxXMargin | CPViewMinYMargin | CPViewMaxYMargin);
+        objj_msgSend(self, "setView:", imageView);
+    }
+    return self;
+}
+,["id"]), new objj_method(sel_getUid("breadcrumbName"), function $BunnyLabsIconViewController__breadcrumbName(self, _cmd)
+{
+    return "Desktop";
+}
+,["CPString"])]);
+}p;16;BunnyTableView.jt;4233;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;4166;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "BunnyTableView"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("scrollView"), new objj_ivar("tableView"), new objj_ivar("reloadButton")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $BunnyTableView__init(self, _cmd)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("BunnyTableView").super_class }, "initWithFrame:", CGRectMake(0, 0, 100, 100));
+    if (self)
+    {
+        self.tableView = objj_msgSend(objj_msgSend(CPTableView, "alloc"), "init");
+        objj_msgSend(self.tableView, "setColumnAutoresizingStyle:", CPTableViewUniformColumnAutoresizingStyle);
+        objj_msgSend(self.tableView, "setAlternatingRowBackgroundColors:", [objj_msgSend(CPColor, "grayColor"), objj_msgSend(CPColor, "whiteColor")]);
+        self.reloadButton = objj_msgSend(CPButton, "buttonWithTitle:", "Reload");
+        objj_msgSend(self.reloadButton, "setFrameOrigin:", CGPointMake(3, 3));
+        objj_msgSend(self.reloadButton, "setTarget:", self);
+        objj_msgSend(self.reloadButton, "setAction:", sel_getUid("reloadButtonClicked:"));
+        objj_msgSend(self, "addSubview:", self.reloadButton);
+        self.scrollView = objj_msgSend(objj_msgSend(CPScrollView, "alloc"), "initWithFrame:", CGRectMake(0, 30, 100, 70));
+        objj_msgSend(self.scrollView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+        objj_msgSend(self.scrollView, "setDocumentView:", self.tableView);
+        objj_msgSend(self, "addSubview:", self.scrollView);
+    }
+    return self;
+}
+,["id"]), new objj_method(sel_getUid("reloadButtonClicked:"), function $BunnyTableView__reloadButtonClicked_(self, _cmd, sender)
+{
+    if (objj_msgSend(objj_msgSend(self, "delegate"), "respondsToSelector:", sel_getUid("reloadButtonClicked:")))
+    {
+        objj_msgSend(objj_msgSend(self, "delegate"), "reloadButtonClicked:", self);
+    }
+}
+,["void","id"]), new objj_method(sel_getUid("reloadData"), function $BunnyTableView__reloadData(self, _cmd)
+{
+    objj_msgSend(self.tableView, "reloadData");
+}
+,["void"]), new objj_method(sel_getUid("addColumnNamed:"), function $BunnyTableView__addColumnNamed_(self, _cmd, anIdentifier)
+{
+    var column = objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", anIdentifier);
+    objj_msgSend(objj_msgSend(column, "headerView"), "setStringValue:", anIdentifier);
+    objj_msgSend(column, "setResizingMask:", CPTableColumnAutoresizingMask | CPTableColumnUserResizingMask);
+    objj_msgSend(column, "setEditable:", YES);
+    objj_msgSend(self.tableView, "addTableColumn:", column);
+}
+,["void","CPString"]), new objj_method(sel_getUid("addBooleanColumnNamed:"), function $BunnyTableView__addBooleanColumnNamed_(self, _cmd, anIdentifier)
+{
+    var column = objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", anIdentifier);
+    objj_msgSend(objj_msgSend(column, "headerView"), "setStringValue:", anIdentifier);
+    objj_msgSend(column, "setResizingMask:", CPTableColumnNoResizing);
+    objj_msgSend(column, "setEditable:", YES);
+    objj_msgSend(column, "setMaxWidth:", 50);
+    objj_msgSend(column, "setDataView:", objj_msgSend(objj_msgSend(CPCheckBox, "alloc"), "init"));
+    objj_msgSend(self.tableView, "addTableColumn:", column);
+}
+,["void","CPString"]), new objj_method(sel_getUid("setDataSource:"), function $BunnyTableView__setDataSource_(self, _cmd, aDataSource)
+{
+    objj_msgSend(self.tableView, "setDataSource:", aDataSource);
+}
+,["void","id"]), new objj_method(sel_getUid("setDelegate:"), function $BunnyTableView__setDelegate_(self, _cmd, aDelegate)
+{
+    objj_msgSend(self.tableView, "setDelegate:", aDelegate);
+}
+,["void","id"]), new objj_method(sel_getUid("delegate"), function $BunnyTableView__delegate(self, _cmd)
+{
+    return objj_msgSend(self.tableView, "delegate");
+}
+,["id"]), new objj_method(sel_getUid("dataSource"), function $BunnyTableView__dataSource(self, _cmd)
+{
+    return objj_msgSend(self.tableView, "dataSource");
+}
+,["id"])]);
+}p;19;CPArray+Additions.jt;1409;@STATIC;1.0;I;23;Foundation/Foundation.jt;1362;objj_executeFile("Foundation/Foundation.j", NO);{
+var the_class = objj_getClass("CPArray")
+if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPArray\"");
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("last"), function $CPArray__last(self, _cmd)
+{
+    return objj_msgSend(self, "objectAtIndex:", objj_msgSend(self, "count") - 1);
+}
+,["id"]), new objj_method(sel_getUid("first"), function $CPArray__first(self, _cmd)
+{
+    return objj_msgSend(self, "objectAtIndex:", 0);
+}
+,["id"]), new objj_method(sel_getUid("filterWithPredicate:"), function $CPArray__filterWithPredicate_(self, _cmd, predicate)
+{
+    var i = 0,
+        newArray = [],
+        currItem,
+        count = objj_msgSend(self, "count");
+    for (i = 0; i < count; i++)
+    {
+        currItem = objj_msgSend(self, "objectAtIndex:", i);
+        if (predicate(currItem))
+        {
+            newArray.push(currItem);
+        }
+    }
+    return newArray;
+}
+,["CPArray","Function"]), new objj_method(sel_getUid("foreach:"), function $CPArray__foreach_(self, _cmd, action)
+{
+    var i = 0,
+        newArray = [],
+        currItem,
+        count = objj_msgSend(self, "count");
+    for (i = 0; i < count; i++)
+    {
+        currItem = objj_msgSend(self, "objectAtIndex:", i);
+        action(currItem);
+    }
+}
+,["void","Function"])]);
+}p;16;DesktopManager.jt;7172;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;13;MenuManager.ji;19;CPArray+Additions.jt;7063;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("MenuManager.j", YES);objj_executeFile("CPArray+Additions.j", YES);var desktopInstance;
+{var the_class = objj_allocateClassPair(CPButton, "BreadcrumbButton"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("representedObject")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("representedObject"), function $BreadcrumbButton__representedObject(self, _cmd)
+{
+    return self.representedObject;
+}
+,["id"]), new objj_method(sel_getUid("setRepresentedObject:"), function $BreadcrumbButton__setRepresentedObject_(self, _cmd, newValue)
+{
+    self.representedObject = newValue;
+}
+,["void","id"])]);
+}{var the_class = objj_allocateClassPair(CPObject, "DesktopManager"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("topWindow"), new objj_ivar("contentView"), new objj_ivar("viewControllerStack")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $DesktopManager__init(self, _cmd)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DesktopManager").super_class }, "init");
+    if (self)
+    {
+        self.topWindow = objj_msgSend(objj_msgSend(CPApplication, "sharedApplication"), "mainWindow");
+        self.contentView = objj_msgSend(self.topWindow, "contentView");
+        self.viewControllerStack = objj_msgSend(CPArray, "array");
+    }
+    return self;
+}
+,["id"]), new objj_method(sel_getUid("desktopResized"), function $DesktopManager__desktopResized(self, _cmd)
+{
+    if (self.viewControllerStack.length != 0 && objj_msgSend(objj_msgSend(self.viewControllerStack, "last"), "respondsToSelector:", sel_getUid("desktopDidResizeToRect:")))
+    {
+        objj_msgSend(objj_msgSend(self.viewControllerStack, "last"), "desktopDidResizeToRect:", objj_msgSend(self.contentView, "frame"));
+    }
+    objj_msgSend(objj_msgSend(objj_msgSend(MenuManager, "instance"), "centerStack"), "removeAllObjects");
+    var i = 0;
+    for (i = 0; i < self.viewControllerStack.length; i++)
+    {
+        var name = self.viewControllerStack[i].isa.name;
+        if (name === "BunnyLabsIconViewController")
+        {
+            continue;
+        }
+        if (objj_msgSend(self.viewControllerStack[i], "respondsToSelector:", sel_getUid("breadcrumbName")))
+        {
+            name = objj_msgSend(self.viewControllerStack[i], "breadcrumbName");
+        }
+        var title = "[" + name + "]";
+        var layer = objj_msgSend(objj_msgSend(CPMenuItem, "alloc"), "initWithTitle:action:keyEquivalent:", "", nil, "");
+        var button = objj_msgSend(BreadcrumbButton, "buttonWithTitle:", title);
+        objj_msgSend(button, "setAction:", sel_getUid("breadcrumbMoveToTop:"));
+        objj_msgSend(button, "setTarget:", self);
+        objj_msgSend(button, "setRepresentedObject:", self.viewControllerStack[i]);
+        var menu = objj_msgSend(objj_msgSend(CPMenu, "alloc"), "init");
+        var menuCloseItem = objj_msgSend(objj_msgSend(CPMenuItem, "alloc"), "initWithTitle:action:keyEquivalent:", "Close", sel_getUid("breadcrumbClose:"), "");
+        objj_msgSend(menuCloseItem, "setTarget:", self);
+        objj_msgSend(menuCloseItem, "setRepresentedObject:", self.viewControllerStack[i]);
+        objj_msgSend(menu, "addItem:", menuCloseItem);
+        objj_msgSend(button, "setMenu:", menu);
+        objj_msgSend(layer, "setView:", button);
+        objj_msgSend(objj_msgSend(objj_msgSend(MenuManager, "instance"), "centerStack"), "addObject:", layer);
+    }
+    objj_msgSend(objj_msgSend(MenuManager, "instance"), "refreshMenu");
+}
+,["void"]), new objj_method(sel_getUid("breadcrumbMoveToTop:"), function $DesktopManager__breadcrumbMoveToTop_(self, _cmd, sender)
+{
+    objj_msgSend(self, "pushTopViewController:", objj_msgSend(sender, "representedObject"));
+}
+,["void","id"]), new objj_method(sel_getUid("breadcrumbClose:"), function $DesktopManager__breadcrumbClose_(self, _cmd, sender)
+{
+    objj_msgSend(self, "removeViewController:", objj_msgSend(sender, "representedObject"));
+}
+,["void","id"]), new objj_method(sel_getUid("setDefaultButton:"), function $DesktopManager__setDefaultButton_(self, _cmd, aButton)
+{
+    objj_msgSend(self.topWindow, "setDefaultButton:", aButton);
+}
+,["void","CPButton"]), new objj_method(sel_getUid("defaultButton"), function $DesktopManager__defaultButton(self, _cmd)
+{
+    return objj_msgSend(self.topWindow, "defaultButton");
+}
+,["CPButton"]), new objj_method(sel_getUid("topViewController"), function $DesktopManager__topViewController(self, _cmd)
+{
+    if (self.viewControllerStack.length != 0)
+    {
+        return objj_msgSend(self.viewControllerStack, "last");
+    }
+    return nil;
+}
+,["CPViewController"]), new objj_method(sel_getUid("pushTopViewController:"), function $DesktopManager__pushTopViewController_(self, _cmd, aViewController)
+{
+    objj_msgSend(self, "_remove:", aViewController);
+    self.viewControllerStack = objj_msgSend(self.viewControllerStack, "arrayByAddingObject:", aViewController);
+    objj_msgSend(self, "_update");
+}
+,["void","CPViewController"]), new objj_method(sel_getUid("removeViewController:"), function $DesktopManager__removeViewController_(self, _cmd, aViewController)
+{
+    objj_msgSend(self, "_remove:", aViewController);
+    objj_msgSend(self, "_update");
+}
+,["void","CPViewController"]), new objj_method(sel_getUid("_remove:"), function $DesktopManager___remove_(self, _cmd, aViewController)
+{
+    self.viewControllerStack = objj_msgSend(self.viewControllerStack, "filterWithPredicate:", function(item)
+    {
+        return item !== aViewController;
+    });
+}
+,["void","CPViewController"]), new objj_method(sel_getUid("_update"), function $DesktopManager___update(self, _cmd)
+{
+    while (objj_msgSend(self.contentView, "subviews").length != 0)
+    {
+        objj_msgSend(objj_msgSend(self.contentView, "subviews")[0], "removeFromSuperview");
+    }
+    if (self.viewControllerStack.length != 0)
+    {
+        var currentViewController = objj_msgSend(self.viewControllerStack, "last");
+        objj_msgSend(self.contentView, "addSubview:", objj_msgSend(currentViewController, "view"));
+        objj_msgSend(objj_msgSend(currentViewController, "view"), "setCenter:", objj_msgSend(self.contentView, "center"));
+        if (objj_msgSend(objj_msgSend(self.viewControllerStack, "last"), "respondsToSelector:", sel_getUid("viewFillsDesktop")) && objj_msgSend(objj_msgSend(self.viewControllerStack, "last"), "viewFillsDesktop"))
+        {
+            objj_msgSend(objj_msgSend(currentViewController, "view"), "setFrame:", objj_msgSend(self.contentView, "frame"));
+        }
+    }
+    objj_msgSend(self, "desktopResized");
+}
+,["void"])]);
+class_addMethods(meta_class, [new objj_method(sel_getUid("instance"), function $DesktopManager__instance(self, _cmd)
+{
+    if (!desktopInstance)
+    {
+        desktopInstance = objj_msgSend(objj_msgSend(DesktopManager, "alloc"), "init");
+    }
+    return desktopInstance;
+}
+,["DesktopManager"])]);
+}p;10;IconView.jt;2488;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;17;ApplicationInfo.jt;2399;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("ApplicationInfo.j", YES);{var the_class = objj_allocateClassPair(CPView, "IconView"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_imageView"), new objj_ivar("_textField")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $IconView__initWithCoder_(self, _cmd, aCoder)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("IconView").super_class }, "initWithCoder:", aCoder);
+    if (self)
+    {
+        self._imageView = objj_msgSend(objj_msgSend(CPImageView, "alloc"), "initWithFrame:", CGRectMake(25, 5, 100, 100));
+        objj_msgSend(self._imageView, "setImageScaling:", CPScaleProportionally);
+        objj_msgSend(self, "addSubview:", self._imageView);
+        var textRect = CGRectMake(5, 107, 140, 40);
+        self._textField = objj_msgSend(objj_msgSend(CPTextField, "alloc"), "initWithFrame:", textRect);
+        objj_msgSend(self._textField, "setLineBreakMode:", CPLineBreakByWordWrapping);
+        objj_msgSend(self._textField, "setAlignment:", CPCenterTextAlignment);
+        objj_msgSend(self._textField, "setVerticalAlignment:", CPCenterVerticalTextAlignment);
+        objj_msgSend(self._textField, "setTextShadowColor:", objj_msgSend(CPColor, "whiteColor"));
+        objj_msgSend(self._textField, "setTextShadowOffset:", CGSizeMake(1, 1));
+        var font = objj_msgSend(CPFont, "boldFontWithName:size:", "Helvetica", 12);
+        objj_msgSend(self._textField, "setFont:", font);
+        objj_msgSend(self._textField, "setTextColor:", objj_msgSend(CPColor, "blackColor"));
+        objj_msgSend(self, "addSubview:", self._textField);
+    }
+    return self;
+}
+,["id","CPCoder"]), new objj_method(sel_getUid("setRepresentedObject:"), function $IconView__setRepresentedObject_(self, _cmd, appInfo)
+{
+    if (appInfo)
+    {
+        objj_msgSend(self._textField, "setStringValue:", objj_msgSend(appInfo, "name"));
+        objj_msgSend(self._imageView, "setImage:", objj_msgSend(appInfo, "icon"));
+    }
+}
+,["void","ApplicationInfo"]), new objj_method(sel_getUid("setSelected:"), function $IconView__setSelected_(self, _cmd, isSelected)
+{
+    objj_msgSend(self, "setBackgroundColor:", isSelected ? objj_msgSend(CPColor, "grayColor") : nil);
+}
+,["void","BOOL"])]);
+}p;20;IconCollectionView.jt;1614;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;17;ApplicationInfo.ji;10;IconView.jt;1510;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("ApplicationInfo.j", YES);objj_executeFile("IconView.j", YES);{var the_class = objj_allocateClassPair(CPCollectionView, "IconCollectionView"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("_prepare"), function $IconCollectionView___prepare(self, _cmd)
+{
+    objj_msgSend(self, "setMinItemSize:", CGSizeMake(150, 150));
+    objj_msgSend(self, "setMaxItemSize:", CGSizeMake(150, 150));
+    var itemPrototype = objj_msgSend(objj_msgSend(CPCollectionViewItem, "alloc"), "init"),
+        iconView = objj_msgSend(objj_msgSend(IconView, "alloc"), "initWithFrame:", CGRectMakeZero());
+    objj_msgSend(itemPrototype, "setView:", iconView);
+    objj_msgSend(self, "setItemPrototype:", itemPrototype);
+}
+,["void"]), new objj_method(sel_getUid("init"), function $IconCollectionView__init(self, _cmd)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("IconCollectionView").super_class }, "init");
+    if (self)
+    {
+        objj_msgSend(self, "_prepare");
+    }
+    return self;
+}
+,["id"]), new objj_method(sel_getUid("initWithFrame:"), function $IconCollectionView__initWithFrame_(self, _cmd, frame)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("IconCollectionView").super_class }, "initWithFrame:", frame);
+{
+    objj_msgSend(self, "_prepare");
+}
+    return self;
+}
+,["id","CGRect"])]);
 }p;22;Utils/URLQueryString.jt;1640;@STATIC;1.0;I;23;Foundation/Foundation.jt;1593;objj_executeFile("Foundation/Foundation.j", NO);{var the_class = objj_allocateClassPair(CPObject, "URLQueryString"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
 class_addMethods(meta_class, [new objj_method(sel_getUid("deserialize:"), function $URLQueryString__deserialize_(self, _cmd, str)
@@ -2120,6 +2105,21 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("deserialize:"), functi
     })).join('&') : '';
 }
 ,["CPString","id"])]);
+}p;20;Utils/HashFragment.jt;806;@STATIC;1.0;I;23;Foundation/Foundation.ji;16;URLQueryString.jt;739;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("URLQueryString.j", YES);{var the_class = objj_allocateClassPair(CPObject, "HashFragment"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(meta_class, [new objj_method(sel_getUid("fragment"), function $HashFragment__fragment(self, _cmd)
+{
+    return window.location.hash;
+}
+,["CPString"]), new objj_method(sel_getUid("fragmentAsObject"), function $HashFragment__fragmentAsObject(self, _cmd)
+{
+    return objj_msgSend(URLQueryString, "deserialize:", window.location.hash.substring(1));
+}
+,["id"]), new objj_method(sel_getUid("clearFragment"), function $HashFragment__clearFragment(self, _cmd)
+{
+    window.location.hash = "";
+}
+,["void"])]);
 }p;32;Applications/TestApp2/TestApp2.jt;2271;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;2204;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPViewController, "TestApp2ViewController"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("bundle")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), function $TestApp2ViewController__initWithBundle_(self, _cmd, aBundle)
@@ -2162,33 +2162,48 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), func
     return self.controller;
 }
 ,["CPViewController"])]);
-}p;41;Applications/DesignerApp/WorkspaceModel.jt;1341;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;1274;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPObject, "WorkspaceModel"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("idcounter"), new objj_ivar("elements"), new objj_ivar("elementMap")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $WorkspaceModel__init(self, _cmd)
+}p;32;Applications/TestApp1/TestApp1.jt;2271;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;2204;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPViewController, "TestApp1ViewController"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("bundle")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), function $TestApp1ViewController__initWithBundle_(self, _cmd, aBundle)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("WorkspaceModel").super_class }, "init");
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("TestApp1ViewController").super_class }, "init");
     if (self)
     {
-        self.idcounter = 0;
-        self.elements = [];
-        self.elementMap = {};
+        self.bundle = aBundle;
+        var file = objj_msgSend(self.bundle, "pathForResource:", "Images/icon.png");
+        var image = objj_msgSend(objj_msgSend(CPImage, "alloc"), "initWithContentsOfFile:", file);
+        var imageView = objj_msgSend(objj_msgSend(CPImageView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 1280, 720));
+        objj_msgSend(imageView, "setImage:", image);
+        objj_msgSend(imageView, "setAutoresizingMask:", CPViewMinXMargin | CPViewMaxXMargin | CPViewMinYMargin | CPViewMaxYMargin);
+        objj_msgSend(self, "setView:", imageView);
     }
     return self;
 }
-,["id"]), new objj_method(sel_getUid("addElementOfType:"), function $WorkspaceModel__addElementOfType_(self, _cmd, type)
+,["id","CPBundle"]), new objj_method(sel_getUid("breadcrumbName"), function $TestApp1ViewController__breadcrumbName(self, _cmd)
 {
-    var element = {id: self.idcounter++, type: type, x: 50, y: 50, w: 200, h: 200, children: []};
-    self.elements.push(element);
-    self.elementMap[element.id] = element;
+    return "Test 1";
 }
-,["void","CPString"]), new objj_method(sel_getUid("updateElement:"), function $WorkspaceModel__updateElement_(self, _cmd, anElement)
+,["CPString"])]);
+}{var the_class = objj_allocateClassPair(CPObject, "TestApp1"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("controller"), new objj_ivar("bundle")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), function $TestApp1__initWithBundle_(self, _cmd, aBundle)
 {
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("TestApp1").super_class }, "init");
+    if (self)
+    {
+        self.bundle = aBundle;
+    }
+    return self;
 }
-,["void","id"]), new objj_method(sel_getUid("elements"), function $WorkspaceModel__elements(self, _cmd)
+,["id","CPBundle"]), new objj_method(sel_getUid("viewController"), function $TestApp1__viewController(self, _cmd)
 {
-    return self.elements;
+    if (!self.controller)
+    {
+        self.controller = objj_msgSend(objj_msgSend(TestApp1ViewController, "alloc"), "initWithBundle:", self.bundle);
+    }
+    return self.controller;
 }
-,["CPArray"])]);
+,["CPViewController"])]);
 }p;38;Applications/DesignerApp/ContentView.jt;4752;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;12;UITreeView.ji;13;ToolBoxView.ji;15;WorkspaceView.ji;16;WorkspaceModel.jt;4609;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("UITreeView.j", YES);objj_executeFile("ToolBoxView.j", YES);objj_executeFile("WorkspaceView.j", YES);objj_executeFile("WorkspaceModel.j", YES);var MINSIDEBARWIDTH = 200;
 {var the_class = objj_allocateClassPair(CPSplitView, "ContentView"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("elementList"), new objj_ivar("mainView"), new objj_ivar("model")]);objj_registerClassPair(the_class);
@@ -2272,7 +2287,433 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), func
     objj_msgSend(self.mainView, "setFrame:", CGRectMake(width + objj_msgSend(aSplitView, "dividerThickness"), 0, splitViewSize.width - objj_msgSend(aSplitView, "dividerThickness") - width, splitViewSize.height));
 }
 ,["void","CPSplitView","CGSize"])]);
-}p;40;Applications/DesignerApp/WorkspaceView.jt;3087;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;WorkspaceModel.ji;15;DraggableView.jt;2979;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("WorkspaceModel.j", YES);objj_executeFile("DraggableView.j", YES);{var the_class = objj_allocateClassPair(CPView, "WorkspaceView"),
+}p;38;Applications/DesignerApp/DesignerApp.jt;1111;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;27;DesignerAppViewController.jt;1012;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("DesignerAppViewController.j", YES);{var the_class = objj_allocateClassPair(CPObject, "DesignerApp"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("controller"), new objj_ivar("bundle")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), function $DesignerApp__initWithBundle_(self, _cmd, aBundle)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DesignerApp").super_class }, "init");
+    if (self)
+    {
+        self.bundle = aBundle;
+    }
+    return self;
+}
+,["id","CPBundle"]), new objj_method(sel_getUid("viewController"), function $DesignerApp__viewController(self, _cmd)
+{
+    if (!self.controller)
+    {
+        self.controller = objj_msgSend(objj_msgSend(DesignerAppViewController, "alloc"), "initWithBundle:", self.bundle);
+    }
+    return self.controller;
+}
+,["CPViewController"])]);
+}p;42;Applications/DesignerApp/DesignerAppView.jt;2771;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;13;ContentView.jt;2686;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("ContentView.j", YES);var TOPBARHEIGHT = 30;
+{var the_class = objj_allocateClassPair(CPSplitView, "DesignerAppView"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("topBar"), new objj_ivar("splitView"), new objj_ivar("elementList"), new objj_ivar("mainView")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), function $DesignerAppView__initWithBundle_(self, _cmd, aBundle)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DesignerAppView").super_class }, "initWithFrame:", CPRectMake(0, 0, 500, 500));
+    if (self)
+    {
+        objj_msgSend(self, "setBackgroundColor:", objj_msgSend(CPColor, "redColor"));
+        objj_msgSend(self, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+        objj_msgSend(self, "setDelegate:", self);
+        self.topBar = objj_msgSend(objj_msgSend(CPView, "alloc"), "init");
+        objj_msgSend(self.topBar, "setBackgroundColor:", objj_msgSend(CPColor, "lightGrayColor"));
+        objj_msgSend(self, "addSubview:", self.topBar);
+        self.splitView = objj_msgSend(objj_msgSend(ContentView, "alloc"), "initWithBundle:", aBundle);
+        self.elementList = objj_msgSend(self.splitView, "elementList");
+        self.mainView = objj_msgSend(self.splitView, "mainView");
+        objj_msgSend(self.splitView, "setBackgroundColor:", objj_msgSend(CPColor, "grayColor"));
+        objj_msgSend(self, "addSubview:", self.splitView);
+        objj_msgSend(self, "setVertical:", NO);
+    }
+    return self;
+}
+,["id","CPBundle"]), new objj_method(sel_getUid("splitView:constrainSplitPosition:ofSubviewAt:"), function $DesignerAppView__splitView_constrainSplitPosition_ofSubviewAt_(self, _cmd, aSpiltView, proposedPosition, subviewIndex)
+{
+    if (subviewIndex == 0)
+    {
+        return TOPBARHEIGHT;
+    }
+    return proposedPosition;
+}
+,["float","CPSplitView","float","int"]), new objj_method(sel_getUid("splitView:resizeSubviewsWithOldSize:"), function $DesignerAppView__splitView_resizeSubviewsWithOldSize_(self, _cmd, aSplitView, oldSize)
+{
+    var splitViewSize = objj_msgSend(aSplitView, "frame").size;
+    var topSize = objj_msgSend(aSplitView, "frame").size;
+    topSize.height = TOPBARHEIGHT;
+    objj_msgSend(self.topBar, "setFrameSize:", topSize);
+    objj_msgSend(self.splitView, "setFrame:", CGRectMake(0, TOPBARHEIGHT + objj_msgSend(aSplitView, "dividerThickness"), splitViewSize.width, splitViewSize.height - objj_msgSend(aSplitView, "dividerThickness") - TOPBARHEIGHT));
+}
+,["void","CPSplitView","CGSize"])]);
+}p;52;Applications/DesignerApp/DesignerAppViewController.jt;1219;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;17;DesignerAppView.jt;1130;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("DesignerAppView.j", YES);{var the_class = objj_allocateClassPair(CPViewController, "DesignerAppViewController"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("view")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), function $DesignerAppViewController__initWithBundle_(self, _cmd, aBundle)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DesignerAppViewController").super_class }, "init");
+    if (self)
+    {
+        self.view = objj_msgSend(objj_msgSend(DesignerAppView, "alloc"), "initWithBundle:", aBundle);
+        objj_msgSend(self, "setView:", self.view);
+    }
+    return self;
+}
+,["id","CPBundle"]), new objj_method(sel_getUid("breadcrumbName"), function $DesignerAppViewController__breadcrumbName(self, _cmd)
+{
+    return "Designer";
+}
+,["CPString"]), new objj_method(sel_getUid("viewFillsDesktop"), function $DesignerAppViewController__viewFillsDesktop(self, _cmd)
+{
+    return YES;
+}
+,["BOOL"])]);
+}p;45;Applications/DesignerApp/DraggableThingView.jt;2352;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;2285;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "DraggableThingView"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("element"), new objj_ivar("delegate")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("delegate"), function $DraggableThingView__delegate(self, _cmd)
+{
+    return self.delegate;
+}
+,["id"]), new objj_method(sel_getUid("setDelegate:"), function $DraggableThingView__setDelegate_(self, _cmd, newValue)
+{
+    self.delegate = newValue;
+}
+,["void","id"]), new objj_method(sel_getUid("initWithElement:"), function $DraggableThingView__initWithElement_(self, _cmd, anElement)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DraggableThingView").super_class }, "initWithFrame:", CGRectMake(anElement.x, anElement.y, anElement.w, anElement.h));
+    if (self)
+    {
+        self.element = anElement;
+    }
+    return self;
+}
+,["id","id"]), new objj_method(sel_getUid("mouseDragged:"), function $DraggableThingView__mouseDragged_(self, _cmd, anEvent)
+{
+    var origin = objj_msgSend(self, "frameOrigin");
+    var newx = origin.x + objj_msgSend(anEvent, "deltaX");
+    var newy = origin.y + objj_msgSend(anEvent, "deltaY");
+    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DraggableThingView").super_class }, "setFrameOrigin:", CGPointMake(newx, newy));
+    self.element.x = newx;
+    self.element.y = newy;
+    self.element.dx = objj_msgSend(anEvent, "deltaX");
+    self.element.dy = objj_msgSend(anEvent, "deltaY");
+    if (objj_msgSend(self.delegate, "respondsToSelector:", sel_getUid("updateElement:")))
+    {
+        objj_msgSend(self.delegate, "updateElement:", self.element);
+    }
+}
+,["void","CPEvent"]), new objj_method(sel_getUid("element"), function $DraggableThingView__element(self, _cmd)
+{
+    return self.element;
+}
+,["id"]), new objj_method(sel_getUid("modifyElement:"), function $DraggableThingView__modifyElement_(self, _cmd, theElement)
+{
+    self.element = theElement;
+    if (objj_msgSend(self.delegate, "respondsToSelector:", sel_getUid("updateElement:")))
+    {
+        objj_msgSend(self.delegate, "updateElement:", self.element);
+    }
+}
+,["void","id"])]);
+}p;40;Applications/DesignerApp/DraggableView.jt;3317;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;20;DraggableThingView.jt;3225;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("DraggableThingView.j", YES);{var the_class = objj_allocateClassPair(DraggableThingView, "DraggableView"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("label"), new objj_ivar("coverView"), new objj_ivar("view")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithElement:"), function $DraggableView__initWithElement_(self, _cmd, anElement)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DraggableView").super_class }, "initWithElement:", anElement);
+    if (self)
+    {
+        self.coverView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0, 0, anElement.w, anElement.h));
+        objj_msgSend(self.coverView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+        self.label = objj_msgSend(CPTextField, "labelWithTitle:", anElement.type);
+        objj_msgSend(self.label, "setCenter:", objj_msgSend(self.coverView, "center"));
+        objj_msgSend(self.label, "setAutoresizingMask:", CPViewMinXMargin | CPViewMaxXMargin | CPViewMinYMargin | CPViewMaxYMargin);
+        objj_msgSend(self.label, "setTextColor:", objj_msgSend(objj_msgSend(CPColor, "grayColor"), "colorWithAlphaComponent:", 0.8));
+        objj_msgSend(self.coverView, "setBackgroundColor:", objj_msgSend(objj_msgSend(CPColor, "grayColor"), "colorWithAlphaComponent:", 0.2));
+        objj_msgSend(self.label, "setHidden:", YES);
+        objj_msgSend(self.coverView, "setHidden:", YES);
+        objj_msgSend(self, "addSubview:", self.label);
+        objj_msgSend(self, "addSubview:", self.coverView);
+    }
+    return self;
+}
+,["id","id"]), new objj_method(sel_getUid("mouseEntered:"), function $DraggableView__mouseEntered_(self, _cmd, anEvent)
+{
+    objj_msgSend(self.label, "setHidden:", NO);
+    objj_msgSend(self.coverView, "setHidden:", NO);
+    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DraggableView").super_class }, "mouseEntered:", anEvent);
+}
+,["void","CPEvent"]), new objj_method(sel_getUid("mouseExited:"), function $DraggableView__mouseExited_(self, _cmd, anEvent)
+{
+    objj_msgSend(self.label, "setHidden:", YES);
+    objj_msgSend(self.coverView, "setHidden:", YES);
+    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DraggableView").super_class }, "mouseExited:", anEvent);
+}
+,["void","CPEvent"]), new objj_method(sel_getUid("setView:"), function $DraggableView__setView_(self, _cmd, aView)
+{
+    var i = 0,
+        subviews = objj_msgSend(self, "subviews");
+    for (i = 0; i < subviews.length; i++)
+    {
+        var subview = subviews[i];
+        if (subview == self.view)
+        {
+            objj_msgSend(subview, "removeFromSuperview");
+        }
+    }
+    objj_msgSend(self, "addSubview:positioned:relativeTo:", aView, CPWindowBelow, self.label);
+    self.view = aView;
+}
+,["void","CPView"]), new objj_method(sel_getUid("view"), function $DraggableView__view(self, _cmd)
+{
+    return self.view;
+}
+,["CPView"]), new objj_method(sel_getUid("coverView"), function $DraggableView__coverView(self, _cmd)
+{
+    return self.coverView;
+}
+,["CPView"])]);
+}p;40;Applications/DesignerApp/ResizableView.jt;4155;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;15;DraggableView.jt;4068;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("DraggableView.j", YES);{var the_class = objj_allocateClassPair(DraggableView, "ResizableView"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("holders")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithElement:"), function $ResizableView__initWithElement_(self, _cmd, anElement)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("ResizableView").super_class }, "initWithElement:", anElement);
+    if (self)
+    {
+        self.holders = {};
+        self.holders["tl"] = objj_msgSend(self, "_holderFor:", "tl");
+        self.holders["t"] = objj_msgSend(self, "_holderFor:", "t");
+        self.holders["tr"] = objj_msgSend(self, "_holderFor:", "tr");
+        self.holders["l"] = objj_msgSend(self, "_holderFor:", "l");
+        self.holders["r"] = objj_msgSend(self, "_holderFor:", "r");
+        self.holders["bl"] = objj_msgSend(self, "_holderFor:", "bl");
+        self.holders["b"] = objj_msgSend(self, "_holderFor:", "b");
+        self.holders["br"] = objj_msgSend(self, "_holderFor:", "br");
+    }
+    return self;
+}
+,["id","id"]), new objj_method(sel_getUid("_holderFor:"), function $ResizableView___holderFor_(self, _cmd, pos)
+{
+    var holderpos = objj_msgSend(self, "_holderPositionFor:", pos);
+    var holder = objj_msgSend(objj_msgSend(DraggableThingView, "alloc"), "initWithElement:", holderpos);
+    objj_msgSend(holder, "setBackgroundColor:", objj_msgSend(objj_msgSend(CPColor, "grayColor"), "colorWithAlphaComponent:", 0.8));
+    objj_msgSend(holder, "setAutoresizingMask:", holderpos.autosizemask);
+    objj_msgSend(holder, "setDelegate:", self);
+    objj_msgSend(objj_msgSendSuper({ receiver:self, super_class:objj_getClass("ResizableView").super_class }, "coverView"), "addSubview:", holder);
+    return holder;
+}
+,["DraggableThingView","CPString"]), new objj_method(sel_getUid("_holderPositionFor:"), function $ResizableView___holderPositionFor_(self, _cmd, pos)
+{
+    var x = Math.floor(objj_msgSend(self, "frame").size.width / 2) - 3,
+        y = Math.floor(objj_msgSend(self, "frame").size.height / 2) - 3,
+        h = 6,
+        w = 6,
+        autosizemask = CPViewMinXMargin | CPViewMaxXMargin | CPViewMinYMargin | CPViewMaxYMargin;
+    if (pos.includes("t"))
+    {
+        autosizemask &= ~CPViewMinYMargin;
+        y = 0;
+    }
+    if (pos.includes("b"))
+    {
+        autosizemask &= ~CPViewMaxYMargin;
+        y = objj_msgSend(self, "frame").size.height - 6;
+    }
+    if (pos.includes("r"))
+    {
+        autosizemask &= ~CPViewMaxXMargin;
+        x = objj_msgSend(self, "frame").size.width - 6;
+    }
+    if (pos.includes("l"))
+    {
+        autosizemask &= ~CPViewMinXMargin;
+        x = 0;
+    }
+    return {x: x, y: y, w: w, h: h, type: pos, autosizemask: autosizemask};
+}
+,["id","CPString"]), new objj_method(sel_getUid("updateElement:"), function $ResizableView__updateElement_(self, _cmd, holder)
+{
+    var x = objj_msgSend(self, "frame").origin.x;
+    var y = objj_msgSend(self, "frame").origin.y;
+    var w = objj_msgSend(self, "frame").size.width;
+    var h = objj_msgSend(self, "frame").size.height;
+    var dx = holder.dx;
+    var dy = holder.dy;
+    var theElement = objj_msgSend(self, "element");
+    if (holder.type.includes("t"))
+    {
+        theElement.y = y + dy;
+        theElement.h = h - dy;
+    }
+    if (holder.type.includes("b"))
+    {
+        theElement.h = h + dy;
+    }
+    if (holder.type.includes("r"))
+    {
+        theElement.w = w + dx;
+    }
+    if (holder.type.includes("l"))
+    {
+        theElement.x = x + dx;
+        theElement.w = w - dx;
+    }
+    objj_msgSend(self, "setFrame:", CGRectMake(theElement.x, theElement.y, theElement.w, theElement.h));
+    objj_msgSend(self, "modifyElement:", theElement);
+    var origpos = objj_msgSend(self, "_holderPositionFor:", holder.type);
+    objj_msgSend(self.holders[holder.type], "setFrameOrigin:", CGPointMake(origpos.x, origpos.y));
+}
+,["void","id"])]);
+}p;48;Applications/DesignerApp/ResizableWithInfoView.jt;2946;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;15;ResizableView.jt;2859;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("ResizableView.j", YES);{var the_class = objj_allocateClassPair(ResizableView, "ResizableWithInfoView"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("infoLabel")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithElement:"), function $ResizableWithInfoView__initWithElement_(self, _cmd, anElement)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("ResizableWithInfoView").super_class }, "initWithElement:", anElement);
+    if (self)
+    {
+        self.infoLabel = objj_msgSend(CPTextField, "labelWithTitle:", "x: y: w: h:");
+        objj_msgSend(self.infoLabel, "setFrameOrigin:", CGPointMake(10, 10));
+        objj_msgSend(self.infoLabel, "setBackgroundColor:", objj_msgSend(objj_msgSend(CPColor, "grayColor"), "colorWithAlphaComponent:", 0.5));
+        objj_msgSend(self.infoLabel, "setTextColor:", objj_msgSend(objj_msgSend(CPColor, "whiteColor"), "colorWithAlphaComponent:", 0.5));
+        objj_msgSend(objj_msgSend(self, "coverView"), "addSubview:", self.infoLabel);
+        objj_msgSend(self, "update");
+    }
+    return self;
+}
+,["id","id"]), new objj_method(sel_getUid("mouseEntered:"), function $ResizableWithInfoView__mouseEntered_(self, _cmd, anEvent)
+{
+    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("ResizableWithInfoView").super_class }, "mouseEntered:", anEvent);
+    objj_msgSend(self, "update");
+}
+,["void","CPEvent"]), new objj_method(sel_getUid("mouseExited:"), function $ResizableWithInfoView__mouseExited_(self, _cmd, anEvent)
+{
+    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("ResizableWithInfoView").super_class }, "mouseExited:", anEvent);
+    objj_msgSend(self, "update");
+}
+,["void","CPEvent"]), new objj_method(sel_getUid("mouseDragged:"), function $ResizableWithInfoView__mouseDragged_(self, _cmd, anEvent)
+{
+    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("ResizableWithInfoView").super_class }, "mouseDragged:", anEvent);
+    objj_msgSend(self, "update");
+}
+,["void","CPEvent"]), new objj_method(sel_getUid("updateElement:"), function $ResizableWithInfoView__updateElement_(self, _cmd, holder)
+{
+    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("ResizableWithInfoView").super_class }, "updateElement:", holder);
+    objj_msgSend(self, "update");
+}
+,["void","id"]), new objj_method(sel_getUid("update"), function $ResizableWithInfoView__update(self, _cmd)
+{
+    var frame = objj_msgSend(self, "frame");
+    objj_msgSend(self.infoLabel, "setStringValue:", objj_msgSend(CPString, "stringWithFormat:", "x:%d y:%d w:%d h:%d", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height));
+    objj_msgSend(self.infoLabel, "sizeToFit");
+}
+,["void"])]);
+}p;38;Applications/DesignerApp/ToolBoxView.jt;3539;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;3472;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "ToolBoxView"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("tableView"), new objj_ivar("elements"), new objj_ivar("bundle"), new objj_ivar("delegate")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("delegate"), function $ToolBoxView__delegate(self, _cmd)
+{
+    return self.delegate;
+}
+,["id"]), new objj_method(sel_getUid("setDelegate:"), function $ToolBoxView__setDelegate_(self, _cmd, newValue)
+{
+    self.delegate = newValue;
+}
+,["void","id"]), new objj_method(sel_getUid("initWithBundle:"), function $ToolBoxView__initWithBundle_(self, _cmd, aBundle)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("ToolBoxView").super_class }, "initWithFrame:", CGRectMake(0, 0, 0, 20));
+    if (self)
+    {
+        self.bundle = aBundle;
+        self.tableView = objj_msgSend(objj_msgSend(CPTableView, "alloc"), "initWithFrame:", CGRectMake(0, 20, 0, 0));
+        var iconColumn = objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "icons");
+        objj_msgSend(iconColumn, "setMaxWidth:", 25);
+        objj_msgSend(iconColumn, "setMinWidth:", 25);
+        var iconView = objj_msgSend(objj_msgSend(CPImageView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 20, 20));
+        objj_msgSend(iconView, "setImageAlignment:", CPImageAlignCenter);
+        objj_msgSend(iconView, "setImageScaling:", CPScaleNone);
+        objj_msgSend(iconColumn, "setDataView:", iconView);
+        objj_msgSend(self.tableView, "addTableColumn:", iconColumn);
+        objj_msgSend(self.tableView, "addTableColumn:", objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "itemname"));
+        objj_msgSend(self.tableView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+        self.elements = ["CPView", "CPTableView", "CPSplitView", "CPButton", "CPTextField"];
+        objj_msgSend(self.tableView, "setTarget:", self);
+        objj_msgSend(self.tableView, "setDoubleAction:", sel_getUid("doubleClick:"));
+        objj_msgSend(self.tableView, "setDataSource:", self);
+        objj_msgSend(self.tableView, "reloadData");
+        objj_msgSend(self, "addSubview:", self.tableView);
+    }
+    return self;
+}
+,["id","CPBundle"]), new objj_method(sel_getUid("numberOfRowsInTableView:"), function $ToolBoxView__numberOfRowsInTableView_(self, _cmd, aTableView)
+{
+    return self.elements.length;
+}
+,["int","CPTableView"]), new objj_method(sel_getUid("tableView:objectValueForTableColumn:row:"), function $ToolBoxView__tableView_objectValueForTableColumn_row_(self, _cmd, aTableView, aColumn, aRowIndex)
+{
+    if (objj_msgSend(aColumn, "identifier") === "itemname")
+    {
+        return self.elements[aRowIndex];
+    }
+    var file = objj_msgSend(self.bundle, "pathForResource:", "Images/" + self.elements[aRowIndex] + ".png");
+    return objj_msgSend(objj_msgSend(CPImage, "alloc"), "initWithContentsOfFile:", file);
+}
+,["id","CPTableView","CPTableColumn","CPInteger"]), new objj_method(sel_getUid("doubleClick:"), function $ToolBoxView__doubleClick_(self, _cmd, sender)
+{
+    if (objj_msgSend(self.delegate, "respondsToSelector:", sel_getUid("requestAddElement:")))
+    {
+        objj_msgSend(self.delegate, "requestAddElement:", self.elements[objj_msgSend(self.tableView, "selectedRow")]);
+    }
+}
+,["void","id"])]);
+}p;37;Applications/DesignerApp/UITreeView.jt;1674;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;1607;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "UITreeView"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("tableView")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $UITreeView__init(self, _cmd)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("UITreeView").super_class }, "initWithFrame:", CGRectMake(0, 0, 0, 20));
+    if (self)
+    {
+        self.tableView = objj_msgSend(objj_msgSend(CPOutlineView, "alloc"), "initWithFrame:", CGRectMake(0, 20, 0, 0));
+        var iconColumn = objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "icons");
+        objj_msgSend(iconColumn, "setMaxWidth:", 25);
+        objj_msgSend(iconColumn, "setMinWidth:", 25);
+        var iconView = objj_msgSend(objj_msgSend(CPImageView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 20, 20));
+        objj_msgSend(iconView, "setImageAlignment:", CPImageAlignCenter);
+        objj_msgSend(iconView, "setImageScaling:", CPScaleNone);
+        objj_msgSend(iconColumn, "setDataView:", iconView);
+        objj_msgSend(self.tableView, "addTableColumn:", iconColumn);
+        objj_msgSend(self.tableView, "addTableColumn:", objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "itemname"));
+        objj_msgSend(self.tableView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+        objj_msgSend(self, "addSubview:", self.tableView);
+    }
+    return self;
+}
+,["id"])]);
+}p;41;Applications/DesignerApp/WorkspaceModel.jt;1341;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;1274;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPObject, "WorkspaceModel"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("idcounter"), new objj_ivar("elements"), new objj_ivar("elementMap")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $WorkspaceModel__init(self, _cmd)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("WorkspaceModel").super_class }, "init");
+    if (self)
+    {
+        self.idcounter = 0;
+        self.elements = [];
+        self.elementMap = {};
+    }
+    return self;
+}
+,["id"]), new objj_method(sel_getUid("addElementOfType:"), function $WorkspaceModel__addElementOfType_(self, _cmd, type)
+{
+    var element = {id: self.idcounter++, type: type, x: 50, y: 50, w: 200, h: 200, children: []};
+    self.elements.push(element);
+    self.elementMap[element.id] = element;
+}
+,["void","CPString"]), new objj_method(sel_getUid("updateElement:"), function $WorkspaceModel__updateElement_(self, _cmd, anElement)
+{
+}
+,["void","id"]), new objj_method(sel_getUid("elements"), function $WorkspaceModel__elements(self, _cmd)
+{
+    return self.elements;
+}
+,["CPArray"])]);
+}p;40;Applications/DesignerApp/WorkspaceView.jt;4248;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;WorkspaceModel.ji;23;ResizableWithInfoView.jt;4132;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("WorkspaceModel.j", YES);objj_executeFile("ResizableWithInfoView.j", YES);{var the_class = objj_allocateClassPair(CPView, "WorkspaceView"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("dataSource")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("dataSource"), function $WorkspaceView__dataSource(self, _cmd)
 {
@@ -2319,7 +2760,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("dataSource"), function 
 }
 ,["void","id"]), new objj_method(sel_getUid("addElement:"), function $WorkspaceView__addElement_(self, _cmd, element)
 {
-    var coverElement = objj_msgSend(objj_msgSend(DraggableView, "alloc"), "initWithElement:", element);
+    var coverElement = objj_msgSend(objj_msgSend(ResizableWithInfoView, "alloc"), "initWithElement:", element);
     objj_msgSend(coverElement, "setDelegate:", self);
     objj_msgSend(self, "addSubview:", coverElement);
     switch(element.type) {
@@ -2327,7 +2768,31 @@ class_addMethods(the_class, [new objj_method(sel_getUid("dataSource"), function 
     {
         var view = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0, 0, element.w, element.h));
         objj_msgSend(view, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
-        objj_msgSend(view, "setBackgroundColor:", objj_msgSend(CPColor, "whiteColor"));
+        objj_msgSend(view, "setBackgroundColor:", objj_msgSend(CPColor, "redColor"));
+        objj_msgSend(coverElement, "setView:", view);
+        break;
+    }
+    case "CPTableView":
+    {
+        var view = objj_msgSend(objj_msgSend(CPTableView, "alloc"), "initWithFrame:", CGRectMake(0, 0, element.w, element.h));
+        objj_msgSend(view, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+        objj_msgSend(coverElement, "setView:", view);
+        break;
+    }
+    case "CPButton":
+    {
+        var view = objj_msgSend(objj_msgSend(CPButton, "alloc"), "initWithFrame:", CGRectMake(0, 0, element.w, element.h));
+        objj_msgSend(view, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+        objj_msgSend(coverElement, "setView:", view);
+        break;
+    }
+    case "CPTextField":
+    {
+        var view = objj_msgSend(objj_msgSend(CPTextField, "alloc"), "initWithFrame:", CGRectMake(0, 0, element.w, element.h));
+        objj_msgSend(view, "setBordered:", YES);
+        objj_msgSend(view, "setBezeled:", YES);
+        objj_msgSend(view, "setBezelStyle:", CPTextFieldSquareBezel);
+        objj_msgSend(view, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
         objj_msgSend(coverElement, "setView:", view);
         break;
     }
@@ -2338,281 +2803,4 @@ default:
     }
 }
 ,["void","id"])]);
-}p;37;Applications/DesignerApp/UITreeView.jt;1674;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;1607;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "UITreeView"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("tableView")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $UITreeView__init(self, _cmd)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("UITreeView").super_class }, "initWithFrame:", CGRectMake(0, 0, 0, 20));
-    if (self)
-    {
-        self.tableView = objj_msgSend(objj_msgSend(CPOutlineView, "alloc"), "initWithFrame:", CGRectMake(0, 20, 0, 0));
-        var iconColumn = objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "icons");
-        objj_msgSend(iconColumn, "setMaxWidth:", 25);
-        objj_msgSend(iconColumn, "setMinWidth:", 25);
-        var iconView = objj_msgSend(objj_msgSend(CPImageView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 20, 20));
-        objj_msgSend(iconView, "setImageAlignment:", CPImageAlignCenter);
-        objj_msgSend(iconView, "setImageScaling:", CPScaleNone);
-        objj_msgSend(iconColumn, "setDataView:", iconView);
-        objj_msgSend(self.tableView, "addTableColumn:", iconColumn);
-        objj_msgSend(self.tableView, "addTableColumn:", objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "itemname"));
-        objj_msgSend(self.tableView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
-        objj_msgSend(self, "addSubview:", self.tableView);
-    }
-    return self;
-}
-,["id"])]);
-}p;40;Applications/DesignerApp/DraggableView.jt;4350;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;4283;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "DraggableView"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("dragging"), new objj_ivar("delegate"), new objj_ivar("element"), new objj_ivar("label"), new objj_ivar("coverView"), new objj_ivar("view")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("delegate"), function $DraggableView__delegate(self, _cmd)
-{
-    return self.delegate;
-}
-,["id"]), new objj_method(sel_getUid("setDelegate:"), function $DraggableView__setDelegate_(self, _cmd, newValue)
-{
-    self.delegate = newValue;
-}
-,["void","id"]), new objj_method(sel_getUid("initWithElement:"), function $DraggableView__initWithElement_(self, _cmd, anElement)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DraggableView").super_class }, "initWithFrame:", CGRectMake(anElement.x, anElement.y, anElement.w, anElement.h));
-    if (self)
-    {
-        self.coverView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0, 0, anElement.w, anElement.h));
-        objj_msgSend(self.coverView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
-        objj_msgSend(self, "addSubview:", self.coverView);
-        self.label = objj_msgSend(CPTextField, "labelWithTitle:", anElement.type);
-        objj_msgSend(self.label, "setCenter:", objj_msgSend(self.coverView, "center"));
-        objj_msgSend(self.label, "setTextColor:", objj_msgSend(CPColor, "clearColor"));
-        objj_msgSend(self.label, "setAutoresizingMask:", CPViewMinXMargin | CPViewMaxXMargin | CPViewMinYMargin | CPViewMaxYMargin);
-        objj_msgSend(self, "addSubview:", self.label);
-        self.element = anElement;
-        self.dragging = false;
-    }
-    return self;
-}
-,["id","id"]), new objj_method(sel_getUid("mouseDragged:"), function $DraggableView__mouseDragged_(self, _cmd, anEvent)
-{
-    var origin = objj_msgSend(self, "frameOrigin");
-    var newx = origin.x + objj_msgSend(anEvent, "deltaX");
-    var newy = origin.y + objj_msgSend(anEvent, "deltaY");
-    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DraggableView").super_class }, "setFrameOrigin:", CGPointMake(newx, newy));
-    self.element.x = newx;
-    self.element.y = newy;
-    if (objj_msgSend(self.delegate, "respondsToSelector:", sel_getUid("updateElement:")))
-    {
-        objj_msgSend(self.delegate, "updateElement:", self.element);
-    }
-    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DraggableView").super_class }, "mouseDragged:", anEvent);
-}
-,["void","CPEvent"]), new objj_method(sel_getUid("mouseEntered:"), function $DraggableView__mouseEntered_(self, _cmd, anEvent)
-{
-    objj_msgSend(self.label, "setTextColor:", objj_msgSend(objj_msgSend(CPColor, "grayColor"), "colorWithAlphaComponent:", 0.8));
-    objj_msgSend(self.coverView, "setBackgroundColor:", objj_msgSend(objj_msgSend(CPColor, "grayColor"), "colorWithAlphaComponent:", 0.2));
-    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DraggableView").super_class }, "mouseEntered:", anEvent);
-}
-,["void","CPEvent"]), new objj_method(sel_getUid("mouseExited:"), function $DraggableView__mouseExited_(self, _cmd, anEvent)
-{
-    objj_msgSend(self.label, "setTextColor:", objj_msgSend(CPColor, "clearColor"));
-    objj_msgSend(self.coverView, "setBackgroundColor:", objj_msgSend(CPColor, "clearColor"));
-    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DraggableView").super_class }, "mouseExited:", anEvent);
-}
-,["void","CPEvent"]), new objj_method(sel_getUid("setView:"), function $DraggableView__setView_(self, _cmd, aView)
-{
-    var i = 0,
-        subviews = objj_msgSend(self, "subviews");
-    for (i = 0; i < subviews.length; i++)
-    {
-        var subview = subviews[i];
-        if (subview != self.coverView && subview != self.label)
-        {
-            objj_msgSend(subview, "removeFromSuperview");
-        }
-    }
-    objj_msgSend(self, "addSubview:positioned:relativeTo:", aView, CPWindowBelow, self.coverView);
-    self.view = aView;
-}
-,["void","CPView"]), new objj_method(sel_getUid("view"), function $DraggableView__view(self, _cmd)
-{
-    return self.view;
-}
-,["CPView"])]);
-}p;42;Applications/DesignerApp/DesignerAppView.jt;2771;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;13;ContentView.jt;2686;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("ContentView.j", YES);var TOPBARHEIGHT = 30;
-{var the_class = objj_allocateClassPair(CPSplitView, "DesignerAppView"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("topBar"), new objj_ivar("splitView"), new objj_ivar("elementList"), new objj_ivar("mainView")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), function $DesignerAppView__initWithBundle_(self, _cmd, aBundle)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DesignerAppView").super_class }, "initWithFrame:", CPRectMake(0, 0, 500, 500));
-    if (self)
-    {
-        objj_msgSend(self, "setBackgroundColor:", objj_msgSend(CPColor, "redColor"));
-        objj_msgSend(self, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
-        objj_msgSend(self, "setDelegate:", self);
-        self.topBar = objj_msgSend(objj_msgSend(CPView, "alloc"), "init");
-        objj_msgSend(self.topBar, "setBackgroundColor:", objj_msgSend(CPColor, "lightGrayColor"));
-        objj_msgSend(self, "addSubview:", self.topBar);
-        self.splitView = objj_msgSend(objj_msgSend(ContentView, "alloc"), "initWithBundle:", aBundle);
-        self.elementList = objj_msgSend(self.splitView, "elementList");
-        self.mainView = objj_msgSend(self.splitView, "mainView");
-        objj_msgSend(self.splitView, "setBackgroundColor:", objj_msgSend(CPColor, "grayColor"));
-        objj_msgSend(self, "addSubview:", self.splitView);
-        objj_msgSend(self, "setVertical:", NO);
-    }
-    return self;
-}
-,["id","CPBundle"]), new objj_method(sel_getUid("splitView:constrainSplitPosition:ofSubviewAt:"), function $DesignerAppView__splitView_constrainSplitPosition_ofSubviewAt_(self, _cmd, aSpiltView, proposedPosition, subviewIndex)
-{
-    if (subviewIndex == 0)
-    {
-        return TOPBARHEIGHT;
-    }
-    return proposedPosition;
-}
-,["float","CPSplitView","float","int"]), new objj_method(sel_getUid("splitView:resizeSubviewsWithOldSize:"), function $DesignerAppView__splitView_resizeSubviewsWithOldSize_(self, _cmd, aSplitView, oldSize)
-{
-    var splitViewSize = objj_msgSend(aSplitView, "frame").size;
-    var topSize = objj_msgSend(aSplitView, "frame").size;
-    topSize.height = TOPBARHEIGHT;
-    objj_msgSend(self.topBar, "setFrameSize:", topSize);
-    objj_msgSend(self.splitView, "setFrame:", CGRectMake(0, TOPBARHEIGHT + objj_msgSend(aSplitView, "dividerThickness"), splitViewSize.width, splitViewSize.height - objj_msgSend(aSplitView, "dividerThickness") - TOPBARHEIGHT));
-}
-,["void","CPSplitView","CGSize"])]);
-}p;38;Applications/DesignerApp/DesignerApp.jt;1111;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;27;DesignerAppViewController.jt;1012;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("DesignerAppViewController.j", YES);{var the_class = objj_allocateClassPair(CPObject, "DesignerApp"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("controller"), new objj_ivar("bundle")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), function $DesignerApp__initWithBundle_(self, _cmd, aBundle)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DesignerApp").super_class }, "init");
-    if (self)
-    {
-        self.bundle = aBundle;
-    }
-    return self;
-}
-,["id","CPBundle"]), new objj_method(sel_getUid("viewController"), function $DesignerApp__viewController(self, _cmd)
-{
-    if (!self.controller)
-    {
-        self.controller = objj_msgSend(objj_msgSend(DesignerAppViewController, "alloc"), "initWithBundle:", self.bundle);
-    }
-    return self.controller;
-}
-,["CPViewController"])]);
-}p;38;Applications/DesignerApp/ToolBoxView.jt;3524;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;3457;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "ToolBoxView"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("tableView"), new objj_ivar("elements"), new objj_ivar("bundle"), new objj_ivar("delegate")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("delegate"), function $ToolBoxView__delegate(self, _cmd)
-{
-    return self.delegate;
-}
-,["id"]), new objj_method(sel_getUid("setDelegate:"), function $ToolBoxView__setDelegate_(self, _cmd, newValue)
-{
-    self.delegate = newValue;
-}
-,["void","id"]), new objj_method(sel_getUid("initWithBundle:"), function $ToolBoxView__initWithBundle_(self, _cmd, aBundle)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("ToolBoxView").super_class }, "initWithFrame:", CGRectMake(0, 0, 0, 20));
-    if (self)
-    {
-        self.bundle = aBundle;
-        self.tableView = objj_msgSend(objj_msgSend(CPTableView, "alloc"), "initWithFrame:", CGRectMake(0, 20, 0, 0));
-        var iconColumn = objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "icons");
-        objj_msgSend(iconColumn, "setMaxWidth:", 25);
-        objj_msgSend(iconColumn, "setMinWidth:", 25);
-        var iconView = objj_msgSend(objj_msgSend(CPImageView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 20, 20));
-        objj_msgSend(iconView, "setImageAlignment:", CPImageAlignCenter);
-        objj_msgSend(iconView, "setImageScaling:", CPScaleNone);
-        objj_msgSend(iconColumn, "setDataView:", iconView);
-        objj_msgSend(self.tableView, "addTableColumn:", iconColumn);
-        objj_msgSend(self.tableView, "addTableColumn:", objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "itemname"));
-        objj_msgSend(self.tableView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
-        self.elements = ["CPView", "CPTableView", "CPSplitView", "CPButton"];
-        objj_msgSend(self.tableView, "setTarget:", self);
-        objj_msgSend(self.tableView, "setDoubleAction:", sel_getUid("doubleClick:"));
-        objj_msgSend(self.tableView, "setDataSource:", self);
-        objj_msgSend(self.tableView, "reloadData");
-        objj_msgSend(self, "addSubview:", self.tableView);
-    }
-    return self;
-}
-,["id","CPBundle"]), new objj_method(sel_getUid("numberOfRowsInTableView:"), function $ToolBoxView__numberOfRowsInTableView_(self, _cmd, aTableView)
-{
-    return self.elements.length;
-}
-,["int","CPTableView"]), new objj_method(sel_getUid("tableView:objectValueForTableColumn:row:"), function $ToolBoxView__tableView_objectValueForTableColumn_row_(self, _cmd, aTableView, aColumn, aRowIndex)
-{
-    if (objj_msgSend(aColumn, "identifier") === "itemname")
-    {
-        return self.elements[aRowIndex];
-    }
-    var file = objj_msgSend(self.bundle, "pathForResource:", "Images/" + self.elements[aRowIndex] + ".png");
-    return objj_msgSend(objj_msgSend(CPImage, "alloc"), "initWithContentsOfFile:", file);
-}
-,["id","CPTableView","CPTableColumn","CPInteger"]), new objj_method(sel_getUid("doubleClick:"), function $ToolBoxView__doubleClick_(self, _cmd, sender)
-{
-    if (objj_msgSend(self.delegate, "respondsToSelector:", sel_getUid("requestAddElement:")))
-    {
-        objj_msgSend(self.delegate, "requestAddElement:", self.elements[objj_msgSend(self.tableView, "selectedRow")]);
-    }
-}
-,["void","id"])]);
-}p;52;Applications/DesignerApp/DesignerAppViewController.jt;1219;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;17;DesignerAppView.jt;1130;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("DesignerAppView.j", YES);{var the_class = objj_allocateClassPair(CPViewController, "DesignerAppViewController"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("view")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), function $DesignerAppViewController__initWithBundle_(self, _cmd, aBundle)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DesignerAppViewController").super_class }, "init");
-    if (self)
-    {
-        self.view = objj_msgSend(objj_msgSend(DesignerAppView, "alloc"), "initWithBundle:", aBundle);
-        objj_msgSend(self, "setView:", self.view);
-    }
-    return self;
-}
-,["id","CPBundle"]), new objj_method(sel_getUid("breadcrumbName"), function $DesignerAppViewController__breadcrumbName(self, _cmd)
-{
-    return "Designer";
-}
-,["CPString"]), new objj_method(sel_getUid("viewFillsDesktop"), function $DesignerAppViewController__viewFillsDesktop(self, _cmd)
-{
-    return YES;
-}
-,["BOOL"])]);
-}p;32;Applications/TestApp1/TestApp1.jt;2271;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;2204;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPViewController, "TestApp1ViewController"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("bundle")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), function $TestApp1ViewController__initWithBundle_(self, _cmd, aBundle)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("TestApp1ViewController").super_class }, "init");
-    if (self)
-    {
-        self.bundle = aBundle;
-        var file = objj_msgSend(self.bundle, "pathForResource:", "Images/icon.png");
-        var image = objj_msgSend(objj_msgSend(CPImage, "alloc"), "initWithContentsOfFile:", file);
-        var imageView = objj_msgSend(objj_msgSend(CPImageView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 1280, 720));
-        objj_msgSend(imageView, "setImage:", image);
-        objj_msgSend(imageView, "setAutoresizingMask:", CPViewMinXMargin | CPViewMaxXMargin | CPViewMinYMargin | CPViewMaxYMargin);
-        objj_msgSend(self, "setView:", imageView);
-    }
-    return self;
-}
-,["id","CPBundle"]), new objj_method(sel_getUid("breadcrumbName"), function $TestApp1ViewController__breadcrumbName(self, _cmd)
-{
-    return "Test 1";
-}
-,["CPString"])]);
-}{var the_class = objj_allocateClassPair(CPObject, "TestApp1"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("controller"), new objj_ivar("bundle")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), function $TestApp1__initWithBundle_(self, _cmd, aBundle)
-{
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("TestApp1").super_class }, "init");
-    if (self)
-    {
-        self.bundle = aBundle;
-    }
-    return self;
-}
-,["id","CPBundle"]), new objj_method(sel_getUid("viewController"), function $TestApp1__viewController(self, _cmd)
-{
-    if (!self.controller)
-    {
-        self.controller = objj_msgSend(objj_msgSend(TestApp1ViewController, "alloc"), "initWithBundle:", self.bundle);
-    }
-    return self.controller;
-}
-,["CPViewController"])]);
 }e;
