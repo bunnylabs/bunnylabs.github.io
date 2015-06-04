@@ -2204,9 +2204,9 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), func
     return self.controller;
 }
 ,["CPViewController"])]);
-}p;38;Applications/DesignerApp/ContentView.jt;4752;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;12;UITreeView.ji;13;ToolBoxView.ji;15;WorkspaceView.ji;16;WorkspaceModel.jt;4609;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("UITreeView.j", YES);objj_executeFile("ToolBoxView.j", YES);objj_executeFile("WorkspaceView.j", YES);objj_executeFile("WorkspaceModel.j", YES);var MINSIDEBARWIDTH = 200;
+}p;38;Applications/DesignerApp/ContentView.jt;4961;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;12;UITreeView.ji;13;ToolBoxView.ji;15;WorkspaceView.ji;16;WorkspaceModel.jt;4818;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("UITreeView.j", YES);objj_executeFile("ToolBoxView.j", YES);objj_executeFile("WorkspaceView.j", YES);objj_executeFile("WorkspaceModel.j", YES);var MINSIDEBARWIDTH = 200;
 {var the_class = objj_allocateClassPair(CPSplitView, "ContentView"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("elementList"), new objj_ivar("mainView"), new objj_ivar("model")]);objj_registerClassPair(the_class);
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("elementList"), new objj_ivar("mainView"), new objj_ivar("model"), new objj_ivar("uiTreeView")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), function $ContentView__initWithBundle_(self, _cmd, bundle)
 {
     self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("ContentView").super_class }, "init");
@@ -2223,12 +2223,14 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), func
         objj_msgSend(item, "setLabel:", "Toolbox");
         objj_msgSend(item, "setView:", toolboxView);
         objj_msgSend(self.elementList, "addTabViewItem:", item);
+        self.uiTreeView = objj_msgSend(objj_msgSend(UITreeView, "alloc"), "initWithBundle:", bundle);
         var item = objj_msgSend(objj_msgSend(CPTabViewItem, "alloc"), "init");
         objj_msgSend(item, "setLabel:", "UI Tree");
-        objj_msgSend(item, "setView:", objj_msgSend(objj_msgSend(UITreeView, "alloc"), "init"));
+        objj_msgSend(item, "setView:", self.uiTreeView);
         objj_msgSend(self.elementList, "addTabViewItem:", item);
         objj_msgSend(self, "addSubview:", self.elementList);
         self.model = objj_msgSend(objj_msgSend(WorkspaceModel, "alloc"), "init");
+        objj_msgSend(self.uiTreeView, "setDataSource:", self.model);
         self.mainView = objj_msgSend(objj_msgSend(WorkspaceView, "alloc"), "initWithBundle:", bundle);
         objj_msgSend(self.mainView, "setDataSource:", self.model);
         objj_msgSend(self, "addSubview:", self.mainView);
@@ -2240,6 +2242,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), func
 {
     objj_msgSend(self.model, "addElementOfType:", aType);
     objj_msgSend(self.mainView, "reloadData");
+    objj_msgSend(self.uiTreeView, "reloadData");
 }
 ,["void","CPString"]), new objj_method(sel_getUid("mainView"), function $ContentView__mainView(self, _cmd)
 {
@@ -2368,7 +2371,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), func
     return YES;
 }
 ,["BOOL"])]);
-}p;45;Applications/DesignerApp/DraggableThingView.jt;2352;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;2285;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "DraggableThingView"),
+}p;45;Applications/DesignerApp/DraggableThingView.jt;2803;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;2736;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "DraggableThingView"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("element"), new objj_ivar("delegate")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("delegate"), function $DraggableThingView__delegate(self, _cmd)
 {
@@ -2400,6 +2403,15 @@ class_addMethods(the_class, [new objj_method(sel_getUid("delegate"), function $D
     if (objj_msgSend(self.delegate, "respondsToSelector:", sel_getUid("updateElement:")))
     {
         objj_msgSend(self.delegate, "updateElement:", self.element);
+    }
+}
+,["void","CPEvent"]), new objj_method(sel_getUid("mouseUp:"), function $DraggableThingView__mouseUp_(self, _cmd, anEvent)
+{
+    self.element.dropWindowX = objj_msgSend(anEvent, "locationInWindow").x;
+    self.element.dropWindowY = objj_msgSend(anEvent, "locationInWindow").y;
+    if (objj_msgSend(self.delegate, "respondsToSelector:", sel_getUid("droppedElement:")))
+    {
+        objj_msgSend(self.delegate, "droppedElement:", self.element);
     }
 }
 ,["void","CPEvent"]), new objj_method(sel_getUid("element"), function $DraggableThingView__element(self, _cmd)
@@ -2663,30 +2675,106 @@ class_addMethods(the_class, [new objj_method(sel_getUid("delegate"), function $T
     }
 }
 ,["void","id"])]);
-}p;37;Applications/DesignerApp/UITreeView.jt;1674;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;1607;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "UITreeView"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("tableView")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $UITreeView__init(self, _cmd)
+}p;37;Applications/DesignerApp/UITreeView.jt;5107;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;WorkspaceModel.jt;5019;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("WorkspaceModel.j", YES);{var the_class = objj_allocateClassPair(CPObject, "ObjectWrapper"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("value")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithValue:"), function $ObjectWrapper__initWithValue_(self, _cmd, something)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("ObjectWrapper").super_class }, "init");
+    if (self)
+    {
+        self.value = something;
+    }
+    return self;
+}
+,["id","id"]), new objj_method(sel_getUid("value"), function $ObjectWrapper__value(self, _cmd)
+{
+    return self.value;
+}
+,["id"])]);
+class_addMethods(meta_class, [new objj_method(sel_getUid("wrapperForValue:"), function $ObjectWrapper__wrapperForValue_(self, _cmd, someValue)
+{
+    return objj_msgSend(objj_msgSend(ObjectWrapper, "alloc"), "initWithValue:", someValue);
+}
+,["ObjectWrapper","id"])]);
+}{var the_class = objj_allocateClassPair(CPView, "UITreeView"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("outlineView"), new objj_ivar("bundle"), new objj_ivar("dataSource")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("dataSource"), function $UITreeView__dataSource(self, _cmd)
+{
+    return self.dataSource;
+}
+,["WorkspaceModel"]), new objj_method(sel_getUid("setDataSource:"), function $UITreeView__setDataSource_(self, _cmd, newValue)
+{
+    self.dataSource = newValue;
+}
+,["void","WorkspaceModel"]), new objj_method(sel_getUid("initWithBundle:"), function $UITreeView__initWithBundle_(self, _cmd, aBundle)
 {
     self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("UITreeView").super_class }, "initWithFrame:", CGRectMake(0, 0, 0, 20));
     if (self)
     {
-        self.tableView = objj_msgSend(objj_msgSend(CPOutlineView, "alloc"), "initWithFrame:", CGRectMake(0, 20, 0, 0));
+        self.bundle = aBundle;
+        self.outlineView = objj_msgSend(objj_msgSend(CPOutlineView, "alloc"), "initWithFrame:", CGRectMake(0, 20, 0, 0));
         var iconColumn = objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "icons");
-        objj_msgSend(iconColumn, "setMaxWidth:", 25);
-        objj_msgSend(iconColumn, "setMinWidth:", 25);
+        objj_msgSend(iconColumn, "setMaxWidth:", 40);
+        objj_msgSend(iconColumn, "setMinWidth:", 40);
         var iconView = objj_msgSend(objj_msgSend(CPImageView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 20, 20));
         objj_msgSend(iconView, "setImageAlignment:", CPImageAlignCenter);
         objj_msgSend(iconView, "setImageScaling:", CPScaleNone);
         objj_msgSend(iconColumn, "setDataView:", iconView);
-        objj_msgSend(self.tableView, "addTableColumn:", iconColumn);
-        objj_msgSend(self.tableView, "addTableColumn:", objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "itemname"));
-        objj_msgSend(self.tableView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
-        objj_msgSend(self, "addSubview:", self.tableView);
+        objj_msgSend(self.outlineView, "addTableColumn:", iconColumn);
+        objj_msgSend(self.outlineView, "addTableColumn:", objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "itemname"));
+        objj_msgSend(self.outlineView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+        objj_msgSend(self.outlineView, "setDataSource:", self);
+        objj_msgSend(self, "addSubview:", self.outlineView);
     }
     return self;
 }
-,["id"])]);
-}p;41;Applications/DesignerApp/WorkspaceModel.jt;1341;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;1274;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPObject, "WorkspaceModel"),
+,["id","CPBundle"]), new objj_method(sel_getUid("reloadData"), function $UITreeView__reloadData(self, _cmd)
+{
+    objj_msgSend(self.outlineView, "reloadData");
+}
+,["void"]), new objj_method(sel_getUid("outlineView:child:ofItem:"), function $UITreeView__outlineView_child_ofItem_(self, _cmd, outlineView, index, item)
+{
+    if (item === nil)
+    {
+        return objj_msgSend(ObjectWrapper, "wrapperForValue:", objj_msgSend(self.dataSource, "elements")[index]);
+    }
+    return objj_msgSend(ObjectWrapper, "wrapperForValue:", item.children[index]);
+}
+,["id","CPOutlineView","CPInteger","id"]), new objj_method(sel_getUid("outlineView:isItemExpandable:"), function $UITreeView__outlineView_isItemExpandable_(self, _cmd, outlineView, item)
+{
+    if (item === nil)
+    {
+        return true;
+    }
+    return objj_msgSend(item, "value").children.length != 0;
+}
+,["BOOL","CPOutlineView","id"]), new objj_method(sel_getUid("outlineView:numberOfChildrenOfItem:"), function $UITreeView__outlineView_numberOfChildrenOfItem_(self, _cmd, outlineView, item)
+{
+    if (!self.dataSource)
+    {
+        return 0;
+    }
+    if (item === nil)
+    {
+        return objj_msgSend(self.dataSource, "elements").length;
+    }
+    return objj_msgSend(item, "value").children.length;
+}
+,["int","CPOutlineView","id"]), new objj_method(sel_getUid("outlineView:objectValueForTableColumn:byItem:"), function $UITreeView__outlineView_objectValueForTableColumn_byItem_(self, _cmd, outlineView, tableColumn, item)
+{
+    if (objj_msgSend(tableColumn, "identifier") === "itemname")
+    {
+        return objj_msgSend(item, "value").type;
+    }
+    if (objj_msgSend(tableColumn, "identifier") === "icons")
+    {
+        var file = objj_msgSend(self.bundle, "pathForResource:", "Images/" + objj_msgSend(item, "value").type + ".png");
+        return objj_msgSend(objj_msgSend(CPImage, "alloc"), "initWithContentsOfFile:", file);
+    }
+    return nil;
+}
+,["id","CPOutlineView","CPTableColumn","id"])]);
+}p;41;Applications/DesignerApp/WorkspaceModel.jt;1354;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;1287;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPObject, "WorkspaceModel"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("idcounter"), new objj_ivar("elements"), new objj_ivar("elementMap")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $WorkspaceModel__init(self, _cmd)
 {
@@ -2701,7 +2789,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $Works
 }
 ,["id"]), new objj_method(sel_getUid("addElementOfType:"), function $WorkspaceModel__addElementOfType_(self, _cmd, type)
 {
-    var element = {id: self.idcounter++, type: type, x: 50, y: 50, w: 200, h: 200, children: []};
+    var element = {id: self.idcounter++, type: type, x: 50, y: 50, w: 200, h: 200, children: [], parent: nil};
     self.elements.push(element);
     self.elementMap[element.id] = element;
 }
@@ -2713,7 +2801,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $Works
     return self.elements;
 }
 ,["CPArray"])]);
-}p;40;Applications/DesignerApp/WorkspaceView.jt;4248;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;WorkspaceModel.ji;23;ResizableWithInfoView.jt;4132;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("WorkspaceModel.j", YES);objj_executeFile("ResizableWithInfoView.j", YES);{var the_class = objj_allocateClassPair(CPView, "WorkspaceView"),
+}p;40;Applications/DesignerApp/WorkspaceView.jt;4646;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;WorkspaceModel.ji;23;ResizableWithInfoView.jt;4530;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("WorkspaceModel.j", YES);objj_executeFile("ResizableWithInfoView.j", YES);{var the_class = objj_allocateClassPair(CPView, "WorkspaceView"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("dataSource")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("dataSource"), function $WorkspaceView__dataSource(self, _cmd)
 {
@@ -2757,6 +2845,14 @@ class_addMethods(the_class, [new objj_method(sel_getUid("dataSource"), function 
 ,["void","CPArray"]), new objj_method(sel_getUid("updateElement:"), function $WorkspaceView__updateElement_(self, _cmd, anElement)
 {
     objj_msgSend(self.dataSource, "updateElement:", anElement);
+}
+,["void","id"]), new objj_method(sel_getUid("droppedElement:"), function $WorkspaceView__droppedElement_(self, _cmd, anElement)
+{
+    var dropPoint = objj_msgSend(self, "convertPoint:fromView:", CGPointMake(anElement.dropWindowX, anElement.dropWindowY), objj_msgSend(objj_msgSend(self, "window"), "contentView"));
+    console.log(dropPoint);
+    for (i = 0; i < elements.length; i++)
+    {
+    }
 }
 ,["void","id"]), new objj_method(sel_getUid("addElement:"), function $WorkspaceView__addElement_(self, _cmd, element)
 {
