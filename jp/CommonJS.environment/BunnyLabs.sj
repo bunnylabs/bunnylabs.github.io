@@ -2204,7 +2204,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), func
     return self.controller;
 }
 ,["CPViewController"])]);
-}p;38;Applications/DesignerApp/ContentView.jt;4961;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;12;UITreeView.ji;13;ToolBoxView.ji;15;WorkspaceView.ji;16;WorkspaceModel.jt;4818;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("UITreeView.j", YES);objj_executeFile("ToolBoxView.j", YES);objj_executeFile("WorkspaceView.j", YES);objj_executeFile("WorkspaceModel.j", YES);var MINSIDEBARWIDTH = 200;
+}p;38;Applications/DesignerApp/ContentView.jt;5183;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;12;UITreeView.ji;13;ToolBoxView.ji;15;WorkspaceView.ji;16;WorkspaceModel.jt;5040;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("UITreeView.j", YES);objj_executeFile("ToolBoxView.j", YES);objj_executeFile("WorkspaceView.j", YES);objj_executeFile("WorkspaceModel.j", YES);var MINSIDEBARWIDTH = 200;
 {var the_class = objj_allocateClassPair(CPSplitView, "ContentView"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("elementList"), new objj_ivar("mainView"), new objj_ivar("model"), new objj_ivar("uiTreeView")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), function $ContentView__initWithBundle_(self, _cmd, bundle)
@@ -2232,6 +2232,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), func
         self.model = objj_msgSend(objj_msgSend(WorkspaceModel, "alloc"), "init");
         objj_msgSend(self.uiTreeView, "setDataSource:", self.model);
         self.mainView = objj_msgSend(objj_msgSend(WorkspaceView, "alloc"), "initWithBundle:", bundle);
+        objj_msgSend(self.mainView, "setDelegate:", self);
         objj_msgSend(self.mainView, "setDataSource:", self.model);
         objj_msgSend(self, "addSubview:", self.mainView);
         objj_msgSend(self, "setPosition:ofDividerAtIndex:", MINSIDEBARWIDTH, 0);
@@ -2244,7 +2245,11 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithBundle:"), func
     objj_msgSend(self.mainView, "reloadData");
     objj_msgSend(self.uiTreeView, "reloadData");
 }
-,["void","CPString"]), new objj_method(sel_getUid("mainView"), function $ContentView__mainView(self, _cmd)
+,["void","CPString"]), new objj_method(sel_getUid("elementsUpdated"), function $ContentView__elementsUpdated(self, _cmd)
+{
+    objj_msgSend(self.uiTreeView, "reloadData");
+}
+,["void"]), new objj_method(sel_getUid("mainView"), function $ContentView__mainView(self, _cmd)
 {
     return self.mainView;
 }
@@ -2427,38 +2432,56 @@ class_addMethods(the_class, [new objj_method(sel_getUid("delegate"), function $D
     }
 }
 ,["void","id"])]);
-}p;40;Applications/DesignerApp/DraggableView.jt;3317;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;20;DraggableThingView.jt;3225;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("DraggableThingView.j", YES);{var the_class = objj_allocateClassPair(DraggableThingView, "DraggableView"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("label"), new objj_ivar("coverView"), new objj_ivar("view")]);objj_registerClassPair(the_class);
+}p;40;Applications/DesignerApp/DraggableView.jt;4950;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;20;DraggableThingView.ji;14;PassthruView.jt;4839;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("DraggableThingView.j", YES);objj_executeFile("PassthruView.j", YES);{var the_class = objj_allocateClassPair(DraggableThingView, "DraggableView"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("label"), new objj_ivar("coverView"), new objj_ivar("childrenView"), new objj_ivar("view")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("initWithElement:"), function $DraggableView__initWithElement_(self, _cmd, anElement)
 {
     self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DraggableView").super_class }, "initWithElement:", anElement);
     if (self)
     {
-        self.coverView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0, 0, anElement.w, anElement.h));
+        self.coverView = objj_msgSend(objj_msgSend(PassthruView, "alloc"), "initWithFrame:", CGRectMake(0, 0, anElement.w, anElement.h));
         objj_msgSend(self.coverView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
-        self.label = objj_msgSend(CPTextField, "labelWithTitle:", anElement.type);
+        self.label = objj_msgSend(PassthruTextField, "labelWithTitle:", anElement.type);
         objj_msgSend(self.label, "setCenter:", objj_msgSend(self.coverView, "center"));
         objj_msgSend(self.label, "setAutoresizingMask:", CPViewMinXMargin | CPViewMaxXMargin | CPViewMinYMargin | CPViewMaxYMargin);
+        self.childrenView = objj_msgSend(objj_msgSend(CPView, "alloc"), "initWithFrame:", CGRectMake(0, 0, anElement.w, anElement.h));
+        objj_msgSend(self.childrenView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
         objj_msgSend(self.label, "setTextColor:", objj_msgSend(objj_msgSend(CPColor, "grayColor"), "colorWithAlphaComponent:", 0.8));
         objj_msgSend(self.coverView, "setBackgroundColor:", objj_msgSend(objj_msgSend(CPColor, "grayColor"), "colorWithAlphaComponent:", 0.2));
-        objj_msgSend(self.label, "setHidden:", YES);
         objj_msgSend(self.coverView, "setHidden:", YES);
-        objj_msgSend(self, "addSubview:", self.label);
+        objj_msgSend(self.coverView, "addSubview:", self.label);
+        objj_msgSend(self, "addSubview:", self.childrenView);
         objj_msgSend(self, "addSubview:", self.coverView);
     }
     return self;
 }
 ,["id","id"]), new objj_method(sel_getUid("mouseEntered:"), function $DraggableView__mouseEntered_(self, _cmd, anEvent)
 {
-    objj_msgSend(self.label, "setHidden:", NO);
     objj_msgSend(self.coverView, "setHidden:", NO);
     objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DraggableView").super_class }, "mouseEntered:", anEvent);
+    objj_msgSend(objj_msgSend(self, "superview"), "mouseExited:", anEvent);
 }
 ,["void","CPEvent"]), new objj_method(sel_getUid("mouseExited:"), function $DraggableView__mouseExited_(self, _cmd, anEvent)
 {
-    objj_msgSend(self.label, "setHidden:", YES);
     objj_msgSend(self.coverView, "setHidden:", YES);
     objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DraggableView").super_class }, "mouseExited:", anEvent);
+    var hitTestPoint = objj_msgSend(objj_msgSend(self, "superview"), "convertPoint:fromView:", objj_msgSend(anEvent, "locationInWindow"), objj_msgSend(objj_msgSend(self, "window"), "contentView"));
+    if (objj_msgSend(objj_msgSend(self, "superview"), "hitTest:", hitTestPoint) === objj_msgSend(self, "superview"))
+    {
+        objj_msgSend(objj_msgSend(self, "superview"), "mouseEntered:", anEvent);
+    }
+}
+,["void","CPEvent"]), new objj_method(sel_getUid("mouseDragged:"), function $DraggableView__mouseDragged_(self, _cmd, anEvent)
+{
+    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DraggableView").super_class }, "mouseDragged:", anEvent);
+}
+,["void","CPEvent"]), new objj_method(sel_getUid("mouseUp:"), function $DraggableView__mouseUp_(self, _cmd, anEvent)
+{
+    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DraggableView").super_class }, "mouseUp:", anEvent);
+}
+,["void","CPEvent"]), new objj_method(sel_getUid("mouseDown:"), function $DraggableView__mouseDown_(self, _cmd, anEvent)
+{
+    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("DraggableView").super_class }, "mouseDown:", anEvent);
 }
 ,["void","CPEvent"]), new objj_method(sel_getUid("setView:"), function $DraggableView__setView_(self, _cmd, aView)
 {
@@ -2483,7 +2506,41 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithElement:"), fun
 {
     return self.coverView;
 }
+,["CPView"]), new objj_method(sel_getUid("childrenView"), function $DraggableView__childrenView(self, _cmd)
+{
+    return self.childrenView;
+}
 ,["CPView"])]);
+}p;39;Applications/DesignerApp/PassthruView.jt;1414;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;1347;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "PassthruView"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("hitTest:"), function $PassthruView__hitTest_(self, _cmd, aPoint)
+{
+    for (var i = 0; i < objj_msgSend(objj_msgSend(self, "subviews"), "count"); i++)
+    {
+        var subView = objj_msgSend(objj_msgSend(self, "subviews"), "objectAtIndex:", i);
+        if (!objj_msgSend(subView, "isHidden") && objj_msgSend(subView, "hitTest:", aPoint))
+        {
+            return subView;
+        }
+    }
+    return nil;
+}
+,["CPView","CGPoint"])]);
+}{var the_class = objj_allocateClassPair(CPTextField, "PassthruTextField"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("hitTest:"), function $PassthruTextField__hitTest_(self, _cmd, aPoint)
+{
+    for (var i = 0; i < objj_msgSend(objj_msgSend(self, "subviews"), "count"); i++)
+    {
+        var subView = objj_msgSend(objj_msgSend(self, "subviews"), "objectAtIndex:", i);
+        if (!objj_msgSend(subView, "isHidden") && objj_msgSend(subView, "hitTest:", aPoint))
+        {
+            return subView;
+        }
+    }
+    return nil;
+}
+,["CPView","CGPoint"])]);
 }p;40;Applications/DesignerApp/ResizableView.jt;4155;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;15;DraggableView.jt;4068;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("DraggableView.j", YES);{var the_class = objj_allocateClassPair(DraggableView, "ResizableView"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("holders")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("initWithElement:"), function $ResizableView__initWithElement_(self, _cmd, anElement)
@@ -2575,14 +2632,14 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithElement:"), fun
     objj_msgSend(self.holders[holder.type], "setFrameOrigin:", CGPointMake(origpos.x, origpos.y));
 }
 ,["void","id"])]);
-}p;48;Applications/DesignerApp/ResizableWithInfoView.jt;2946;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;15;ResizableView.jt;2859;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("ResizableView.j", YES);{var the_class = objj_allocateClassPair(ResizableView, "ResizableWithInfoView"),
+}p;48;Applications/DesignerApp/ResizableWithInfoView.jt;3011;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;15;ResizableView.ji;14;PassthruView.jt;2905;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("ResizableView.j", YES);objj_executeFile("PassthruView.j", YES);{var the_class = objj_allocateClassPair(ResizableView, "ResizableWithInfoView"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("infoLabel")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("initWithElement:"), function $ResizableWithInfoView__initWithElement_(self, _cmd, anElement)
 {
     self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("ResizableWithInfoView").super_class }, "initWithElement:", anElement);
     if (self)
     {
-        self.infoLabel = objj_msgSend(CPTextField, "labelWithTitle:", "x: y: w: h:");
+        self.infoLabel = objj_msgSend(PassthruTextField, "labelWithTitle:", "x: y: w: h:");
         objj_msgSend(self.infoLabel, "setFrameOrigin:", CGPointMake(10, 10));
         objj_msgSend(self.infoLabel, "setBackgroundColor:", objj_msgSend(objj_msgSend(CPColor, "grayColor"), "colorWithAlphaComponent:", 0.5));
         objj_msgSend(self.infoLabel, "setTextColor:", objj_msgSend(objj_msgSend(CPColor, "whiteColor"), "colorWithAlphaComponent:", 0.5));
@@ -2618,6 +2675,20 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithElement:"), fun
     objj_msgSend(self.infoLabel, "sizeToFit");
 }
 ,["void"])]);
+}p;54;Applications/DesignerApp/SelectableResizableInfoView.jt;1032;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;23;ResizableWithInfoView.jt;938;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("ResizableWithInfoView.j", YES);{var the_class = objj_allocateClassPair(CPObject, "SelectionRoster"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+}{var the_class = objj_allocateClassPair(ResizableWithInfoView, "SelectableResizableInfoView"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("elementId")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithElement:onRoster:"), function $SelectableResizableInfoView__initWithElement_onRoster_(self, _cmd, anElement, aRoster)
+{
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("SelectableResizableInfoView").super_class }, "initWithElement:", anElement);
+    if (self)
+    {
+        self.elementId = anElement.id;
+    }
+    return self;
+}
+,["id","id","SelectionRoster"])]);
 }p;38;Applications/DesignerApp/ToolBoxView.jt;3539;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;3472;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "ToolBoxView"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("tableView"), new objj_ivar("elements"), new objj_ivar("bundle"), new objj_ivar("delegate")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("delegate"), function $ToolBoxView__delegate(self, _cmd)
@@ -2675,7 +2746,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("delegate"), function $T
     }
 }
 ,["void","id"])]);
-}p;37;Applications/DesignerApp/UITreeView.jt;5107;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;WorkspaceModel.jt;5019;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("WorkspaceModel.j", YES);{var the_class = objj_allocateClassPair(CPObject, "ObjectWrapper"),
+}p;37;Applications/DesignerApp/UITreeView.jt;5414;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;WorkspaceModel.jt;5326;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("WorkspaceModel.j", YES);{var the_class = objj_allocateClassPair(CPObject, "ObjectWrapper"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("value")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("initWithValue:"), function $ObjectWrapper__initWithValue_(self, _cmd, something)
 {
@@ -2712,25 +2783,27 @@ class_addMethods(the_class, [new objj_method(sel_getUid("dataSource"), function 
     if (self)
     {
         self.bundle = aBundle;
-        self.outlineView = objj_msgSend(objj_msgSend(CPOutlineView, "alloc"), "initWithFrame:", CGRectMake(0, 20, 0, 0));
+        self.outlineView = objj_msgSend(objj_msgSend(CPOutlineView, "alloc"), "initWithFrame:", CGRectMake(0, 20, 250, 250));
         var iconColumn = objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "icons");
-        objj_msgSend(iconColumn, "setMaxWidth:", 40);
-        objj_msgSend(iconColumn, "setMinWidth:", 40);
+        objj_msgSend(iconColumn, "setMinWidth:", 25);
         var iconView = objj_msgSend(objj_msgSend(CPImageView, "alloc"), "initWithFrame:", CGRectMake(0, 0, 20, 20));
         objj_msgSend(iconView, "setImageAlignment:", CPImageAlignCenter);
         objj_msgSend(iconView, "setImageScaling:", CPScaleNone);
         objj_msgSend(iconColumn, "setDataView:", iconView);
-        objj_msgSend(self.outlineView, "addTableColumn:", iconColumn);
         objj_msgSend(self.outlineView, "addTableColumn:", objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "itemname"));
+        objj_msgSend(self.outlineView, "setColumnAutoresizingStyle:", CPTableViewLastColumnOnlyAutoresizingStyle);
         objj_msgSend(self.outlineView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
         objj_msgSend(self.outlineView, "setDataSource:", self);
+        objj_msgSend(self, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
         objj_msgSend(self, "addSubview:", self.outlineView);
+        objj_msgSend(self, "reloadData");
     }
     return self;
 }
 ,["id","CPBundle"]), new objj_method(sel_getUid("reloadData"), function $UITreeView__reloadData(self, _cmd)
 {
     objj_msgSend(self.outlineView, "reloadData");
+    objj_msgSend(self.outlineView, "setFrame:", CGRectMake(0, 20, objj_msgSend(self, "frame").size.width, objj_msgSend(self, "frame").size.height - 20));
 }
 ,["void"]), new objj_method(sel_getUid("outlineView:child:ofItem:"), function $UITreeView__outlineView_child_ofItem_(self, _cmd, outlineView, index, item)
 {
@@ -2738,7 +2811,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("dataSource"), function 
     {
         return objj_msgSend(ObjectWrapper, "wrapperForValue:", objj_msgSend(self.dataSource, "elements")[index]);
     }
-    return objj_msgSend(ObjectWrapper, "wrapperForValue:", item.children[index]);
+    return objj_msgSend(ObjectWrapper, "wrapperForValue:", objj_msgSend(item, "value").children[index]);
 }
 ,["id","CPOutlineView","CPInteger","id"]), new objj_method(sel_getUid("outlineView:isItemExpandable:"), function $UITreeView__outlineView_isItemExpandable_(self, _cmd, outlineView, item)
 {
@@ -2801,8 +2874,8 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $Works
     return self.elements;
 }
 ,["CPArray"])]);
-}p;40;Applications/DesignerApp/WorkspaceView.jt;4646;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;WorkspaceModel.ji;23;ResizableWithInfoView.jt;4530;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("WorkspaceModel.j", YES);objj_executeFile("ResizableWithInfoView.j", YES);{var the_class = objj_allocateClassPair(CPView, "WorkspaceView"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("dataSource")]);objj_registerClassPair(the_class);
+}p;40;Applications/DesignerApp/WorkspaceView.jt;7614;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;WorkspaceModel.ji;23;ResizableWithInfoView.jt;7498;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("WorkspaceModel.j", YES);objj_executeFile("ResizableWithInfoView.j", YES);{var the_class = objj_allocateClassPair(CPView, "WorkspaceView"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("dataSource"), new objj_ivar("delegate")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("dataSource"), function $WorkspaceView__dataSource(self, _cmd)
 {
     return self.dataSource;
@@ -2811,7 +2884,15 @@ class_addMethods(the_class, [new objj_method(sel_getUid("dataSource"), function 
 {
     self.dataSource = newValue;
 }
-,["void","WorkspaceModel"]), new objj_method(sel_getUid("initWithBundle:"), function $WorkspaceView__initWithBundle_(self, _cmd, bundle)
+,["void","WorkspaceModel"]), new objj_method(sel_getUid("delegate"), function $WorkspaceView__delegate(self, _cmd)
+{
+    return self.delegate;
+}
+,["id"]), new objj_method(sel_getUid("setDelegate:"), function $WorkspaceView__setDelegate_(self, _cmd, newValue)
+{
+    self.delegate = newValue;
+}
+,["void","id"]), new objj_method(sel_getUid("initWithBundle:"), function $WorkspaceView__initWithBundle_(self, _cmd, bundle)
 {
     self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("WorkspaceView").super_class }, "init");
     if (self)
@@ -2832,33 +2913,94 @@ class_addMethods(the_class, [new objj_method(sel_getUid("dataSource"), function 
         var subview = subviews[i];
         objj_msgSend(subview, "removeFromSuperview");
     }
-    objj_msgSend(self, "addElements:", elements);
+    objj_msgSend(self, "addElements:to:", elements, self);
 }
-,["void"]), new objj_method(sel_getUid("addElements:"), function $WorkspaceView__addElements_(self, _cmd, elements)
+,["void"]), new objj_method(sel_getUid("addElements:to:"), function $WorkspaceView__addElements_to_(self, _cmd, elements, parentView)
 {
     var i = 0;
     for (i = 0; i < elements.length; i++)
     {
-        objj_msgSend(self, "addElement:", elements[i]);
+        objj_msgSend(self, "addElement:to:", elements[i], parentView);
     }
 }
-,["void","CPArray"]), new objj_method(sel_getUid("updateElement:"), function $WorkspaceView__updateElement_(self, _cmd, anElement)
+,["void","CPArray","CPView"]), new objj_method(sel_getUid("updateElement:"), function $WorkspaceView__updateElement_(self, _cmd, anElement)
 {
     objj_msgSend(self.dataSource, "updateElement:", anElement);
 }
-,["void","id"]), new objj_method(sel_getUid("droppedElement:"), function $WorkspaceView__droppedElement_(self, _cmd, anElement)
+,["void","id"]), new objj_method(sel_getUid("_findElementAtPoint:inArray:x:y:except:"), function $WorkspaceView___findElementAtPoint_inArray_x_y_except_(self, _cmd, aPoint, anArray, x, y, anException)
+{
+    var i = 0;
+    for (i = 0; i < anArray.length; i++)
+    {
+        var curElement = anArray[i];
+        var rect = CGRectMake(curElement.x + x, curElement.y + y, curElement.w, curElement.h);
+        if (curElement === anException)
+        {
+            continue;
+        }
+        if (CGRectContainsPoint(rect, aPoint))
+        {
+            var childElement = objj_msgSend(self, "_findElementAtPoint:inArray:x:y:except:", aPoint, curElement.children, x + curElement.x, y + curElement.y, anException);
+            if (childElement !== nil)
+            {
+                return childElement;
+            }
+            return curElement;
+        }
+    }
+    return nil;
+}
+,["id","CGPoint","CPArray","int","int","id"]), new objj_method(sel_getUid("droppedElement:"), function $WorkspaceView__droppedElement_(self, _cmd, anElement)
 {
     var dropPoint = objj_msgSend(self, "convertPoint:fromView:", CGPointMake(anElement.dropWindowX, anElement.dropWindowY), objj_msgSend(objj_msgSend(self, "window"), "contentView"));
-    console.log(dropPoint);
-    for (i = 0; i < elements.length; i++)
+    var elements = objj_msgSend(self.dataSource, "elements");
+    var result = objj_msgSend(self, "_findElementAtPoint:inArray:x:y:except:", dropPoint, elements, 0, 0, anElement);
+    if (result === nil)
     {
+        if (anElement.parent !== nil)
+        {
+            var newPoint = objj_msgSend(self, "convertPoint:fromView:", CGPointMake(anElement.x, anElement.y), anElement.parent.repview);
+            objj_msgSend(anElement.parent.children, "removeObject:", anElement);
+            anElement.parent = nil;
+            anElement.x = newPoint.x;
+            anElement.y = newPoint.y;
+            elements.push(anElement);
+            objj_msgSend(self, "reloadData");
+        }
+    }
+    else if (anElement.parent !== result)
+    {
+        console.log(result);
+        var parent = self;
+        if (anElement.parent !== nil)
+        {
+            parent = anElement.parent.repview;
+        }
+        var newPoint = objj_msgSend(result.repview, "convertPoint:fromView:", CGPointMake(anElement.x, anElement.y), parent);
+        if (anElement.parent === nil)
+        {
+            objj_msgSend(elements, "removeObject:", anElement);
+        }
+        else
+        {
+            objj_msgSend(anElement.parent.children, "removeObject:", anElement);
+        }
+        result.children.push(anElement);
+        anElement.parent = result;
+        anElement.x = newPoint.x;
+        anElement.y = newPoint.y;
+        objj_msgSend(self, "reloadData");
+    }
+    if (objj_msgSend(self.delegate, "respondsToSelector:", sel_getUid("elementsUpdated")))
+    {
+        objj_msgSend(self.delegate, "elementsUpdated");
     }
 }
-,["void","id"]), new objj_method(sel_getUid("addElement:"), function $WorkspaceView__addElement_(self, _cmd, element)
+,["void","id"]), new objj_method(sel_getUid("addElement:to:"), function $WorkspaceView__addElement_to_(self, _cmd, element, parentView)
 {
     var coverElement = objj_msgSend(objj_msgSend(ResizableWithInfoView, "alloc"), "initWithElement:", element);
     objj_msgSend(coverElement, "setDelegate:", self);
-    objj_msgSend(self, "addSubview:", coverElement);
+    objj_msgSend(parentView, "addSubview:", coverElement);
     switch(element.type) {
     case "CPView":
     {
@@ -2897,6 +3039,8 @@ default:
         break;
     }
     }
+    element.repview = coverElement;
+    objj_msgSend(self, "addElements:to:", element.children, objj_msgSend(coverElement, "childrenView"));
 }
-,["void","id"])]);
+,["void","id","CPView"])]);
 }e;
