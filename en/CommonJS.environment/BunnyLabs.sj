@@ -2541,7 +2541,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("hitTest:"), function $P
     return nil;
 }
 ,["CPView","CGPoint"])]);
-}p;40;Applications/DesignerApp/ResizableView.jt;4155;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;15;DraggableView.jt;4068;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("DraggableView.j", YES);{var the_class = objj_allocateClassPair(DraggableView, "ResizableView"),
+}p;40;Applications/DesignerApp/ResizableView.jt;4195;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;15;DraggableView.jt;4108;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("DraggableView.j", YES);{var the_class = objj_allocateClassPair(DraggableView, "ResizableView"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("holders")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("initWithElement:"), function $ResizableView__initWithElement_(self, _cmd, anElement)
 {
@@ -2577,22 +2577,22 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithElement:"), fun
         h = 6,
         w = 6,
         autosizemask = CPViewMinXMargin | CPViewMaxXMargin | CPViewMinYMargin | CPViewMaxYMargin;
-    if (pos.includes("t"))
+    if (pos.indexOf("t") != -1)
     {
         autosizemask &= ~CPViewMinYMargin;
         y = 0;
     }
-    if (pos.includes("b"))
+    if (pos.indexOf("b") != -1)
     {
         autosizemask &= ~CPViewMaxYMargin;
         y = objj_msgSend(self, "frame").size.height - 6;
     }
-    if (pos.includes("r"))
+    if (pos.indexOf("r") != -1)
     {
         autosizemask &= ~CPViewMaxXMargin;
         x = objj_msgSend(self, "frame").size.width - 6;
     }
-    if (pos.includes("l"))
+    if (pos.indexOf("l") != -1)
     {
         autosizemask &= ~CPViewMinXMargin;
         x = 0;
@@ -2608,20 +2608,20 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithElement:"), fun
     var dx = holder.dx;
     var dy = holder.dy;
     var theElement = objj_msgSend(self, "element");
-    if (holder.type.includes("t"))
+    if (holder.type.indexOf("t") != -1)
     {
         theElement.y = y + dy;
         theElement.h = h - dy;
     }
-    if (holder.type.includes("b"))
+    if (holder.type.indexOf("b") != -1)
     {
         theElement.h = h + dy;
     }
-    if (holder.type.includes("r"))
+    if (holder.type.indexOf("r") != -1)
     {
         theElement.w = w + dx;
     }
-    if (holder.type.includes("l"))
+    if (holder.type.indexOf("l") != -1)
     {
         theElement.x = x + dx;
         theElement.w = w - dx;
@@ -2689,7 +2689,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithElement:onRoste
     return self;
 }
 ,["id","id","SelectionRoster"])]);
-}p;38;Applications/DesignerApp/ToolBoxView.jt;3539;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;3472;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "ToolBoxView"),
+}p;38;Applications/DesignerApp/ToolBoxView.jt;3548;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.jt;3481;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);{var the_class = objj_allocateClassPair(CPView, "ToolBoxView"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("tableView"), new objj_ivar("elements"), new objj_ivar("bundle"), new objj_ivar("delegate")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("delegate"), function $ToolBoxView__delegate(self, _cmd)
 {
@@ -2716,7 +2716,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("delegate"), function $T
         objj_msgSend(self.tableView, "addTableColumn:", iconColumn);
         objj_msgSend(self.tableView, "addTableColumn:", objj_msgSend(objj_msgSend(CPTableColumn, "alloc"), "initWithIdentifier:", "itemname"));
         objj_msgSend(self.tableView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
-        self.elements = ["CPView", "CPTableView", "CPSplitView", "CPButton", "CPTextField"];
+        self.elements = ["CPView", "CPTableView", "CPSplitView", "CPBox", "CPButton", "CPTextField"];
         objj_msgSend(self.tableView, "setTarget:", self);
         objj_msgSend(self.tableView, "setDoubleAction:", sel_getUid("doubleClick:"));
         objj_msgSend(self.tableView, "setDataSource:", self);
@@ -2874,7 +2874,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $Works
     return self.elements;
 }
 ,["CPArray"])]);
-}p;40;Applications/DesignerApp/WorkspaceView.jt;7614;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;WorkspaceModel.ji;23;ResizableWithInfoView.jt;7498;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("WorkspaceModel.j", YES);objj_executeFile("ResizableWithInfoView.j", YES);{var the_class = objj_allocateClassPair(CPView, "WorkspaceView"),
+}p;40;Applications/DesignerApp/WorkspaceView.jt;7928;@STATIC;1.0;I;23;Foundation/Foundation.jI;15;AppKit/AppKit.ji;16;WorkspaceModel.ji;23;ResizableWithInfoView.jt;7812;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("AppKit/AppKit.j", NO);objj_executeFile("WorkspaceModel.j", YES);objj_executeFile("ResizableWithInfoView.j", YES);{var the_class = objj_allocateClassPair(CPView, "WorkspaceView"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("dataSource"), new objj_ivar("delegate")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("dataSource"), function $WorkspaceView__dataSource(self, _cmd)
 {
@@ -3020,6 +3020,13 @@ class_addMethods(the_class, [new objj_method(sel_getUid("dataSource"), function 
     case "CPButton":
     {
         var view = objj_msgSend(objj_msgSend(CPButton, "alloc"), "initWithFrame:", CGRectMake(0, 0, element.w, element.h));
+        objj_msgSend(view, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+        objj_msgSend(coverElement, "setView:", view);
+        break;
+    }
+    case "CPBox":
+    {
+        var view = objj_msgSend(objj_msgSend(CPBox, "alloc"), "initWithFrame:", CGRectMake(0, 0, element.w, element.h));
         objj_msgSend(view, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
         objj_msgSend(coverElement, "setView:", view);
         break;
